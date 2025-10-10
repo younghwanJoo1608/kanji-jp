@@ -2,21 +2,17 @@ name: Build and Deploy Jekyll
 
 on:
   push:
-    branches: [ "feat" ]
+    branches: ["feat"]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
+    permissions: { contents: read, pages: write, id-token: write }
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        with: { fetch-depth: 0 }
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -24,33 +20,35 @@ jobs:
           ruby-version: '3.1'
           bundler-cache: false
 
-      - name: Add Linux platform to lockfile (if needed)
+      # ← 여기서 매번 리눅스용 lockfile 생성 (윈도우/맥 플랫폼도 함께 기록)
+      - name: Generate lockfile for Linux runner
         run: |
-          if [ -f Gemfile.lock ]; then
-            bundle lock --add-platform x86_64-linux || true
-          fi
+          rm -f Gemfile.lock
+          bundle lock --add-platform x86_64-linux --add-platform x86-mingw32 --add-platform x86_64-darwin-22
 
       - name: Bundle install
         run: bundle install --jobs 4
+
+      - name: Verify jekyll in bundle (debug)
+        run: |
+          ruby -v
+          bundle -v
+          grep -A2 "^PLATFORMS" Gemfile.lock || true
+          bundle info github-pages || true
+          bundle info jekyll || true
+          bundle list | grep jekyll || (echo "jekyll not in bundle" && exit 1)
 
       - name: Build with Jekyll
         run: bundle exec jekyll build -d _site
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
+        with: { path: _site }
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    permissions: { pages: write, id-token: write }
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4

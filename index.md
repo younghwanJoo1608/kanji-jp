@@ -1,6 +1,6 @@
 ---
 layout: default
-title: My Kanji Dictionary
+title: 일본어 한자 사전
 ---
 
 # 自作漢字辞典

@@ -1,9 +1,9 @@
 # サイト基本設定
-title: "My Kanji Dictionary"
+title: "漢検 한자사전전"
 description: "自作漢字辞典"
 baseurl: ""
 url: "https://www.kanji-jp.kr"
-lang: ja
+lang: ko
 
 # GitHub Pages でも使える標準の Markdown/テーマ
 markdown: kramdown

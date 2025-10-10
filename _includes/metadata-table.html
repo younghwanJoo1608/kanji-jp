@@ -70,12 +70,27 @@
       </tr>
   
       <tr>
+        <th>훈독별 의미</th>
+        <td>
+            {% if page.kun_meanings %}
+            <ul class="kun_meanings">
+              {% for w in page.kun_meanings %}
+                  <li>{{ w.word }} <small class="reading">{{ w.reading }}</small>  {{ w.gloss }}</li>
+              {% endfor %}
+            </ul>
+            {% else %}
+                <!-- 비어 있을 경우 빈 칸 유지 -->
+            {% endif %}
+        </td>
+      </tr>
+
+      <tr>
         <th>숙어</th>
         <td>
             {% if page.compounds %}
             <ul class="compounds">
                 {% for w in page.compounds %}
-                    <li>{{ w.word }} <small class="reading">{{ w.reading }}</small> — {{ w.gloss }}</li>
+                    <li>{{ w.word }} <small class="reading">{{ w.reading }}</small>  {{ w.gloss }}</li>
                 {% endfor %}
             </ul>
             {% else %}

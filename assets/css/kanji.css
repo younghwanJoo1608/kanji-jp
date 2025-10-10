@@ -1,0 +1,41 @@
+/* ベース */
+:root {
+    --max-width: 960px;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif; line-height: 1.7; margin: 0; }
+  .container { max-width: var(--max-width); margin: 2rem auto; padding: 0 1rem; }
+  .site-header, .site-footer { padding: 1rem; background: #fafafa; border-bottom: 1px solid #eee; }
+  .site-footer { border-top: 1px solid #eee; border-bottom: none; }
+  .site-title { font-weight: 700; text-decoration: none; color: inherit; }
+  .site-nav a { margin-left: 1rem; text-decoration: none; }
+  
+  /* 漢字ページ */
+  .kanji-entry { display: grid; gap: 1rem; }
+  .kanji-header { display: flex; align-items: center; gap: 1rem; }
+  .kanji-title { margin: 0; font-size: 1.5rem; font-weight: 700; }
+  .kanji-title .code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Roboto Mono", monospace; font-size: .9rem; color: #666; }
+  
+  /* ★ 字形を大きく見せるクラス（本文中でも使用可） */
+  .kanji-glyph {
+    font-family: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", "Songti SC", "SimSun", serif; /* 明朝系でディテールが見やすい */
+    display: inline-block;
+    font-size: clamp(64px, 12vw, 148px); /* 画面に応じて大きく */
+    line-height: 1;
+    margin: .25rem .5rem .25rem 0;
+  }
+  
+  /* メタ情報テーブル */
+  .kanji-meta { width: 100%; border-collapse: collapse; }
+  .kanji-meta th, .kanji-meta td { border-bottom: 1px solid #eee; padding: .5rem .75rem; vertical-align: top; }
+  .kanji-meta th { white-space: nowrap; text-align: left; color: #555; }
+  .compounds { margin: 0; padding-left: 1.25rem; }
+  .compounds .reading { color: #666; }
+  
+  /* 本文メモ */
+  .kanji-notes p { margin: 1rem 0; }
+  
+  /* 一覧ページのカード */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: .75rem; }
+  .card { border: 1px solid #eee; border-radius: 12px; padding: .75rem; background: #fff; text-decoration: none; color: inherit; }
+  .card .g { font-family: "Noto Serif JP", serif; font-size: 44px; line-height: 1; display: block; }
+  .card small { color: #666; }

@@ -1,0 +1,79 @@
+<table class="kanji-meta">
+    <tbody>
+      {% if page.meanings %}
+      <tr>
+        <th>意味</th>
+        <td>{{ page.meanings }}</td>
+      </tr>
+      {% endif %}
+  
+      {% if page.onyomi %}
+      <tr>
+        <th>音読み</th>
+        <td>{{ page.onyomi }}</td>
+      </tr>
+      {% endif %}
+  
+      {% if page.kunyomi %}
+      <tr>
+        <th>訓読み</th>
+        <td>{{ page.kunyomi }}</td>
+      </tr>
+      {% endif %}
+  
+      {% if page.radical %}
+      <tr>
+        <th>部首</th>
+        <td>{{ page.radical }}</td>
+      </tr>
+      {% endif %}
+  
+      {% if page.strokes %}
+      <tr>
+        <th>画数</th>
+        <td>{{ page.strokes }}</td>
+      </tr>
+      {% endif %}
+  
+      {% if page.kanken %}
+      <tr>
+        <th>漢検</th>
+        <td>{{ page.kanken }}</td>
+      </tr>
+      {% endif %}
+  
+      {% if page.jis %}
+      <tr>
+        <th>JIS</th>
+        <td>{{ page.jis }}</td>
+      </tr>
+      {% endif %}
+  
+      {% if page.unicode %}
+      <tr>
+        <th>Unicode</th>
+        <td><code>{{ page.unicode }}</code></td>
+      </tr>
+      {% endif %}
+  
+      {% if page.variants %}
+      <tr>
+        <th>異体字</th>
+        <td>{{ page.variants }}</td>
+      </tr>
+      {% endif %}
+  
+      {% if page.compounds %}
+      <tr>
+        <th>熟語</th>
+        <td>
+          <ul class="compounds">
+            {% for w in page.compounds %}
+              <li>{{ w.word }} <small class="reading">{{ w.reading }}</small> — {{ w.gloss }}</li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>

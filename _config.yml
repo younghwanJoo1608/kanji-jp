@@ -1,0 +1,32 @@
+# サイト基本設定
+title: "My Kanji Dictionary"
+description: "自作漢字辞典"
+baseurl: ""
+url: ""
+lang: ja
+
+# GitHub Pages でも使える標準の Markdown/テーマ
+markdown: kramdown
+theme: minima
+
+# コレクション定義（各漢字は _kanji/ 以下に）
+collections:
+  kanji:
+    output: true
+    permalink: /kanji/:title/
+
+# デフォルト Front Matter（書かなくても最低限の見た目が出る）
+defaults:
+  - scope:
+      path: ""
+      type: kanji
+    values:
+      layout: kanji
+
+# ビルド対象
+include:
+  - _pages
+  - _kanji
+
+# 記事のタイムゾーンなど
+timezone: Asia/Seoul

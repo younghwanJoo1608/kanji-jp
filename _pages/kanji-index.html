@@ -1,0 +1,17 @@
+---
+layout: default
+title: 漢字一覧
+permalink: /kanji/
+---
+<h1>漢字一覧</h1>
+<p>追加順。必要に応じて radical / 漢検 / 画数などでサブ一覧を増やしてください。</p>
+<div class="grid">
+  {% assign all = site.kanji | sort: 'title' %}
+  {% for k in all %}
+    <a class="card" href="{{ k.url | relative_url }}">
+      <span class="g">{{ k.char }}</span>
+      <div>{{ k.title }}</div>
+      <small>{{ k.unicode }}</small>
+    </a>
+  {% endfor %}
+</div>

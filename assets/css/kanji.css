@@ -103,3 +103,9 @@
         padding: .35rem .6rem;
         background: #fff;
     }
+
+    /* 표외 */
+    .onyomi { margin-right: .5em; }
+    .onyomi.offchart { color: #c62828; font-weight: 600; } /* 붉은색 강조 */
+    .kunyomi { margin-right: .5em; }
+    .kunyomi.offchart { color: #c62828; font-weight: 600; } /* 붉은색 강조 */

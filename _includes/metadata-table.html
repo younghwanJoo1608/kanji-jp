@@ -11,12 +11,32 @@
   
       <tr>
         <th>음독</th>
-        <td>{{ page.onyomi }}</td>
+        <td>
+          {% if page.onyomi.first.reading %}
+            {% for o in page.onyomi %}
+              <span class="onyomi {% if o.type == '표외' %}offchart{% endif %}">
+                {{ o.reading }}
+              </span>
+            {% endfor %}
+          {% else %}
+            {{ page.onyomi }}
+          {% endif %}
+        </td>
       </tr>
   
       <tr>
         <th>훈독</th>
-        <td>{{ page.kunyomi }}</td>
+        <td>
+          {% if page.kunyomi.first.reading %}
+            {% for o in page.kunyomi %}
+              <span class="kunyomi {% if o.type == '표외' %}offchart{% endif %}">
+                {{ o.reading }}
+              </span>
+            {% endfor %}
+          {% else %}
+            {{ page.kunyomi }}
+          {% endif %}
+        </td>
       </tr>
   
       <tr>

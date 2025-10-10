@@ -61,20 +61,34 @@ title: 급수별 한자 목록
              {% if forloop.first %}style="display:grid"{% endif %}>
       {% if items and items.size > 0 %}
         <div class="grid">
-          {% assign sorted = items | sort: "title" %}
-          {% for k in sorted %}
-            <a class="card"
-                href="{{ k.url | relative_url }}"
-                title="{{ k.title }}"
-                data-onyomi="{{ k.onyomi | default: '' }}"
-                data-strokes="{{ k.strokes | default: 9999 }}"
-                data-radical="{{ k.radical | default: '' }}">
-                <span class="g">{{ k.char }}</span>
-                <div>{{ k.title }}</div>
-                <small>{{ k.unicode }}</small>
-            </a>
-          {% endfor %}
-        </div>
+        {% assign sorted = items | sort: "title" %}
+        {% for k in sorted %}
+          {% assign onyomi_sort = "" %}
+          {% if k.onyomi and k.onyomi.first and k.onyomi.first.reading %}
+            {% assign ony_list = k.onyomi | map: "reading" %}
+            {% assign onyomi_sort = ony_list | join: " " %}
+          {% else %}
+            {% assign onyomi_sort = k.onyomi | default: "" %}
+          {% endif %}
+          {% assign onyomi_sort = onyomi_sort | strip | escape %}
+
+          {% assign radical_key = k.radical | default: "" %}
+          {% assign radical_key = radical_key | split: " " | first %}
+          {% assign radical_key = radical_key | split: "（" | first | split: "(" | first %}
+          {% assign radical_key = radical_key | strip | escape %}
+
+          <a class="card"
+             href="{{ k.url | relative_url }}"
+             title="{{ k.title }}"
+             data-onyomi="{{ onyomi_sort }}"
+             data-strokes="{{ k.strokes | plus: 0 | default: 9999 }}"
+             data-radical="{{ radical_key }}">
+            <span class="g">{{ k.char }}</span>
+            <div>{{ k.title }}</div>
+            <small>{{ k.unicode }}</small>
+          </a>
+        {% endfor %}
+      </div>
       {% else %}
         <p class="muted">아직 {{ label_kr }}으로 등록된 한자가 없습니다.</p>
       {% endif %}
@@ -82,86 +96,82 @@ title: 급수별 한자 목록
   {% endfor %}
   
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const sections = document.querySelectorAll('.level-section');
-      const buttons  = document.querySelectorAll('.level-tabs .level-btn');
-      const select   = document.getElementById('sort-select');
-  
-      function currentSection() {
-        return Array.from(sections).find(s => s.style.display !== 'none');
-      }
-  
-      function sortCards(section, key) {
-        if (!section) return;
-        const grid = section.querySelector('.grid');
-        if (!grid) return;
-        const cards = Array.from(grid.querySelectorAll('a.card'));
-  
-        const getVal = (el) => {
-          switch (key) {
-            case 'onyomi': {
-              // 한자/가나 정렬 안정화
-              const v = (el.dataset.onyomi || '').normalize('NFKD');
-              return v;
-            }
-            case 'strokes': {
-              const n = parseInt(el.dataset.strokes || '9999', 10);
-              return isNaN(n) ? 9999 : n;
-            }
-            case 'radical': {
-              return (el.dataset.radical || '');
-            }
-            default: return '';
-          }
-        };
-  
-        cards.sort((a, b) => {
-          const va = getVal(a);
-          const vb = getVal(b);
-          if (key === 'strokes') {
-            // 획수 오름차순, 동률이면 음독으로 2차 정렬
-            const diff = va - vb;
-            if (diff !== 0) return diff;
-            return (a.dataset.onyomi || '').localeCompare((b.dataset.onyomi || ''), 'ja');
-          } else if (key === 'radical') {
-            // 부수 오름차순, 동률이면 획수 → 음독
-            const p = String(va).localeCompare(String(vb), 'ja');
-            if (p !== 0) return p;
-            const s = (parseInt(a.dataset.strokes||'9999',10)) - (parseInt(b.dataset.strokes||'9999',10));
-            if (s !== 0) return s;
-            return (a.dataset.onyomi || '').localeCompare((b.dataset.onyomi || ''), 'ja');
-          } else {
-            // 음독 오름차순
-            return String(va).localeCompare(String(vb), 'ja');
-          }
-        });
-  
-        // DOM 재배치
-        cards.forEach(c => grid.appendChild(c));
-      }
-  
-      function show(level) {
-        sections.forEach(s => s.style.display = (s.dataset.level === level ? 'grid' : 'none'));
-        buttons.forEach(b => b.classList.toggle('active', b.dataset.level === level));
-  
-        // 탭 전환 시 현재 선택된 정렬 기준으로 즉시 정렬
-        sortCards(currentSection(), select.value);
-      }
-  
-      // 초기 표시 (첫 탭 활성화 상태 보장)
-      var defaultLevel = buttons.length ? buttons[0].dataset.level : null;
-      if (defaultLevel) {
-        // 첫 버튼에 active 클래스가 이미 박혀있다면 display만 보정
-        sections.forEach((s, i) => s.style.display = (i === 0 ? 'grid' : 'none'));
-        sortCards(currentSection(), select.value);
-      }
-  
-      // 이벤트 바인딩
-      buttons.forEach(function (b) {
-        b.addEventListener('click', function () { show(b.dataset.level); });
+  document.addEventListener('DOMContentLoaded', function () {
+    const sections = document.querySelectorAll('.level-section');
+    const buttons  = document.querySelectorAll('.level-tabs .level-btn');
+    const select   = document.getElementById('sort-select');
+
+    // 혹시 HTML의 value가 한글로 남아 있어도 안전하게 매핑
+    const keyMap = {
+      '음독 오름차순': 'onyomi',
+      '획수순': 'strokes',
+      '부수순': 'radical',
+      'onyomi': 'onyomi',
+      'strokes': 'strokes',
+      'radical': 'radical'
+    };
+    const normKey = v => keyMap[v] || v;
+
+    function currentSection() {
+      return Array.from(sections).find(s => s.style.display !== 'none');
+    }
+
+    function sortCards(section, rawKey) {
+      const key = normKey(rawKey);
+      const grid = section?.querySelector('.grid');
+      if (!grid) return;
+
+      const cards = Array.from(grid.querySelectorAll('a.card'));
+
+      const getVal = (el) => {
+        if (key === 'strokes') {
+          const n = Number(el.dataset.strokes);
+          return Number.isFinite(n) ? n : 9999;          // 숫자 보장
+        }
+        if (key === 'radical') {
+          return (el.dataset.radical || '');
+        }
+        // onyomi
+        return (el.dataset.onyomi || '').normalize('NFKD');
+      };
+
+      cards.sort((a, b) => {
+        const va = getVal(a);
+        const vb = getVal(b);
+
+        if (key === 'strokes') {
+          const diff = va - vb;                           // 오름차순(작은→큰)
+          if (diff !== 0) return diff;
+          return (a.dataset.onyomi || '').localeCompare((b.dataset.onyomi || ''), 'ja');
+        }
+        if (key === 'radical') {
+          const p = String(va).localeCompare(String(vb), 'ja');
+          if (p !== 0) return p;
+          const s = (Number(a.dataset.strokes) || 9999) - (Number(b.dataset.strokes) || 9999);
+          if (s !== 0) return s;
+          return (a.dataset.onyomi || '').localeCompare((b.dataset.onyomi || ''), 'ja');
+        }
+        // onyomi
+        return String(va).localeCompare(String(vb), 'ja');
       });
-      select.addEventListener('change', function () {
-        sortCards(currentSection(), select.value);
-      });
-    });
-  </script>
+
+      cards.forEach(c => grid.appendChild(c));
+    }
+
+    function show(level) {
+      sections.forEach(s => s.style.display = (s.dataset.level === level ? 'grid' : 'none'));
+      buttons.forEach(b => b.classList.toggle('active', b.dataset.level === level));
+      sortCards(currentSection(), select.value);
+    }
+
+    // 초기 표시 & 정렬
+    const defaultLevel = buttons[0]?.dataset.level;
+    if (defaultLevel) {
+      sections.forEach((s, i) => s.style.display = (i === 0 ? 'grid' : 'none'));
+      sortCards(currentSection(), select.value);
+    }
+
+    buttons.forEach(b => b.addEventListener('click', () => show(b.dataset.level)));
+    select.addEventListener('change', () => sortCards(currentSection(), select.value));
+  });
+</script>

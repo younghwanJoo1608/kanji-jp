@@ -10,7 +10,15 @@ title: 일본어 한자 사전
 
 ## 최근 추가된 한자
 
-{% assign recent = site.kanji | sort: "date" | reverse | slice: 0, 10 %}
+{% assign enriched = "" %}
+{% for d in site.kanji %}
+  {% assign ts = d.last_modified_at | default: d.date | default: "" %}
+  {% if ts != "" %}
+    {% assign item = ts | append: "||" | append: d.url | append: "||" | append: d.title | append: "||" | append: d.char | append: "||" | append: d.unicode %}
+    {% assign enriched = enriched | append: item | append: "##SEP##" %}
+  {% endif %}
+{% endfor %}
+{% assign rows = enriched | split: "##SEP##" | sort_natural | reverse | slice: 0, 10 %}
 
 <div class="grid">
   {% for k in recent %}

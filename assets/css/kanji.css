@@ -43,3 +43,18 @@
   .card { border: 1px solid #eee; border-radius: 12px; padding: .75rem; background: #fff; text-decoration: none; color: inherit; }
   .card .g { font-family: "Noto Serif JP", serif; font-size: 44px; line-height: 1; display: block; }
   .card small { color: #666; }
+
+  /* 급수 탭 버튼 */
+  .level-tabs { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0 1.25rem; }
+  .level-tabs .level-btn {
+    border: 1px solid #e5e5e5; border-radius: 10px; padding: .5rem .9rem; background: #fff; cursor: pointer;
+    font-weight: 600; transition: background .15s ease, box-shadow .15s ease;
+  }
+  .level-tabs .level-btn:hover { background: #f7f7f7; }
+  .level-tabs .level-btn.active { background: #111; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+
+  /* 급수 섹션: 기본은 감춤, JS로 전환 시 grid 표시 */
+  .level-section { display: none; }
+
+  /* 빈 목록 문구 */
+  .muted { color: #777; }

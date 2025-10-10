@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>급수별 한자 목록</title>
+    <link rel="stylesheet" href="/assets/css/kanji.css">
+    
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="site-title" href="/">My Kanji Dictionary</a>
+      <nav class="site-nav">
+        <a href="/kanji/">한자 일람</a>
+        <a href="/kanken/">칸켄 급수별 한자 목록</a>
+      </nav>
+    </header>
+
+    <main class="container">
+      <h1>급수별 한자 목록</h1>
+<p>아래 버튼을 눌러 급수별 한자를 확인하세요.</p>
+
+<div class="level-tabs">
+  
+    
+    <button type="button" class="level-btn" data-level="10">10급</button>
+  
+    
+    <button type="button" class="level-btn" data-level="9">9급</button>
+  
+    
+    <button type="button" class="level-btn" data-level="8">8급</button>
+  
+    
+    <button type="button" class="level-btn" data-level="7">7급</button>
+  
+    
+    <button type="button" class="level-btn" data-level="6">6급</button>
+  
+    
+    <button type="button" class="level-btn" data-level="5">5급</button>
+  
+    
+    <button type="button" class="level-btn" data-level="4">4급</button>
+  
+    
+    <button type="button" class="level-btn" data-level="3">3급</button>
+  
+    
+    <button type="button" class="level-btn" data-level="준2">준2급</button>
+  
+    
+    <button type="button" class="level-btn" data-level="2">2급</button>
+  
+    
+    <button type="button" class="level-btn" data-level="준1">준1급</button>
+  
+    
+    <button type="button" class="level-btn" data-level="1">1급</button>
+  
+</div>
+  
+
+  
+  
+  
+  
+
+  <section class="level-section" data-level="10" aria-label="10급 한자 목록">
+    
+      <p class="muted">아직 10급으로 등록된 한자가 없습니다.</p>
+    
+  </section>
+
+  
+
+  
+  
+  
+  
+
+  <section class="level-section" data-level="9" aria-label="9급 한자 목록">
+    
+      <p class="muted">아직 9급으로 등록된 한자가 없습니다.</p>
+    
+  </section>
+
+  
+
+  
+  
+  
+  
+
+  <section class="level-section" data-level="8" aria-label="8급 한자 목록">
+    
+      <p class="muted">아직 8급으로 등록된 한자가 없습니다.</p>
+    
+  </section>
+
+  
+
+  
+  
+  
+  
+
+  <section class="level-section" data-level="7" aria-label="7급 한자 목록">
+    
+      <p class="muted">아직 7급으로 등록된 한자가 없습니다.</p>
+    
+  </section>
+
+  
+
+  
+  
+  
+  
+
+  <section class="level-section" data-level="6" aria-label="6급 한자 목록">
+    
+      <p class="muted">아직 6급으로 등록된 한자가 없습니다.</p>
+    
+  </section>
+
+  
+
+  
+  
+  
+  
+
+  <section class="level-section" data-level="5" aria-label="5급 한자 목록">
+    
+      <p class="muted">아직 5급으로 등록된 한자가 없습니다.</p>
+    
+  </section>
+
+  
+
+  
+  
+  
+  
+
+  <section class="level-section" data-level="4" aria-label="4급 한자 목록">
+    
+      <p class="muted">아직 4급으로 등록된 한자가 없습니다.</p>
+    
+  </section>
+
+  
+
+  
+  
+  
+  
+
+  <section class="level-section" data-level="3" aria-label="3급 한자 목록">
+    
+      <p class="muted">아직 3급으로 등록된 한자가 없습니다.</p>
+    
+  </section>
+
+  
+
+  
+  
+  
+  
+
+  <section class="level-section" data-level="준2" aria-label="준2급 한자 목록">
+    
+      <p class="muted">아직 준2급으로 등록된 한자가 없습니다.</p>
+    
+  </section>
+
+  
+
+  
+  
+  
+  
+
+  <section class="level-section" data-level="2" aria-label="2급 한자 목록">
+    
+      <p class="muted">아직 2급으로 등록된 한자가 없습니다.</p>
+    
+  </section>
+
+  
+
+  
+  
+  
+  
+
+  <section class="level-section" data-level="준1" aria-label="준1급 한자 목록">
+    
+      <div class="grid">
+        
+        
+          <a class="card" href="/kanji/61A7/" title="憧（あこがれる）">
+            <span class="g">憧</span>
+            <div>憧（あこがれる）</div>
+            <small>U+61A7</small>
+          </a>
+        
+      </div>
+    
+  </section>
+
+  
+
+  
+  
+  
+  
+
+  <section class="level-section" data-level="1" aria-label="1급 한자 목록">
+    
+      <p class="muted">아직 1급으로 등록된 한자가 없습니다.</p>
+    
+  </section>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const sections = document.querySelectorAll('.level-section');
+    const buttons  = document.querySelectorAll('.level-tabs .level-btn');
+    function show(level) {
+      sections.forEach(s => s.style.display = (s.dataset.level === level ? 'grid' : 'none'));
+      buttons.forEach(b => b.classList.toggle('active', b.dataset.level === level));
+    }
+    const defaultLevel = buttons[0]?.dataset.level;
+    if (defaultLevel) show(defaultLevel);
+    buttons.forEach(b => b.addEventListener('click', () => show(b.dataset.level)));
+  });
+</script>
+
+    </main>
+
+    <footer class="site-footer">
+      <small>© 2025 My Kanji Dictionary</small>
+    </footer>
+  </body>
+</html>

@@ -2,23 +2,29 @@ name: Build and Deploy Jekyll
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "feat" ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Set up Ruby
-      - uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
-          bundler-cache: false   # 캐시 자동 설치 끄고, 아래에서 수동 실행
+          bundler-cache: false
 
-      - name: Fix Gemfile.lock platform (Linux)
+      - name: Add Linux platform to lockfile (if needed)
         run: |
           if [ -f Gemfile.lock ]; then
             bundle lock --add-platform x86_64-linux || true
@@ -30,18 +36,21 @@ jobs:
       - name: Build with Jekyll
         run: bundle exec jekyll build -d _site
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: _site
 
   deploy:
     needs: build
+    runs-on: ubuntu-latest
     permissions:
       pages: write
       id-token: write
     environment:
       name: github-pages
-    runs-on: ubuntu-latest
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - id: deployment
+      - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4

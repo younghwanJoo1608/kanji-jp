@@ -1,79 +1,67 @@
 <table class="kanji-meta">
+    <colgroup>
+        <col class="col-th">  <!-- 라벨 칸 -->
+        <col class="col-td">  <!-- 값 칸 -->
+    </colgroup>
     <tbody>
-      {% if page.meanings %}
       <tr>
         <th>의미</th>
         <td>{{ page.meanings }}</td>
       </tr>
-      {% endif %}
   
-      {% if page.onyomi %}
       <tr>
         <th>음독</th>
         <td>{{ page.onyomi }}</td>
       </tr>
-      {% endif %}
   
-      {% if page.kunyomi %}
       <tr>
         <th>훈독</th>
         <td>{{ page.kunyomi }}</td>
       </tr>
-      {% endif %}
   
-      {% if page.radical %}
       <tr>
         <th>부수</th>
         <td>{{ page.radical }}</td>
       </tr>
-      {% endif %}
   
-      {% if page.strokes %}
       <tr>
         <th>획수</th>
         <td>{{ page.strokes }}</td>
       </tr>
-      {% endif %}
   
-      {% if page.kanken %}
       <tr>
         <th>칸켄 급수</th>
         <td>{{ page.kanken }}</td>
       </tr>
-      {% endif %}
   
-      {% if page.jis %}
       <tr>
         <th>JIS 수준</th>
         <td>{{ page.jis }}</td>
       </tr>
-      {% endif %}
   
-      {% if page.unicode %}
       <tr>
         <th>Unicode</th>
         <td><code>{{ page.unicode }}</code></td>
       </tr>
-      {% endif %}
   
-      {% if page.variants %}
       <tr>
         <th>이체자</th>
         <td>{{ page.variants }}</td>
       </tr>
-      {% endif %}
   
-      {% if page.compounds %}
       <tr>
         <th>숙어</th>
         <td>
-          <ul class="compounds">
-            {% for w in page.compounds %}
-              <li>{{ w.word }} <small class="reading">{{ w.reading }}</small> — {{ w.gloss }}</li>
-            {% endfor %}
-          </ul>
+            {% if page.compounds %}
+            <ul class="compounds">
+                {% for w in page.compounds %}
+                    <li>{{ w.word }} <small class="reading">{{ w.reading }}</small> — {{ w.gloss }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+                <!-- 비어 있을 경우 빈 칸 유지 -->
+            {% endif %}
         </td>
       </tr>
-      {% endif %}
     </tbody>
   </table>

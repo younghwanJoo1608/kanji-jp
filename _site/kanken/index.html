@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>급수별 한자 목록</title>
-    <link rel="stylesheet" href="/assets/css/kanji.css?v=1760109759">
+    <link rel="stylesheet" href="/assets/css/kanji.css?v=1760112199">
     
   </head>
   <body>
@@ -106,7 +106,18 @@
         1급
       </button>
     
-  </div>
+</div>
+  
+  
+
+<div class="sort-bar">
+    <label for="sort-select">정렬:</label>
+    <select id="sort-select">
+      <option value="onyomi">음독 오름차순</option>
+      <option value="strokes">획수순</option>
+      <option value="radical">부수순</option>
+    </select>
+</div>
     
   
     
@@ -304,10 +315,26 @@
         <div class="grid">
           
           
-            <a class="card" href="/kanji/61A7/" title="憧（あこがれる）">
-              <span class="g">憧</span>
-              <div>憧（あこがれる）</div>
-              <small>U+61A7</small>
+            <a class="card"
+                href="/kanji/5E00/"
+                title="帀（めぐ-る）"
+                data-onyomi="ソウ"
+                data-strokes="4"
+                data-radical="巾（はばへん）">
+                <span class="g">帀</span>
+                <div>帀（めぐ-る）</div>
+                <small>U+5E00</small>
+            </a>
+          
+            <a class="card"
+                href="/kanji/61A7/"
+                title="憧（あこがれる）"
+                data-onyomi="ショウ"
+                data-strokes="15"
+                data-radical="心（りっしんべん）">
+                <span class="g">憧</span>
+                <div>憧（あこがれる）</div>
+                <small>U+61A7</small>
             </a>
           
         </div>
@@ -337,22 +364,87 @@
     document.addEventListener('DOMContentLoaded', function () {
       const sections = document.querySelectorAll('.level-section');
       const buttons  = document.querySelectorAll('.level-tabs .level-btn');
+      const select   = document.getElementById('sort-select');
+  
+      function currentSection() {
+        return Array.from(sections).find(s => s.style.display !== 'none');
+      }
+  
+      function sortCards(section, key) {
+        if (!section) return;
+        const grid = section.querySelector('.grid');
+        if (!grid) return;
+        const cards = Array.from(grid.querySelectorAll('a.card'));
+  
+        const getVal = (el) => {
+          switch (key) {
+            case 'onyomi': {
+              // 한자/가나 정렬 안정화
+              const v = (el.dataset.onyomi || '').normalize('NFKD');
+              return v;
+            }
+            case 'strokes': {
+              const n = parseInt(el.dataset.strokes || '9999', 10);
+              return isNaN(n) ? 9999 : n;
+            }
+            case 'radical': {
+              return (el.dataset.radical || '');
+            }
+            default: return '';
+          }
+        };
+  
+        cards.sort((a, b) => {
+          const va = getVal(a);
+          const vb = getVal(b);
+          if (key === 'strokes') {
+            // 획수 오름차순, 동률이면 음독으로 2차 정렬
+            const diff = va - vb;
+            if (diff !== 0) return diff;
+            return (a.dataset.onyomi || '').localeCompare((b.dataset.onyomi || ''), 'ja');
+          } else if (key === 'radical') {
+            // 부수 오름차순, 동률이면 획수 → 음독
+            const p = String(va).localeCompare(String(vb), 'ja');
+            if (p !== 0) return p;
+            const s = (parseInt(a.dataset.strokes||'9999',10)) - (parseInt(b.dataset.strokes||'9999',10));
+            if (s !== 0) return s;
+            return (a.dataset.onyomi || '').localeCompare((b.dataset.onyomi || ''), 'ja');
+          } else {
+            // 음독 오름차순
+            return String(va).localeCompare(String(vb), 'ja');
+          }
+        });
+  
+        // DOM 재배치
+        cards.forEach(c => grid.appendChild(c));
+      }
   
       function show(level) {
         sections.forEach(s => s.style.display = (s.dataset.level === level ? 'grid' : 'none'));
         buttons.forEach(b => b.classList.toggle('active', b.dataset.level === level));
+  
+        // 탭 전환 시 현재 선택된 정렬 기준으로 즉시 정렬
+        sortCards(currentSection(), select.value);
       }
   
-      // 호환성 확보(옵셔널 체이닝 제거)
+      // 초기 표시 (첫 탭 활성화 상태 보장)
       var defaultLevel = buttons.length ? buttons[0].dataset.level : null;
-      if (defaultLevel) show(defaultLevel);
+      if (defaultLevel) {
+        // 첫 버튼에 active 클래스가 이미 박혀있다면 display만 보정
+        sections.forEach((s, i) => s.style.display = (i === 0 ? 'grid' : 'none'));
+        sortCards(currentSection(), select.value);
+      }
   
+      // 이벤트 바인딩
       buttons.forEach(function (b) {
         b.addEventListener('click', function () { show(b.dataset.level); });
       });
+      select.addEventListener('change', function () {
+        sortCards(currentSection(), select.value);
+      });
     });
   </script>
-  
+
     </main>
 
     <footer class="site-footer">

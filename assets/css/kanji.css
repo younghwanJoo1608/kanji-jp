@@ -29,9 +29,26 @@
     }
     
     /* メタ情報テーブル */
-    .kanji-meta { width: 100%; border-collapse: collapse; }
+    .kanji-meta {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;       /* ★ 열 폭 고정 */
+    }
+    .kanji-meta .col-th { width: 9rem; }  /* 라벨 칸 고정폭 (취향에 맞게 8~12rem 조절) */
+    .kanji-meta .col-td { width: auto; }  /* 값 칸은 나머지 전부 */
+
     .kanji-meta th, .kanji-meta td { border-bottom: 1px solid #eee; padding: .5rem .75rem; vertical-align: top; }
-    .kanji-meta th { white-space: nowrap; text-align: left; color: #555; }
+    .kanji-meta th {
+        white-space: nowrap;       /* 라벨은 줄바꿈 없이 한 줄 */
+        text-align: left;
+        color: #555;
+    }
+    .kanji-meta td {
+        overflow-wrap: anywhere;   /* 긴 단어/코드에도 줄바꿈 허용 */
+        word-break: break-word;    /* CJK와 혼용시 강제 줄바꿈 */
+        min-height: 1.2em; /* 빈 칸에도 일정 높이 유지 */
+    }
+      
     .compounds { margin: 0; padding-left: 1.25rem; }
     .compounds .reading { color: #666; }
     
@@ -67,4 +84,22 @@
         color: #fff !important;
         border-color: #111 !important;
         box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+
+    /* 정렬 바 */
+    .sort-bar {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        margin: .5rem 0 1rem;
+    }
+    .sort-bar label {
+        color: #444;
+        font-weight: 600;
+    }
+    .sort-bar select {
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        padding: .35rem .6rem;
+        background: #fff;
     }

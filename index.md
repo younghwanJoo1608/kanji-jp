@@ -12,9 +12,10 @@ title: 일본어 한자 사전
 
 {% assign enriched = "" %}
 {% for d in site.kanji %}
-  {% assign ts = d.last_modified_at | default: d.date | default: "" %}
+  {% assign url = d.url %}
+  {% assign ts = site.data.lastmod[url] | default: d.date | default: "" %}
   {% if ts != "" %}
-    {% assign item = ts | append: "||" | append: d.url | append: "||" | append: d.title | append: "||" | append: d.char | append: "||" | append: d.unicode %}
+    {% assign item = ts | append: "||" | append: url | append: "||" | append: d.title | append: "||" | append: d.char | append: "||" | append: d.unicode %}
     {% assign enriched = enriched | append: item | append: "##SEP##" %}
   {% endif %}
 {% endfor %}

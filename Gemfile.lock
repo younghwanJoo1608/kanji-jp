@@ -37,6 +37,7 @@ GEM
       http_parser.rb (~> 0)
     ethon (0.15.0)
       ffi (>= 1.15.0)
+    eventmachine (1.2.7)
     eventmachine (1.2.7-x86-mingw32)
     execjs (2.10.0)
     faraday (2.14.0)
@@ -45,7 +46,7 @@ GEM
       logger
     faraday-net_http (3.4.1)
       net-http (>= 0.5.0)
-    ffi (1.17.2-x86-mingw32)
+    ffi (1.17.2)
     forwardable-extended (2.6.0)
     gemoji (4.1.0)
     github-pages (232)
@@ -276,6 +277,7 @@ GEM
 
 PLATFORMS
   x86-mingw32
+  x86_64-linux
 
 DEPENDENCIES
   github-pages

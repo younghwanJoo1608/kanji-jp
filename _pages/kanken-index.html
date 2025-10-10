@@ -7,79 +7,81 @@ title: 급수별 한자 목록
 <h1>급수별 한자 목록</h1>
 <p>아래 버튼을 눌러 급수별 한자를 확인하세요.</p>
 
-{%- comment -%}
-요구 순서: 10, 9, 8, 7, 6, 5, 4, 3, 준2, 2, 준1, 1
-- "준n"은 한국어/일본어 표기 모두 지원 (준1급/準1級 등)
-- 일본어 전각 숫자(１,２,…) 표기도 함께 매칭
-{%- endcomment -%}
-{% assign levels = "10,9,8,7,6,5,4,3,준2,2,준1,1" | split: "," %}
-
 <div class="level-tabs">
+    {% assign levels = "10,9,8,7,6,5,4,3,준2,2,준1,1" | split: "," %}
+    {% for lv in levels %}
+      {% if lv contains "준" %}
+        {% assign n = lv | replace:"준","" %}
+        {% assign label_kr_btn = "준" | append:n | append:"급" %}
+      {% else %}
+        {% assign label_kr_btn = lv | append:"급" %}
+      {% endif %}
+      <button type="button"
+              class="level-btn{% if forloop.first %} active{% endif %}"
+              data-level="{{ lv }}">
+        {{ label_kr_btn }}
+      </button>
+    {% endfor %}
+  </div>
+  
+  {%- comment -%} 섹션 렌더링 {%- endcomment -%}
   {% for lv in levels %}
     {% if lv contains "준" %}
       {% assign n = lv | replace:"준","" %}
-      {% assign label_kr_btn = "준" | append:n | append:"급" %}
+      {% assign label_kr = "준" | append:n | append:"급" %}
+      {% assign label_jp = "準" | append:n | append:"級" %}
     {% else %}
-      {% assign label_kr_btn = lv | append:"급" %}
+      {% assign label_kr = lv | append:"급" %}
+      {% assign label_jp = lv | append:"級" %}
     {% endif %}
-    <button type="button" class="level-btn" data-level="{{ lv }}">{{ label_kr_btn }}</button>
+  
+    {% assign label_jp_fw = label_jp
+      | replace:"0","０" | replace:"1","１" | replace:"2","２" | replace:"3","３" | replace:"4","４"
+      | replace:"5","５" | replace:"6","６" | replace:"7","７" | replace:"8","８" | replace:"9","９" %}
+  
+    {% assign items_kr    = site.kanji | where:"kanken", label_kr %}
+    {% assign items_jp    = site.kanji | where:"kanken", label_jp %}
+    {% assign items_jp_fw = site.kanji | where:"kanken", label_jp_fw %}
+    {% assign items = items_kr | concat: items_jp | concat: items_jp_fw %}
+  
+    <section class="level-section"
+             data-level="{{ lv }}"
+             aria-label="{{ label_kr }} 한자 목록"
+             {% if forloop.first %}style="display:grid"{% endif %}>
+      {% if items and items.size > 0 %}
+        <div class="grid">
+          {% assign sorted = items | sort: "title" %}
+          {% for k in sorted %}
+            <a class="card" href="{{ k.url | relative_url }}" title="{{ k.title }}">
+              <span class="g">{{ k.char }}</span>
+              <div>{{ k.title }}</div>
+              <small>{{ k.unicode }}</small>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="muted">아직 {{ label_kr }}으로 등록된 한자가 없습니다.</p>
+      {% endif %}
+    </section>
   {% endfor %}
-</div>
-
-{%- comment -%}
-각 레벨 섹션:
-- 한국식 라벨: "10급" 또는 "준1급"
-- 일본식 라벨: "10級" 또는 "準1級"
-- 일본식 전각 숫자도 대비: "準１級", "１０級"
-{%- endcomment -%}
-{% for lv in levels %}
-  {% if lv contains "준" %}
-    {% assign n = lv | replace:"준","" %}
-    {% assign label_kr = "준" | append:n | append:"급" %}
-    {% assign label_jp = "準" | append:n | append:"級" %}
-  {% else %}
-    {% assign label_kr = lv | append:"급" %}
-    {% assign label_jp = lv | append:"級" %}
-  {% endif %}
-
-  {%- comment -%} 전각 숫자 변환 (0-9 → ０-９) {%- endcomment -%}
-  {% assign label_jp_fw = label_jp
-    | replace:"0","０" | replace:"1","１" | replace:"2","２" | replace:"3","３" | replace:"4","４"
-    | replace:"5","５" | replace:"6","６" | replace:"7","７" | replace:"8","８" | replace:"9","９" %}
-
-  {% assign items_kr    = site.kanji | where:"kanken", label_kr %}
-  {% assign items_jp    = site.kanji | where:"kanken", label_jp %}
-  {% assign items_jp_fw = site.kanji | where:"kanken", label_jp_fw %}
-  {% assign items = items_kr | concat: items_jp | concat: items_jp_fw %}
-
-  <section class="level-section" data-level="{{ lv }}" aria-label="{{ label_kr }} 한자 목록">
-    {% if items and items.size > 0 %}
-      <div class="grid">
-        {% assign sorted = items | sort: "title" %}
-        {% for k in sorted %}
-          <a class="card" href="{{ k.url | relative_url }}" title="{{ k.title }}">
-            <span class="g">{{ k.char }}</span>
-            <div>{{ k.title }}</div>
-            <small>{{ k.unicode }}</small>
-          </a>
-        {% endfor %}
-      </div>
-    {% else %}
-      <p class="muted">아직 {{ label_kr }}으로 등록된 한자가 없습니다.</p>
-    {% endif %}
-  </section>
-{% endfor %}
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const sections = document.querySelectorAll('.level-section');
-    const buttons  = document.querySelectorAll('.level-tabs .level-btn');
-    function show(level) {
-      sections.forEach(s => s.style.display = (s.dataset.level === level ? 'grid' : 'none'));
-      buttons.forEach(b => b.classList.toggle('active', b.dataset.level === level));
-    }
-    const defaultLevel = buttons[0]?.dataset.level;
-    if (defaultLevel) show(defaultLevel);
-    buttons.forEach(b => b.addEventListener('click', () => show(b.dataset.level)));
-  });
-</script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const sections = document.querySelectorAll('.level-section');
+      const buttons  = document.querySelectorAll('.level-tabs .level-btn');
+  
+      function show(level) {
+        sections.forEach(s => s.style.display = (s.dataset.level === level ? 'grid' : 'none'));
+        buttons.forEach(b => b.classList.toggle('active', b.dataset.level === level));
+      }
+  
+      // 호환성 확보(옵셔널 체이닝 제거)
+      var defaultLevel = buttons.length ? buttons[0].dataset.level : null;
+      if (defaultLevel) show(defaultLevel);
+  
+      buttons.forEach(function (b) {
+        b.addEventListener('click', function () { show(b.dataset.level); });
+      });
+    });
+  </script>
+  

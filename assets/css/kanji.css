@@ -1,60 +1,70 @@
 /* ベース */
 :root {
-    --max-width: 960px;
-  }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Noto Sans KR","Malgun Gothic", "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
-    line-height: 1.7;
-    margin: 0;
-    word-break: keep-all;
- }
-  .container { max-width: var(--max-width); margin: 2rem auto; padding: 0 1rem; }
-  .site-header, .site-footer { padding: 1rem; background: #fafafa; border-bottom: 1px solid #eee; }
-  .site-footer { border-top: 1px solid #eee; border-bottom: none; }
-  .site-title { font-weight: 700; text-decoration: none; color: inherit; }
-  .site-nav a { margin-left: 1rem; text-decoration: none; }
-  
-  /* 漢字ページ */
-  .kanji-entry { display: grid; gap: 1rem; }
-  .kanji-header { display: flex; align-items: center; gap: 1rem; }
-  .kanji-title { margin: 0; font-size: 1.5rem; font-weight: 700; }
-  .kanji-title .code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Roboto Mono", monospace; font-size: .9rem; color: #666; }
-  
-  /* ★ 字形を大きく見せるクラス（本文中でも使用可） */
-  .kanji-glyph {
-    font-family: "Noto Serif KR", "Noto Serif CJK KR", "BatangChe", "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", "Songti SC", "SimSun", serif;
-    display: inline-block;
-    font-size: clamp(64px, 12vw, 148px); /* 画面に応じて大きく */
-    line-height: 1;
-    margin: .25rem .5rem .25rem 0;
-  }
-  
-  /* メタ情報テーブル */
-  .kanji-meta { width: 100%; border-collapse: collapse; }
-  .kanji-meta th, .kanji-meta td { border-bottom: 1px solid #eee; padding: .5rem .75rem; vertical-align: top; }
-  .kanji-meta th { white-space: nowrap; text-align: left; color: #555; }
-  .compounds { margin: 0; padding-left: 1.25rem; }
-  .compounds .reading { color: #666; }
-  
-  /* 本文メモ */
-  .kanji-notes p { margin: 1rem 0; }
-  
-  /* 一覧ページのカード */
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: .75rem; }
-  .card { border: 1px solid #eee; border-radius: 12px; padding: .75rem; background: #fff; text-decoration: none; color: inherit; }
-  .card .g { font-family: "Noto Serif JP", serif; font-size: 44px; line-height: 1; display: block; }
-  .card small { color: #666; }
+        --max-width: 960px;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Noto Sans KR","Malgun Gothic", "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+        line-height: 1.7;
+        margin: 0;
+        word-break: keep-all;
+    }
+    .container { max-width: var(--max-width); margin: 2rem auto; padding: 0 1rem; }
+    .site-header, .site-footer { padding: 1rem; background: #fafafa; border-bottom: 1px solid #eee; }
+    .site-footer { border-top: 1px solid #eee; border-bottom: none; }
+    .site-title { font-weight: 700; text-decoration: none; color: inherit; }
+    .site-nav a { margin-left: 1rem; text-decoration: none; }
+    
+    /* 漢字ページ */
+    .kanji-entry { display: grid; gap: 1rem; }
+    .kanji-header { display: flex; align-items: center; gap: 1rem; }
+    .kanji-title { margin: 0; font-size: 1.5rem; font-weight: 700; }
+    .kanji-title .code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Roboto Mono", monospace; font-size: .9rem; color: #666; }
+    
+    /* ★ 字形を大きく見せるクラス（本文中でも使用可） */
+    .kanji-glyph {
+        font-family: "Noto Serif KR", "Noto Serif CJK KR", "BatangChe", "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", "Songti SC", "SimSun", serif;
+        display: inline-block;
+        font-size: clamp(64px, 12vw, 148px); /* 画面に応じて大きく */
+        line-height: 1;
+        margin: .25rem .5rem .25rem 0;
+    }
+    
+    /* メタ情報テーブル */
+    .kanji-meta { width: 100%; border-collapse: collapse; }
+    .kanji-meta th, .kanji-meta td { border-bottom: 1px solid #eee; padding: .5rem .75rem; vertical-align: top; }
+    .kanji-meta th { white-space: nowrap; text-align: left; color: #555; }
+    .compounds { margin: 0; padding-left: 1.25rem; }
+    .compounds .reading { color: #666; }
+    
+    /* 本文メモ */
+    .kanji-notes p { margin: 1rem 0; }
+    
+    /* 一覧ページのカード */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: .75rem; }
+    .card { border: 1px solid #eee; border-radius: 12px; padding: .75rem; background: #fff; text-decoration: none; color: inherit; }
+    .card .g { font-family: "Noto Serif JP", serif; font-size: 44px; line-height: 1; display: block; }
+    .card small { color: #666; }
 
-  /* 급수 탭 버튼 */
-  .level-tabs { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0 1.25rem; }
-  .level-tabs .level-btn {
-    border: 1px solid #e5e5e5; border-radius: 10px; padding: .5rem .9rem; background: #fff; cursor: pointer;
-    font-weight: 600; transition: background .15s ease, box-shadow .15s ease;
-  }
-  .level-tabs .level-btn:hover { background: #f7f7f7; }
-  .level-tabs .level-btn.active { background: #111; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
-
-  /* 급수 섹션: 기본은 감춤, JS로 전환 시 grid 표시 */
-  .level-section { display: none; }
-
-  /* 빈 목록 문구 */
-  .muted { color: #777; }
+    /* 급수 탭 버튼 */
+    /* 버튼 reset & 일관성 */
+    .level-tabs .level-btn {
+        -webkit-appearance: none;
+        appearance: none;
+        border: 1px solid #e5e5e5;
+        border-radius: 12px;
+        padding: .5rem .9rem;
+        background: #fff;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background .15s ease, box-shadow .15s ease, border-color .15s ease, color .15s ease;
+    }
+    
+    /* hover */
+    .level-tabs .level-btn:hover { background: #f7f7f7; }
+    
+    /* active(선택됨) — 우선순위 올리고, 일부 테마가 이기는 경우 대비해 !important 사용 */
+    .level-tabs .level-btn.active {
+        background: #111 !important;
+        color: #fff !important;
+        border-color: #111 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }

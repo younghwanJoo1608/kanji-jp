@@ -1,0 +1,22 @@
+current directory: G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/json-2.15.1/ext/json/ext/parser
+C:/Ruby31/bin/ruby.exe -I C:/Ruby31/lib/ruby/3.1.0 -r ./siteconf20251010-8084-tgtyb7.rb extconf.rb
+checking for rb_enc_interned_str() in ruby/encoding.h... yes
+checking for rb_hash_new_capa() in ruby.h... no
+checking for rb_hash_bulk_insert() in ruby.h... yes
+checking for strnlen() in string.h... yes
+checking for whether -std=c99 is accepted as CFLAGS... yes
+checking for cpuid.h... yes
+creating Makefile
+
+current directory: G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/json-2.15.1/ext/json/ext/parser
+make DESTDIR\= clean
+
+current directory: G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/json-2.15.1/ext/json/ext/parser
+make DESTDIR\=
+generating parser-i386-mingw32.def
+compiling parser.c
+linking shared-object json/ext/parser.so
+
+current directory: G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/json-2.15.1/ext/json/ext/parser
+make DESTDIR\= install
+/usr/bin/install -c -m 0755 parser.so ./.gem.20251010-8084-tybt4u/json/ext

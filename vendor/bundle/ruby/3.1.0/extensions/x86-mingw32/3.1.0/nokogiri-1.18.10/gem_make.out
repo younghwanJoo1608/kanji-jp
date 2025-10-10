@@ -1,0 +1,682 @@
+current directory: G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ext/nokogiri
+C:/Ruby31/bin/ruby.exe -I C:/Ruby31/lib/ruby/3.1.0 -r ./siteconf20251010-8084-nq7lou.rb extconf.rb
+checking for whether -std=c99 is accepted as CFLAGS... yes
+checking for whether -Wno-declaration-after-statement is accepted as CFLAGS... yes
+checking for whether -O2 is accepted as CFLAGS... yes
+checking for whether -g is accepted as CFLAGS... yes
+checking for whether -Winline is accepted as CFLAGS... yes
+checking for whether -Wmissing-noreturn is accepted as CFLAGS... yes
+checking for whether -Wconversion is accepted as CFLAGS... no
+checking for whether  "-Idummypath" is accepted as CPPFLAGS... yes
+Building nokogiri using packaged libraries.
+Static linking is enabled.
+Cross build is disabled.
+Using mini_portile version 2.8.9
+---------- IMPORTANT NOTICE ----------
+Building Nokogiri with a packaged version of zlib-1.3.1.
+Configuration options: --host\=i686-w64-mingw32 --enable-static --disable-shared --libdir\=G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/zlib/1.3.1/lib --disable-shared --enable-static CFLAGS\=-fPIC
+
+The Nokogiri maintainers intend to provide timely security updates, but if
+this is a concern for you and want to use your OS/distro system library
+instead, then abort this installation process and install nokogiri as
+instructed at:
+
+  https://nokogiri.org/tutorials/installing_nokogiri.html#installing-using-standard-system-libraries
+
+
+Downloading zlib-1.3.1.tar.gz (  0%) 
+Downloading zlib-1.3.1.tar.gz (  0%) 
+Downloading zlib-1.3.1.tar.gz (  0%) 
+Downloading zlib-1.3.1.tar.gz (  0%) 
+Downloading zlib-1.3.1.tar.gz (  0%) 
+Downloading zlib-1.3.1.tar.gz (  0%) 
+Downloading zlib-1.3.1.tar.gz (  0%) 
+Downloading zlib-1.3.1.tar.gz (  0%) 
+Downloading zlib-1.3.1.tar.gz (  0%) 
+Downloading zlib-1.3.1.tar.gz (  0%) 
+Downloading zlib-1.3.1.tar.gz (  0%) 
+Downloading zlib-1.3.1.tar.gz (  1%) 
+Downloading zlib-1.3.1.tar.gz (  1%) 
+Downloading zlib-1.3.1.tar.gz (  1%) 
+Downloading zlib-1.3.1.tar.gz (  1%) 
+Downloading zlib-1.3.1.tar.gz (  1%) 
+Downloading zlib-1.3.1.tar.gz (  1%) 
+Downloading zlib-1.3.1.tar.gz (  1%) 
+Downloading zlib-1.3.1.tar.gz (  1%) 
+Downloading zlib-1.3.1.tar.gz (  1%) 
+Downloading zlib-1.3.1.tar.gz (  1%) 
+Downloading zlib-1.3.1.tar.gz (  1%) 
+Downloading zlib-1.3.1.tar.gz (  1%) 
+Downloading zlib-1.3.1.tar.gz (  2%) 
+Downloading zlib-1.3.1.tar.gz (  2%) 
+Downloading zlib-1.3.1.tar.gz (  2%) 
+Downloading zlib-1.3.1.tar.gz (  2%) 
+Downloading zlib-1.3.1.tar.gz (  2%) 
+Downloading zlib-1.3.1.tar.gz (  2%) 
+Downloading zlib-1.3.1.tar.gz (  2%) 
+Downloading zlib-1.3.1.tar.gz (  2%) 
+Downloading zlib-1.3.1.tar.gz (  2%) 
+Downloading zlib-1.3.1.tar.gz (  2%) 
+Downloading zlib-1.3.1.tar.gz (  2%) 
+Downloading zlib-1.3.1.tar.gz (  3%) 
+Downloading zlib-1.3.1.tar.gz (  3%) 
+Downloading zlib-1.3.1.tar.gz (  3%) 
+Downloading zlib-1.3.1.tar.gz (  3%) 
+Downloading zlib-1.3.1.tar.gz (  3%) 
+Downloading zlib-1.3.1.tar.gz (  3%) 
+Downloading zlib-1.3.1.tar.gz (  3%) 
+Downloading zlib-1.3.1.tar.gz (  3%) 
+Downloading zlib-1.3.1.tar.gz (  3%) 
+Downloading zlib-1.3.1.tar.gz (  3%) 
+Downloading zlib-1.3.1.tar.gz (  3%) 
+Downloading zlib-1.3.1.tar.gz (  4%) 
+Downloading zlib-1.3.1.tar.gz (  4%) 
+Downloading zlib-1.3.1.tar.gz (  5%) 
+Downloading zlib-1.3.1.tar.gz (  6%) 
+Downloading zlib-1.3.1.tar.gz (  7%) 
+Downloading zlib-1.3.1.tar.gz (  7%) 
+Downloading zlib-1.3.1.tar.gz (  8%) 
+Downloading zlib-1.3.1.tar.gz (  9%) 
+Downloading zlib-1.3.1.tar.gz ( 10%) 
+Downloading zlib-1.3.1.tar.gz ( 11%) 
+Downloading zlib-1.3.1.tar.gz ( 12%) 
+Downloading zlib-1.3.1.tar.gz ( 13%) 
+Downloading zlib-1.3.1.tar.gz ( 13%) 
+Downloading zlib-1.3.1.tar.gz ( 14%) 
+Downloading zlib-1.3.1.tar.gz ( 15%) 
+Downloading zlib-1.3.1.tar.gz ( 16%) 
+Downloading zlib-1.3.1.tar.gz ( 17%) 
+Downloading zlib-1.3.1.tar.gz ( 18%) 
+Downloading zlib-1.3.1.tar.gz ( 19%) 
+Downloading zlib-1.3.1.tar.gz ( 19%) 
+Downloading zlib-1.3.1.tar.gz ( 20%) 
+Downloading zlib-1.3.1.tar.gz ( 21%) 
+Downloading zlib-1.3.1.tar.gz ( 22%) 
+Downloading zlib-1.3.1.tar.gz ( 23%) 
+Downloading zlib-1.3.1.tar.gz ( 24%) 
+Downloading zlib-1.3.1.tar.gz ( 25%) 
+Downloading zlib-1.3.1.tar.gz ( 26%) 
+Downloading zlib-1.3.1.tar.gz ( 27%) 
+Downloading zlib-1.3.1.tar.gz ( 28%) 
+Downloading zlib-1.3.1.tar.gz ( 28%) 
+Downloading zlib-1.3.1.tar.gz ( 29%) 
+Downloading zlib-1.3.1.tar.gz ( 30%) 
+Downloading zlib-1.3.1.tar.gz ( 31%) 
+Downloading zlib-1.3.1.tar.gz ( 32%) 
+Downloading zlib-1.3.1.tar.gz ( 33%) 
+Downloading zlib-1.3.1.tar.gz ( 34%) 
+Downloading zlib-1.3.1.tar.gz ( 35%) 
+Downloading zlib-1.3.1.tar.gz ( 36%) 
+Downloading zlib-1.3.1.tar.gz ( 37%) 
+Downloading zlib-1.3.1.tar.gz ( 37%) 
+Downloading zlib-1.3.1.tar.gz ( 38%) 
+Downloading zlib-1.3.1.tar.gz ( 39%) 
+Downloading zlib-1.3.1.tar.gz ( 40%) 
+Downloading zlib-1.3.1.tar.gz ( 42%) 
+Downloading zlib-1.3.1.tar.gz ( 42%) 
+Downloading zlib-1.3.1.tar.gz ( 43%) 
+Downloading zlib-1.3.1.tar.gz ( 45%) 
+Downloading zlib-1.3.1.tar.gz ( 46%) 
+Downloading zlib-1.3.1.tar.gz ( 47%) 
+Downloading zlib-1.3.1.tar.gz ( 48%) 
+Downloading zlib-1.3.1.tar.gz ( 49%) 
+Downloading zlib-1.3.1.tar.gz ( 50%) 
+Downloading zlib-1.3.1.tar.gz ( 51%) 
+Downloading zlib-1.3.1.tar.gz ( 52%) 
+Downloading zlib-1.3.1.tar.gz ( 53%) 
+Downloading zlib-1.3.1.tar.gz ( 54%) 
+Downloading zlib-1.3.1.tar.gz ( 55%) 
+Downloading zlib-1.3.1.tar.gz ( 56%) 
+Downloading zlib-1.3.1.tar.gz ( 57%) 
+Downloading zlib-1.3.1.tar.gz ( 58%) 
+Downloading zlib-1.3.1.tar.gz ( 59%) 
+Downloading zlib-1.3.1.tar.gz ( 60%) 
+Downloading zlib-1.3.1.tar.gz ( 61%) 
+Downloading zlib-1.3.1.tar.gz ( 62%) 
+Downloading zlib-1.3.1.tar.gz ( 63%) 
+Downloading zlib-1.3.1.tar.gz ( 64%) 
+Downloading zlib-1.3.1.tar.gz ( 65%) 
+Downloading zlib-1.3.1.tar.gz ( 66%) 
+Downloading zlib-1.3.1.tar.gz ( 67%) 
+Downloading zlib-1.3.1.tar.gz ( 68%) 
+Downloading zlib-1.3.1.tar.gz ( 69%) 
+Downloading zlib-1.3.1.tar.gz ( 70%) 
+Downloading zlib-1.3.1.tar.gz ( 71%) 
+Downloading zlib-1.3.1.tar.gz ( 72%) 
+Downloading zlib-1.3.1.tar.gz ( 74%) 
+Downloading zlib-1.3.1.tar.gz ( 75%) 
+Downloading zlib-1.3.1.tar.gz ( 76%) 
+Downloading zlib-1.3.1.tar.gz ( 77%) 
+Downloading zlib-1.3.1.tar.gz ( 78%) 
+Downloading zlib-1.3.1.tar.gz ( 79%) 
+Downloading zlib-1.3.1.tar.gz ( 80%) 
+Downloading zlib-1.3.1.tar.gz ( 81%) 
+Downloading zlib-1.3.1.tar.gz ( 82%) 
+Downloading zlib-1.3.1.tar.gz ( 83%) 
+Downloading zlib-1.3.1.tar.gz ( 84%) 
+Downloading zlib-1.3.1.tar.gz ( 85%) 
+Downloading zlib-1.3.1.tar.gz ( 86%) 
+Downloading zlib-1.3.1.tar.gz ( 87%) 
+Downloading zlib-1.3.1.tar.gz ( 88%) 
+Downloading zlib-1.3.1.tar.gz ( 89%) 
+Downloading zlib-1.3.1.tar.gz ( 90%) 
+Downloading zlib-1.3.1.tar.gz ( 91%) 
+Downloading zlib-1.3.1.tar.gz ( 92%) 
+Downloading zlib-1.3.1.tar.gz ( 93%) 
+Downloading zlib-1.3.1.tar.gz ( 94%) 
+Downloading zlib-1.3.1.tar.gz ( 95%) 
+Downloading zlib-1.3.1.tar.gz ( 96%) 
+Downloading zlib-1.3.1.tar.gz ( 97%) 
+Downloading zlib-1.3.1.tar.gz ( 98%) 
+Downloading zlib-1.3.1.tar.gz ( 99%) 
+Downloading zlib-1.3.1.tar.gz (100%) 
+Extracting zlib-1.3.1.tar.gz into tmp/i686-w64-mingw32/ports/zlib/1.3.1... OK
+Running 'compile' for zlib 1.3.1... OK
+Running 'install' for zlib 1.3.1... OK
+Activating zlib 1.3.1 (from G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/zlib/1.3.1)...
+Using mini_portile version 2.8.9
+---------- IMPORTANT NOTICE ----------
+Building Nokogiri with a packaged version of libiconv-1.18.
+Configuration options: --host\=i686-w64-mingw32 --enable-static --disable-shared --libdir\=G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/libiconv/1.18/lib --disable-dependency-tracking --disable-shared --enable-static CPPFLAGS\=-Wall CFLAGS\=-O2\ -g\ -fPIC CXXFLAGS\=-O2\ -g LDFLAGS\=
+
+The Nokogiri maintainers intend to provide timely security updates, but if
+this is a concern for you and want to use your OS/distro system library
+instead, then abort this installation process and install nokogiri as
+instructed at:
+
+  https://nokogiri.org/tutorials/installing_nokogiri.html#installing-using-standard-system-libraries
+
+
+Downloading libiconv-1.18.tar.gz (  0%) 
+Downloading libiconv-1.18.tar.gz (  0%) 
+Downloading libiconv-1.18.tar.gz (  0%) 
+Downloading libiconv-1.18.tar.gz (  1%) 
+Downloading libiconv-1.18.tar.gz (  1%) 
+Downloading libiconv-1.18.tar.gz (  1%) 
+Downloading libiconv-1.18.tar.gz (  1%) 
+Downloading libiconv-1.18.tar.gz (  2%) 
+Downloading libiconv-1.18.tar.gz (  2%) 
+Downloading libiconv-1.18.tar.gz (  2%) 
+Downloading libiconv-1.18.tar.gz (  3%) 
+Downloading libiconv-1.18.tar.gz (  3%) 
+Downloading libiconv-1.18.tar.gz (  3%) 
+Downloading libiconv-1.18.tar.gz (  3%) 
+Downloading libiconv-1.18.tar.gz (  4%) 
+Downloading libiconv-1.18.tar.gz (  4%) 
+Downloading libiconv-1.18.tar.gz (  4%) 
+Downloading libiconv-1.18.tar.gz (  5%) 
+Downloading libiconv-1.18.tar.gz (  5%) 
+Downloading libiconv-1.18.tar.gz (  5%) 
+Downloading libiconv-1.18.tar.gz (  5%) 
+Downloading libiconv-1.18.tar.gz (  6%) 
+Downloading libiconv-1.18.tar.gz (  6%) 
+Downloading libiconv-1.18.tar.gz (  6%) 
+Downloading libiconv-1.18.tar.gz (  7%) 
+Downloading libiconv-1.18.tar.gz (  7%) 
+Downloading libiconv-1.18.tar.gz (  7%) 
+Downloading libiconv-1.18.tar.gz (  7%) 
+Downloading libiconv-1.18.tar.gz (  8%) 
+Downloading libiconv-1.18.tar.gz (  8%) 
+Downloading libiconv-1.18.tar.gz (  8%) 
+Downloading libiconv-1.18.tar.gz (  8%) 
+Downloading libiconv-1.18.tar.gz (  9%) 
+Downloading libiconv-1.18.tar.gz (  9%) 
+Downloading libiconv-1.18.tar.gz (  9%) 
+Downloading libiconv-1.18.tar.gz ( 10%) 
+Downloading libiconv-1.18.tar.gz ( 10%) 
+Downloading libiconv-1.18.tar.gz ( 10%) 
+Downloading libiconv-1.18.tar.gz ( 10%) 
+Downloading libiconv-1.18.tar.gz ( 11%) 
+Downloading libiconv-1.18.tar.gz ( 11%) 
+Downloading libiconv-1.18.tar.gz ( 11%) 
+Downloading libiconv-1.18.tar.gz ( 12%) 
+Downloading libiconv-1.18.tar.gz ( 12%) 
+Downloading libiconv-1.18.tar.gz ( 12%) 
+Downloading libiconv-1.18.tar.gz ( 12%) 
+Downloading libiconv-1.18.tar.gz ( 13%) 
+Downloading libiconv-1.18.tar.gz ( 13%) 
+Downloading libiconv-1.18.tar.gz ( 13%) 
+Downloading libiconv-1.18.tar.gz ( 14%) 
+Downloading libiconv-1.18.tar.gz ( 14%) 
+Downloading libiconv-1.18.tar.gz ( 14%) 
+Downloading libiconv-1.18.tar.gz ( 14%) 
+Downloading libiconv-1.18.tar.gz ( 15%) 
+Downloading libiconv-1.18.tar.gz ( 15%) 
+Downloading libiconv-1.18.tar.gz ( 15%) 
+Downloading libiconv-1.18.tar.gz ( 16%) 
+Downloading libiconv-1.18.tar.gz ( 16%) 
+Downloading libiconv-1.18.tar.gz ( 16%) 
+Downloading libiconv-1.18.tar.gz ( 16%) 
+Downloading libiconv-1.18.tar.gz ( 17%) 
+Downloading libiconv-1.18.tar.gz ( 17%) 
+Downloading libiconv-1.18.tar.gz ( 17%) 
+Downloading libiconv-1.18.tar.gz ( 18%) 
+Downloading libiconv-1.18.tar.gz ( 18%) 
+Downloading libiconv-1.18.tar.gz ( 18%) 
+Downloading libiconv-1.18.tar.gz ( 18%) 
+Downloading libiconv-1.18.tar.gz ( 19%) 
+Downloading libiconv-1.18.tar.gz ( 19%) 
+Downloading libiconv-1.18.tar.gz ( 19%) 
+Downloading libiconv-1.18.tar.gz ( 19%) 
+Downloading libiconv-1.18.tar.gz ( 20%) 
+Downloading libiconv-1.18.tar.gz ( 20%) 
+Downloading libiconv-1.18.tar.gz ( 20%) 
+Downloading libiconv-1.18.tar.gz ( 21%) 
+Downloading libiconv-1.18.tar.gz ( 21%) 
+Downloading libiconv-1.18.tar.gz ( 21%) 
+Downloading libiconv-1.18.tar.gz ( 21%) 
+Downloading libiconv-1.18.tar.gz ( 22%) 
+Downloading libiconv-1.18.tar.gz ( 22%) 
+Downloading libiconv-1.18.tar.gz ( 22%) 
+Downloading libiconv-1.18.tar.gz ( 23%) 
+Downloading libiconv-1.18.tar.gz ( 23%) 
+Downloading libiconv-1.18.tar.gz ( 23%) 
+Downloading libiconv-1.18.tar.gz ( 23%) 
+Downloading libiconv-1.18.tar.gz ( 24%) 
+Downloading libiconv-1.18.tar.gz ( 24%) 
+Downloading libiconv-1.18.tar.gz ( 24%) 
+Downloading libiconv-1.18.tar.gz ( 25%) 
+Downloading libiconv-1.18.tar.gz ( 25%) 
+Downloading libiconv-1.18.tar.gz ( 25%) 
+Downloading libiconv-1.18.tar.gz ( 25%) 
+Downloading libiconv-1.18.tar.gz ( 26%) 
+Downloading libiconv-1.18.tar.gz ( 26%) 
+Downloading libiconv-1.18.tar.gz ( 26%) 
+Downloading libiconv-1.18.tar.gz ( 27%) 
+Downloading libiconv-1.18.tar.gz ( 27%) 
+Downloading libiconv-1.18.tar.gz ( 27%) 
+Downloading libiconv-1.18.tar.gz ( 27%) 
+Downloading libiconv-1.18.tar.gz ( 28%) 
+Downloading libiconv-1.18.tar.gz ( 28%) 
+Downloading libiconv-1.18.tar.gz ( 28%) 
+Downloading libiconv-1.18.tar.gz ( 28%) 
+Downloading libiconv-1.18.tar.gz ( 29%) 
+Downloading libiconv-1.18.tar.gz ( 29%) 
+Downloading libiconv-1.18.tar.gz ( 29%) 
+Downloading libiconv-1.18.tar.gz ( 30%) 
+Downloading libiconv-1.18.tar.gz ( 30%) 
+Downloading libiconv-1.18.tar.gz ( 30%) 
+Downloading libiconv-1.18.tar.gz ( 30%) 
+Downloading libiconv-1.18.tar.gz ( 31%) 
+Downloading libiconv-1.18.tar.gz ( 31%) 
+Downloading libiconv-1.18.tar.gz ( 31%) 
+Downloading libiconv-1.18.tar.gz ( 32%) 
+Downloading libiconv-1.18.tar.gz ( 32%) 
+Downloading libiconv-1.18.tar.gz ( 32%) 
+Downloading libiconv-1.18.tar.gz ( 32%) 
+Downloading libiconv-1.18.tar.gz ( 33%) 
+Downloading libiconv-1.18.tar.gz ( 33%) 
+Downloading libiconv-1.18.tar.gz ( 33%) 
+Downloading libiconv-1.18.tar.gz ( 34%) 
+Downloading libiconv-1.18.tar.gz ( 34%) 
+Downloading libiconv-1.18.tar.gz ( 34%) 
+Downloading libiconv-1.18.tar.gz ( 34%) 
+Downloading libiconv-1.18.tar.gz ( 35%) 
+Downloading libiconv-1.18.tar.gz ( 35%) 
+Downloading libiconv-1.18.tar.gz ( 35%) 
+Downloading libiconv-1.18.tar.gz ( 36%) 
+Downloading libiconv-1.18.tar.gz ( 36%) 
+Downloading libiconv-1.18.tar.gz ( 36%) 
+Downloading libiconv-1.18.tar.gz ( 36%) 
+Downloading libiconv-1.18.tar.gz ( 37%) 
+Downloading libiconv-1.18.tar.gz ( 37%) 
+Downloading libiconv-1.18.tar.gz ( 37%) 
+Downloading libiconv-1.18.tar.gz ( 37%) 
+Downloading libiconv-1.18.tar.gz ( 38%) 
+Downloading libiconv-1.18.tar.gz ( 38%) 
+Downloading libiconv-1.18.tar.gz ( 38%) 
+Downloading libiconv-1.18.tar.gz ( 39%) 
+Downloading libiconv-1.18.tar.gz ( 39%) 
+Downloading libiconv-1.18.tar.gz ( 39%) 
+Downloading libiconv-1.18.tar.gz ( 39%) 
+Downloading libiconv-1.18.tar.gz ( 40%) 
+Downloading libiconv-1.18.tar.gz ( 40%) 
+Downloading libiconv-1.18.tar.gz ( 40%) 
+Downloading libiconv-1.18.tar.gz ( 41%) 
+Downloading libiconv-1.18.tar.gz ( 41%) 
+Downloading libiconv-1.18.tar.gz ( 41%) 
+Downloading libiconv-1.18.tar.gz ( 41%) 
+Downloading libiconv-1.18.tar.gz ( 42%) 
+Downloading libiconv-1.18.tar.gz ( 42%) 
+Downloading libiconv-1.18.tar.gz ( 42%) 
+Downloading libiconv-1.18.tar.gz ( 43%) 
+Downloading libiconv-1.18.tar.gz ( 43%) 
+Downloading libiconv-1.18.tar.gz ( 43%) 
+Downloading libiconv-1.18.tar.gz ( 43%) 
+Downloading libiconv-1.18.tar.gz ( 44%) 
+Downloading libiconv-1.18.tar.gz ( 44%) 
+Downloading libiconv-1.18.tar.gz ( 44%) 
+Downloading libiconv-1.18.tar.gz ( 45%) 
+Downloading libiconv-1.18.tar.gz ( 45%) 
+Downloading libiconv-1.18.tar.gz ( 45%) 
+Downloading libiconv-1.18.tar.gz ( 45%) 
+Downloading libiconv-1.18.tar.gz ( 46%) 
+Downloading libiconv-1.18.tar.gz ( 46%) 
+Downloading libiconv-1.18.tar.gz ( 46%) 
+Downloading libiconv-1.18.tar.gz ( 46%) 
+Downloading libiconv-1.18.tar.gz ( 47%) 
+Downloading libiconv-1.18.tar.gz ( 47%) 
+Downloading libiconv-1.18.tar.gz ( 47%) 
+Downloading libiconv-1.18.tar.gz ( 48%) 
+Downloading libiconv-1.18.tar.gz ( 48%) 
+Downloading libiconv-1.18.tar.gz ( 48%) 
+Downloading libiconv-1.18.tar.gz ( 48%) 
+Downloading libiconv-1.18.tar.gz ( 49%) 
+Downloading libiconv-1.18.tar.gz ( 49%) 
+Downloading libiconv-1.18.tar.gz ( 49%) 
+Downloading libiconv-1.18.tar.gz ( 50%) 
+Downloading libiconv-1.18.tar.gz ( 50%) 
+Downloading libiconv-1.18.tar.gz ( 50%) 
+Downloading libiconv-1.18.tar.gz ( 50%) 
+Downloading libiconv-1.18.tar.gz ( 51%) 
+Downloading libiconv-1.18.tar.gz ( 51%) 
+Downloading libiconv-1.18.tar.gz ( 51%) 
+Downloading libiconv-1.18.tar.gz ( 52%) 
+Downloading libiconv-1.18.tar.gz ( 52%) 
+Downloading libiconv-1.18.tar.gz ( 52%) 
+Downloading libiconv-1.18.tar.gz ( 52%) 
+Downloading libiconv-1.18.tar.gz ( 53%) 
+Downloading libiconv-1.18.tar.gz ( 53%) 
+Downloading libiconv-1.18.tar.gz ( 53%) 
+Downloading libiconv-1.18.tar.gz ( 54%) 
+Downloading libiconv-1.18.tar.gz ( 54%) 
+Downloading libiconv-1.18.tar.gz ( 54%) 
+Downloading libiconv-1.18.tar.gz ( 54%) 
+Downloading libiconv-1.18.tar.gz ( 55%) 
+Downloading libiconv-1.18.tar.gz ( 55%) 
+Downloading libiconv-1.18.tar.gz ( 55%) 
+Downloading libiconv-1.18.tar.gz ( 55%) 
+Downloading libiconv-1.18.tar.gz ( 56%) 
+Downloading libiconv-1.18.tar.gz ( 56%) 
+Downloading libiconv-1.18.tar.gz ( 56%) 
+Downloading libiconv-1.18.tar.gz ( 57%) 
+Downloading libiconv-1.18.tar.gz ( 57%) 
+Downloading libiconv-1.18.tar.gz ( 57%) 
+Downloading libiconv-1.18.tar.gz ( 57%) 
+Downloading libiconv-1.18.tar.gz ( 58%) 
+Downloading libiconv-1.18.tar.gz ( 58%) 
+Downloading libiconv-1.18.tar.gz ( 58%) 
+Downloading libiconv-1.18.tar.gz ( 59%) 
+Downloading libiconv-1.18.tar.gz ( 59%) 
+Downloading libiconv-1.18.tar.gz ( 59%) 
+Downloading libiconv-1.18.tar.gz ( 59%) 
+Downloading libiconv-1.18.tar.gz ( 60%) 
+Downloading libiconv-1.18.tar.gz ( 60%) 
+Downloading libiconv-1.18.tar.gz ( 60%) 
+Downloading libiconv-1.18.tar.gz ( 61%) 
+Downloading libiconv-1.18.tar.gz ( 61%) 
+Downloading libiconv-1.18.tar.gz ( 61%) 
+Downloading libiconv-1.18.tar.gz ( 61%) 
+Downloading libiconv-1.18.tar.gz ( 62%) 
+Downloading libiconv-1.18.tar.gz ( 62%) 
+Downloading libiconv-1.18.tar.gz ( 62%) 
+Downloading libiconv-1.18.tar.gz ( 63%) 
+Downloading libiconv-1.18.tar.gz ( 63%) 
+Downloading libiconv-1.18.tar.gz ( 63%) 
+Downloading libiconv-1.18.tar.gz ( 63%) 
+Downloading libiconv-1.18.tar.gz ( 64%) 
+Downloading libiconv-1.18.tar.gz ( 64%) 
+Downloading libiconv-1.18.tar.gz ( 64%) 
+Downloading libiconv-1.18.tar.gz ( 64%) 
+Downloading libiconv-1.18.tar.gz ( 65%) 
+Downloading libiconv-1.18.tar.gz ( 65%) 
+Downloading libiconv-1.18.tar.gz ( 65%) 
+Downloading libiconv-1.18.tar.gz ( 66%) 
+Downloading libiconv-1.18.tar.gz ( 66%) 
+Downloading libiconv-1.18.tar.gz ( 66%) 
+Downloading libiconv-1.18.tar.gz ( 66%) 
+Downloading libiconv-1.18.tar.gz ( 67%) 
+Downloading libiconv-1.18.tar.gz ( 67%) 
+Downloading libiconv-1.18.tar.gz ( 67%) 
+Downloading libiconv-1.18.tar.gz ( 68%) 
+Downloading libiconv-1.18.tar.gz ( 68%) 
+Downloading libiconv-1.18.tar.gz ( 68%) 
+Downloading libiconv-1.18.tar.gz ( 68%) 
+Downloading libiconv-1.18.tar.gz ( 69%) 
+Downloading libiconv-1.18.tar.gz ( 69%) 
+Downloading libiconv-1.18.tar.gz ( 69%) 
+Downloading libiconv-1.18.tar.gz ( 70%) 
+Downloading libiconv-1.18.tar.gz ( 70%) 
+Downloading libiconv-1.18.tar.gz ( 70%) 
+Downloading libiconv-1.18.tar.gz ( 70%) 
+Downloading libiconv-1.18.tar.gz ( 71%) 
+Downloading libiconv-1.18.tar.gz ( 71%) 
+Downloading libiconv-1.18.tar.gz ( 71%) 
+Downloading libiconv-1.18.tar.gz ( 72%) 
+Downloading libiconv-1.18.tar.gz ( 72%) 
+Downloading libiconv-1.18.tar.gz ( 72%) 
+Downloading libiconv-1.18.tar.gz ( 72%) 
+Downloading libiconv-1.18.tar.gz ( 73%) 
+Downloading libiconv-1.18.tar.gz ( 73%) 
+Downloading libiconv-1.18.tar.gz ( 73%) 
+Downloading libiconv-1.18.tar.gz ( 73%) 
+Downloading libiconv-1.18.tar.gz ( 74%) 
+Downloading libiconv-1.18.tar.gz ( 74%) 
+Downloading libiconv-1.18.tar.gz ( 74%) 
+Downloading libiconv-1.18.tar.gz ( 75%) 
+Downloading libiconv-1.18.tar.gz ( 75%) 
+Downloading libiconv-1.18.tar.gz ( 75%) 
+Downloading libiconv-1.18.tar.gz ( 75%) 
+Downloading libiconv-1.18.tar.gz ( 76%) 
+Downloading libiconv-1.18.tar.gz ( 76%) 
+Downloading libiconv-1.18.tar.gz ( 76%) 
+Downloading libiconv-1.18.tar.gz ( 77%) 
+Downloading libiconv-1.18.tar.gz ( 77%) 
+Downloading libiconv-1.18.tar.gz ( 77%) 
+Downloading libiconv-1.18.tar.gz ( 77%) 
+Downloading libiconv-1.18.tar.gz ( 78%) 
+Downloading libiconv-1.18.tar.gz ( 78%) 
+Downloading libiconv-1.18.tar.gz ( 78%) 
+Downloading libiconv-1.18.tar.gz ( 79%) 
+Downloading libiconv-1.18.tar.gz ( 79%) 
+Downloading libiconv-1.18.tar.gz ( 79%) 
+Downloading libiconv-1.18.tar.gz ( 79%) 
+Downloading libiconv-1.18.tar.gz ( 80%) 
+Downloading libiconv-1.18.tar.gz ( 80%) 
+Downloading libiconv-1.18.tar.gz ( 80%) 
+Downloading libiconv-1.18.tar.gz ( 81%) 
+Downloading libiconv-1.18.tar.gz ( 81%) 
+Downloading libiconv-1.18.tar.gz ( 81%) 
+Downloading libiconv-1.18.tar.gz ( 81%) 
+Downloading libiconv-1.18.tar.gz ( 82%) 
+Downloading libiconv-1.18.tar.gz ( 82%) 
+Downloading libiconv-1.18.tar.gz ( 82%) 
+Downloading libiconv-1.18.tar.gz ( 83%) 
+Downloading libiconv-1.18.tar.gz ( 83%) 
+Downloading libiconv-1.18.tar.gz ( 83%) 
+Downloading libiconv-1.18.tar.gz ( 83%) 
+Downloading libiconv-1.18.tar.gz ( 84%) 
+Downloading libiconv-1.18.tar.gz ( 84%) 
+Downloading libiconv-1.18.tar.gz ( 84%) 
+Downloading libiconv-1.18.tar.gz ( 84%) 
+Downloading libiconv-1.18.tar.gz ( 85%) 
+Downloading libiconv-1.18.tar.gz ( 85%) 
+Downloading libiconv-1.18.tar.gz ( 85%) 
+Downloading libiconv-1.18.tar.gz ( 86%) 
+Downloading libiconv-1.18.tar.gz ( 86%) 
+Downloading libiconv-1.18.tar.gz ( 86%) 
+Downloading libiconv-1.18.tar.gz ( 86%) 
+Downloading libiconv-1.18.tar.gz ( 87%) 
+Downloading libiconv-1.18.tar.gz ( 87%) 
+Downloading libiconv-1.18.tar.gz ( 87%) 
+Downloading libiconv-1.18.tar.gz ( 88%) 
+Downloading libiconv-1.18.tar.gz ( 88%) 
+Downloading libiconv-1.18.tar.gz ( 88%) 
+Downloading libiconv-1.18.tar.gz ( 88%) 
+Downloading libiconv-1.18.tar.gz ( 89%) 
+Downloading libiconv-1.18.tar.gz ( 89%) 
+Downloading libiconv-1.18.tar.gz ( 89%) 
+Downloading libiconv-1.18.tar.gz ( 90%) 
+Downloading libiconv-1.18.tar.gz ( 90%) 
+Downloading libiconv-1.18.tar.gz ( 90%) 
+Downloading libiconv-1.18.tar.gz ( 90%) 
+Downloading libiconv-1.18.tar.gz ( 91%) 
+Downloading libiconv-1.18.tar.gz ( 91%) 
+Downloading libiconv-1.18.tar.gz ( 91%) 
+Downloading libiconv-1.18.tar.gz ( 92%) 
+Downloading libiconv-1.18.tar.gz ( 92%) 
+Downloading libiconv-1.18.tar.gz ( 92%) 
+Downloading libiconv-1.18.tar.gz ( 92%) 
+Downloading libiconv-1.18.tar.gz ( 93%) 
+Downloading libiconv-1.18.tar.gz ( 93%) 
+Downloading libiconv-1.18.tar.gz ( 93%) 
+Downloading libiconv-1.18.tar.gz ( 93%) 
+Downloading libiconv-1.18.tar.gz ( 94%) 
+Downloading libiconv-1.18.tar.gz ( 94%) 
+Downloading libiconv-1.18.tar.gz ( 94%) 
+Downloading libiconv-1.18.tar.gz ( 95%) 
+Downloading libiconv-1.18.tar.gz ( 95%) 
+Downloading libiconv-1.18.tar.gz ( 95%) 
+Downloading libiconv-1.18.tar.gz ( 95%) 
+Downloading libiconv-1.18.tar.gz ( 96%) 
+Downloading libiconv-1.18.tar.gz ( 96%) 
+Downloading libiconv-1.18.tar.gz ( 96%) 
+Downloading libiconv-1.18.tar.gz ( 97%) 
+Downloading libiconv-1.18.tar.gz ( 97%) 
+Downloading libiconv-1.18.tar.gz ( 97%) 
+Downloading libiconv-1.18.tar.gz ( 97%) 
+Downloading libiconv-1.18.tar.gz ( 98%) 
+Downloading libiconv-1.18.tar.gz ( 98%) 
+Downloading libiconv-1.18.tar.gz ( 98%) 
+Downloading libiconv-1.18.tar.gz ( 99%) 
+Downloading libiconv-1.18.tar.gz ( 99%) 
+Downloading libiconv-1.18.tar.gz ( 99%) 
+Downloading libiconv-1.18.tar.gz ( 99%) 
+Downloading libiconv-1.18.tar.gz (100%) 
+Extracting libiconv-1.18.tar.gz into tmp/i686-w64-mingw32/ports/libiconv/1.18... OK
+Running 'configure' for libiconv 1.18... OK
+Running 'compile' for libiconv 1.18... OK
+Running 'install' for libiconv 1.18... OK
+Activating libiconv 1.18 (from G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/libiconv/1.18)...
+checking for whether -IG:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/zlib/1.3.1/include is accepted as CPPFLAGS... yes
+checking for gzdopen() in -lz... yes
+checking for whether -IG:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/libiconv/1.18/include is accepted as CPPFLAGS... yes
+checking for iconv_open() in -liconv... yes
+Using mini_portile version 2.8.9
+---------- IMPORTANT NOTICE ----------
+Building Nokogiri with a packaged version of libxml2-2.13.9.
+Configuration options: --host\=i686-w64-mingw32 --enable-static --disable-shared --libdir\=G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/libxml2/2.13.9/lib --with-legacy --with-zlib\=G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/zlib/1.3.1 --with-iconv\=G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/libiconv/1.18 --disable-dependency-tracking --without-python --without-readline --with-c14n --with-debug --with-threads --disable-shared --enable-static CPPFLAGS\= CFLAGS\=-O2\ -g\ -ULIBXML_STATIC\ -DIN_LIBXML\ -fPIC
+The following patches are being applied:
+  - 0001-Remove-script-macro-support.patch
+  - 0002-Update-entities-to-remove-handling-of-ssi.patch
+  - 0009-allow-wildcard-namespaces.patch
+  - 0010-update-config.guess-and-config.sub-for-libxml2.patch
+  - 0011-rip-out-libxml2-s-libc_single_threaded-support.patch
+  - 0019-xpath-Use-separate-static-hash-table-for-standard-fu.patch
+
+The Nokogiri maintainers intend to provide timely security updates, but if
+this is a concern for you and want to use your OS/distro system library
+instead, then abort this installation process and install nokogiri as
+instructed at:
+
+  https://nokogiri.org/tutorials/installing_nokogiri.html#installing-using-standard-system-libraries
+
+Note, however, that nokogiri cannot guarantee compatibility with every
+version of libxml2 that may be provided by OS/package vendors.
+
+Extracting libxml2-2.13.9.tar.xz into tmp/i686-w64-mingw32/ports/libxml2/2.13.9... OK
+Running git apply with G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/patches/libxml2/0001-Remove-script-macro-support.patch... OK
+Running git apply with G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/patches/libxml2/0002-Update-entities-to-remove-handling-of-ssi.patch... OK
+Running git apply with G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/patches/libxml2/0009-allow-wildcard-namespaces.patch... OK
+Running git apply with G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/patches/libxml2/0010-update-config.guess-and-config.sub-for-libxml2.patch... OK
+Running git apply with G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/patches/libxml2/0011-rip-out-libxml2-s-libc_single_threaded-support.patch... OK
+Running git apply with G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/patches/libxml2/0019-xpath-Use-separate-static-hash-table-for-standard-fu.patch... OK
+Running 'configure' for libxml2 2.13.9... OK
+Running 'compile' for libxml2 2.13.9... OK
+Running 'install' for libxml2 2.13.9... OK
+Activating libxml2 2.13.9 (from G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/libxml2/2.13.9)...
+Using mini_portile version 2.8.9
+---------- IMPORTANT NOTICE ----------
+Building Nokogiri with a packaged version of libxslt-1.1.43.
+Configuration options: --host\=i686-w64-mingw32 --enable-static --disable-shared --libdir\=G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/libxslt/1.1.43/lib --disable-dependency-tracking --without-python --without-crypto --with-debug --with-libxml-prefix\=/G/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/libxml2/2.13.9 --disable-shared --enable-static CFLAGS\=-O2\ -g\ -ULIBXSLT_STATIC\ -DIN_LIBXSLT\ -ULIBEXSLT_STATIC\ -DIN_LIBEXSLT\ -fPIC
+The following patches are being applied:
+  - 0001-update-config.guess-and-config.sub-for-libxslt.patch
+
+The Nokogiri maintainers intend to provide timely security updates, but if
+this is a concern for you and want to use your OS/distro system library
+instead, then abort this installation process and install nokogiri as
+instructed at:
+
+  https://nokogiri.org/tutorials/installing_nokogiri.html#installing-using-standard-system-libraries
+
+Extracting libxslt-1.1.43.tar.xz into tmp/i686-w64-mingw32/ports/libxslt/1.1.43... OK
+Running git apply with G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/patches/libxslt/0001-update-config.guess-and-config.sub-for-libxslt.patch... OK
+Running 'configure' for libxslt 1.1.43... OK
+Running 'compile' for libxslt 1.1.43... OK
+Running 'install' for libxslt 1.1.43... OK
+Activating libxslt 1.1.43 (from G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/libxslt/1.1.43)...
+checking for whether -DNOKOGIRI_PACKAGED_LIBRARIES is accepted as CPPFLAGS... yes
+xml2-config cflags: -IG:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/libxml2/2.13.9/include/libxml2 -IG:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/libiconv/1.18/include -DLIBXML_STATIC
+checking for whether -DNOKOGIRI_LIBXML2_PATCHES="\"0001-Remove-script-macro-support.patch 0002-Update-entities-to-remove-handling-of-ssi.patch 0009-allow-wildcard-namespaces.patch 0010-update-config.guess-and-config.sub-for-libxml2.patch 0011-rip-out-libxml2-s-libc_single_threaded-support.patch 0019-xpath-Use-separate-static-hash-table-for-standard-fu.patch\"" is accepted as CPPFLAGS... yes
+checking for -llzma... no
+checking for -lliblzma... no
+xslt-config cflags: -IG:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/libxml2/2.13.9/include/libxml2 -IG:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/libiconv/1.18/include -DLIBXML_STATIC -DLIBXSLT_STATIC -DLIBEXSLT_STATIC -IG:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ports/i386-mingw32/libxslt/1.1.43/include
+checking for whether -DNOKOGIRI_LIBXSLT_PATCHES="\"0001-update-config.guess-and-config.sub-for-libxslt.patch\"" is accepted as CPPFLAGS... yes
+checking for xmlParseDoc() in libxml/parser.h... yes
+checking for xsltParseStylesheetDoc() in libxslt/xslt.h... yes
+checking for exsltFuncRegister() in libexslt/exslt.h... yes
+Using mini_portile version 2.8.9
+---------- IMPORTANT NOTICE ----------
+Building Nokogiri with a packaged version of libgumbo-1.0.0-nokogiri.
+Configuration options: --disable-shared --enable-static CFLAGS\=-fPIC
+Copying gumbo-parser files into tmp/i686-w64-mingw32/ports/libgumbo/1.0.0-nokogiri/gumbo-parser...
+Running 'compile' for libgumbo 1.0.0-nokogiri... OK
+Activating libgumbo 1.0.0-nokogiri (from ports/i386-mingw32/libgumbo/1.0.0-nokogiri)...
+checking for whether -IG:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ext/nokogiri/ports/i386-mingw32/libgumbo/1.0.0-nokogiri/include is accepted as CPPFLAGS... yes
+checking for gumbo_parse_with_options() in nokogiri_gumbo.h... yes
+checking for xmlCtxtSetOptions()... yes
+checking for xmlCtxtGetOptions()... no
+checking for xmlSwitchEncodingName()... yes
+checking for rb_category_warning()... yes
+checking for whether -DNOKOGIRI_OTHER_LIBRARY_VERSIONS="\"zlib:1.3.1,libiconv:1.18,libgumbo:1.0.0-nokogiri\"" is accepted as CPPFLAGS... yes
+creating Makefile
+
+current directory: G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ext/nokogiri
+make DESTDIR\= clean
+
+current directory: G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ext/nokogiri
+make DESTDIR\=
+generating nokogiri-i386-mingw32.def
+compiling gumbo.c
+compiling html4_document.c
+compiling html4_element_description.c
+compiling html4_entity_lookup.c
+compiling html4_sax_parser.c
+compiling html4_sax_parser_context.c
+compiling html4_sax_push_parser.c
+compiling libxml2_polyfill.c
+compiling nokogiri.c
+compiling test_global_handlers.c
+compiling xml_attr.c
+compiling xml_attribute_decl.c
+compiling xml_cdata.c
+compiling xml_comment.c
+compiling xml_document.c
+compiling xml_document_fragment.c
+compiling xml_dtd.c
+compiling xml_element_content.c
+compiling xml_element_decl.c
+compiling xml_encoding_handler.c
+compiling xml_entity_decl.c
+compiling xml_entity_reference.c
+compiling xml_namespace.c
+compiling xml_node.c
+compiling xml_node_set.c
+compiling xml_processing_instruction.c
+compiling xml_reader.c
+compiling xml_relax_ng.c
+compiling xml_sax_parser.c
+compiling xml_sax_parser_context.c
+compiling xml_sax_push_parser.c
+compiling xml_schema.c
+compiling xml_syntax_error.c
+compiling xml_text.c
+compiling xml_xpath_context.c
+compiling xslt_stylesheet.c
+linking shared-object nokogiri/nokogiri.so
+Cleaning files only used during build.
+
+current directory: G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/nokogiri-1.18.10/ext/nokogiri
+make DESTDIR\= install
+/usr/bin/install -c -m 0755 nokogiri.so ./.gem.20251010-8084-2cbvq0/nokogiri
+installing nokogiri libraries

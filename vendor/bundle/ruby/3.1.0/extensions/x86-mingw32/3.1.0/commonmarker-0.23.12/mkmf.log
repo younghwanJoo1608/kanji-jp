@@ -1,0 +1,30 @@
+block in append_cflags: checking for whether -std=c99 is accepted as CFLAGS... -------------------- yes
+
+PATH=".;C:/Ruby31/lib;C:\Ruby31\bin;C:\Ruby31\msys32\mingw32\bin;C:\Ruby31\msys32\usr\bin;c:\program files\imagemagick-7.1.0-q16-hdri;c:\program files\nvidia gpu computing toolkit\cuda\v11.3\bin;c:\program files\nvidia gpu computing toolkit\cuda\v11.3\libnvvp;c:\program files\common files\oracle\java\javapath;c:\windows\system32;c:\windows;c:\windows\system32\wbem;c:\windows\system32\windowspowershell\v1.0\;c:\windows\system32\openssh\;c:\program files\bandizip\;c:\program files\git\cmd;c:\program files\nvidia corporation\nsight compute 2021.1.0\;c:\program files\matlab\r2022a\runtime\win64;c:\program files\matlab\r2022a\bin;c:\program files (x86)\gs\gs9.56.1\bin;c:\program files\dotnet\;c:\program files\mingw64\bin;c:\users\pyohy\appdata\local\programs\cursor\resources\app\bin;c:\program files\nvidia corporation\nvidia app\nvdlisr;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\python;C:\python\Scripts;G:\poppler-24.08.0;G:\poppler-24.08.0\Library\bin;C:\Program Files\Mullvad VPN\resources;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\python\Scripts\;C:\python\;C:\Ruby31\bin;C:\Users\pyohy\AppData\Local\Microsoft\WindowsApps;C:\Users\pyohy\AppData\Local\Programs\Microsoft VS Code\bin;C:\texlive\2022\bin\win32;C:\Users\pyohy\.dotnet\tools;C:\Users\pyohy\AppData\Local\Programs\cursor\resources\app\bin;" "gcc -o conftest.exe -IC:/Ruby31/include/ruby-3.1.0/i386-mingw32 -IC:/Ruby31/include/ruby-3.1.0/ruby/backward -IC:/Ruby31/include/ruby-3.1.0 -I. -D__USE_MINGW_ANSI_STDIO=1 -DFD_SETSIZE=2048 -D_WIN32_WINNT=0x0600 -D__MINGW_USE_VC2005_COMPAT -D_FILE_OFFSET_BITS=64  -O3 -fno-fast-math -fstack-protector-strong conftest.c  -L. -LC:/Ruby31/lib -L. -pipe -s -fstack-protector-strong -Wl,--no-as-needed     -lmsvcrt-ruby310  -lshell32 -lws2_32 -liphlpapi -limagehlp -lshlwapi -lbcrypt  "
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: #include <winsock2.h>
+4: #include <windows.h>
+5: int main(int argc, char **argv)
+6: {
+7:   return !!argv[argc];
+8: }
+/* end */
+
+PATH=".;C:/Ruby31/lib;C:\Ruby31\bin;C:\Ruby31\msys32\mingw32\bin;C:\Ruby31\msys32\usr\bin;c:\program files\imagemagick-7.1.0-q16-hdri;c:\program files\nvidia gpu computing toolkit\cuda\v11.3\bin;c:\program files\nvidia gpu computing toolkit\cuda\v11.3\libnvvp;c:\program files\common files\oracle\java\javapath;c:\windows\system32;c:\windows;c:\windows\system32\wbem;c:\windows\system32\windowspowershell\v1.0\;c:\windows\system32\openssh\;c:\program files\bandizip\;c:\program files\git\cmd;c:\program files\nvidia corporation\nsight compute 2021.1.0\;c:\program files\matlab\r2022a\runtime\win64;c:\program files\matlab\r2022a\bin;c:\program files (x86)\gs\gs9.56.1\bin;c:\program files\dotnet\;c:\program files\mingw64\bin;c:\users\pyohy\appdata\local\programs\cursor\resources\app\bin;c:\program files\nvidia corporation\nvidia app\nvdlisr;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\python;C:\python\Scripts;G:\poppler-24.08.0;G:\poppler-24.08.0\Library\bin;C:\Program Files\Mullvad VPN\resources;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\python\Scripts\;C:\python\;C:\Ruby31\bin;C:\Users\pyohy\AppData\Local\Microsoft\WindowsApps;C:\Users\pyohy\AppData\Local\Programs\Microsoft VS Code\bin;C:\texlive\2022\bin\win32;C:\Users\pyohy\.dotnet\tools;C:\Users\pyohy\AppData\Local\Programs\cursor\resources\app\bin;" "gcc -IC:/Ruby31/include/ruby-3.1.0/i386-mingw32 -IC:/Ruby31/include/ruby-3.1.0/ruby/backward -IC:/Ruby31/include/ruby-3.1.0 -I. -D__USE_MINGW_ANSI_STDIO=1 -DFD_SETSIZE=2048 -D_WIN32_WINNT=0x0600 -D__MINGW_USE_VC2005_COMPAT -D_FILE_OFFSET_BITS=64  -O3 -fno-fast-math -fstack-protector-strong  -std=c99 -Werror -c conftest.c"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: #include <winsock2.h>
+4: #include <windows.h>
+5: int main(int argc, char **argv)
+6: {
+7:   return !!argv[argc];
+8: }
+/* end */
+
+--------------------
+

@@ -1,0 +1,16 @@
+current directory: G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/racc-1.8.1/ext/racc/cparse
+C:/Ruby31/bin/ruby.exe -I C:/Ruby31/lib/ruby/3.1.0 -r ./siteconf20251010-8084-qm8hnl.rb extconf.rb
+creating Makefile
+
+current directory: G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= clean
+
+current directory: G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\=
+generating cparse-i386-mingw32.def
+compiling cparse.c
+linking shared-object racc/cparse.so
+
+current directory: G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= install
+/usr/bin/install -c -m 0755 cparse.so ./.gem.20251010-8084-bggxjp/racc

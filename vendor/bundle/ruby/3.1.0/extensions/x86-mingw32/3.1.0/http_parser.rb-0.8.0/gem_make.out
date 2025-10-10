@@ -1,0 +1,17 @@
+current directory: G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/http_parser.rb-0.8.0/ext/ruby_http_parser
+C:/Ruby31/bin/ruby.exe -I C:/Ruby31/lib/ruby/3.1.0 -r ./siteconf20251010-8084-byxq1w.rb extconf.rb
+creating Makefile
+
+current directory: G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/http_parser.rb-0.8.0/ext/ruby_http_parser
+make DESTDIR\= clean
+
+current directory: G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/http_parser.rb-0.8.0/ext/ruby_http_parser
+make DESTDIR\=
+generating ruby_http_parser-i386-mingw32.def
+compiling ruby_http_parser.c
+compiling ryah_http_parser.c
+linking shared-object ruby_http_parser.so
+
+current directory: G:/GithubBlog/kanji-jp/vendor/bundle/ruby/3.1.0/gems/http_parser.rb-0.8.0/ext/ruby_http_parser
+make DESTDIR\= install
+/usr/bin/install -c -m 0755 ruby_http_parser.so ./.gem.20251010-8084-d1kddm

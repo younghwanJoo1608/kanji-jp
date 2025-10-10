@@ -2,7 +2,7 @@
 title: "My Kanji Dictionary"
 description: "自作漢字辞典"
 baseurl: ""
-url: ""
+url: "https://www.kanji-jp.kr"
 lang: ja
 
 # GitHub Pages でも使える標準の Markdown/テーマ

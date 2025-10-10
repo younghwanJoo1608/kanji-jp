@@ -10,39 +10,33 @@ jobs:
     runs-on: ubuntu-latest
     permissions: { contents: read, pages: write, id-token: write }
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }  # 커밋 기록 필요
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      # 커밋 시간 수집 → _data/lastmod.json 생성
+      - name: Generate lastmod data (commit times)
+        run: |
+          mkdir -p _data
+          echo "{" > _data/lastmod.json
+          first=1
+          # 컬렉션 경로에 맞춰 필요 시 패턴 조정
+          for f in $(git ls-files "_kanji/*.md"); do
+            ts=$(git log -1 --pretty=format:%cI -- "$f" || true)
+            # Jekyll 컬렉션 기본 permalink에 맞춰 URL 생성
+            slug="$(basename "$f" .md)"
+            url="/kanji/${slug}/"
+            [ $first -eq 0 ] && echo "," >> _data/lastmod.json
+            first=0
+            printf '  "%s": "%s"\n' "$url" "$ts" >> _data/lastmod.json
+          done
+          echo "}" >> _data/lastmod.json
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/jekyll-build-pages@v1
         with:
-          ruby-version: '3.1'
-          bundler-cache: false
-
-      # ← 여기서 매번 리눅스용 lockfile 생성 (윈도우/맥 플랫폼도 함께 기록)
-      - name: Generate lockfile for Linux runner
-        run: |
-          rm -f Gemfile.lock
-          bundle lock --add-platform x86_64-linux --add-platform x86-mingw32 --add-platform x86_64-darwin-22
-
-      - name: Bundle install
-        run: bundle install --jobs 4
-
-      - name: Verify jekyll in bundle (debug)
-        run: |
-          ruby -v
-          bundle -v
-          grep -A2 "^PLATFORMS" Gemfile.lock || true
-          bundle info github-pages || true
-          bundle info jekyll || true
-          bundle list | grep jekyll || (echo "jekyll not in bundle" && exit 1)
-
-      - name: Build with Jekyll
-        run: bundle exec jekyll build -d _site
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+          source: .
+          destination: _site
+      - uses: actions/upload-pages-artifact@v3
         with: { path: _site }
 
   deploy:

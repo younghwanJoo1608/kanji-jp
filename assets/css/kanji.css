@@ -62,7 +62,21 @@
     .card { border: 1px solid #eee; border-radius: 12px; padding: .75rem; background: #fff; text-decoration: none; color: inherit; }
     .card .g { font-family: "Noto Serif JP", serif; font-size: 44px; line-height: 1; display: block; }
     .card small { color: #666; }
+    .card .title-line {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-top: .25rem;
+        line-height: 1.3;
+        white-space: nowrap;
+    }
 
+    .card .title-line .readings-inline {
+        color: #666;
+        font-weight: 400;
+        margin-left: 0.15em;
+        font-size: 0.7rem;
+    }
+    
     /* 급수 탭 버튼 */
     /* 버튼 reset & 일관성 */
     .level-tabs .level-btn {

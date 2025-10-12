@@ -75,7 +75,15 @@
             {% if page.kun_meanings %}
             <ul class="kun_meanings">
               {% for w in page.kun_meanings %}
-                  <li>{{ w.word }} <small class="reading">{{ w.reading }}</small>  {{ w.gloss }}</li>
+                  <li>
+                      <span class="{% if w.type == '표외' %}offchart{% endif %}">{{ w.word }}</span>
+                      {% if w.reading %}
+                        <small class="reading">{{ w.reading }}</small>
+                      {% endif %}
+                      {% if w.gloss %}
+                        {{ w.gloss }}
+                      {% endif %}
+                    </li>
               {% endfor %}
             </ul>
             {% else %}
@@ -90,7 +98,15 @@
             {% if page.compounds %}
             <ul class="compounds">
                 {% for w in page.compounds %}
-                    <li>{{ w.word }} <small class="reading">{{ w.reading }}</small>  {{ w.gloss }}</li>
+                    <li>
+                      <span class="{% if w.type == '숙자훈' %}ateji{% endif %}">{{ w.word }}</span>
+                      {% if w.reading %}
+                        <small class="reading">{{ w.reading }}</small>
+                      {% endif %}
+                      {% if w.gloss %}
+                        {{ w.gloss }}
+                      {% endif %}
+                    </li>
                 {% endfor %}
             </ul>
             {% else %}

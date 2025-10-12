@@ -91,6 +91,20 @@ title: 급수별 한자 목록
             {% assign readings = readings | append: kun_text %}
           {% endif %}
 
+          {% assign onyomi_sort = "" %}
+          {% if k.onyomi and k.onyomi.first and k.onyomi.first.reading %}
+            {% assign onyomi_sort = k.onyomi | map: "reading" | join: " " %}
+          {% else %}
+            {% assign onyomi_sort = k.onyomi | default: "" %}
+          {% endif %}
+          {% assign onyomi_sort = onyomi_sort | strip | escape %}
+
+          {%- comment -%} 부수 키: 괄호/설명 제거해서 핵심만 {%- endcomment -%}
+          {% assign radical_key = k.radical | default: "" %}
+          {% assign radical_key = radical_key | split: " " | first %}
+          {% assign radical_key = radical_key | split: "（" | first | split: "(" | first %}
+          {% assign radical_key = radical_key | strip | escape %}
+
           <a class="card"
             href="{{ k.url | relative_url }}"
             title="{{ k.title }}"

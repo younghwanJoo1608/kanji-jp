@@ -51,8 +51,11 @@
       
     .compounds { margin: 0; padding-left: 1.25rem; }
     .compounds .reading { color: #666; }
+    .compounds .ateji { color: #733a97; } /* 숙자훈 붉은색 강조 */
+
     .kun_meanings { margin: 0; padding-left: 1.25rem; }
     .kun_meanings .reading { color: #666; }
+    .kun_meanings .offchart { color: #c62828; }
     
     /* 本文メモ */
     .kanji-notes p { margin: 1rem 0; }

@@ -23,8 +23,6 @@ title: 급수별 한자 목록
       </button>
     {% endfor %}
 </div>
-  
-  
 
 <div class="sort-bar">
     <label for="sort-select">정렬:</label>
@@ -32,6 +30,7 @@ title: 급수별 한자 목록
       <option value="onyomi">음독 오름차순</option>
       <option value="strokes">획수순</option>
       <option value="radical">부수순</option>
+      <option value="unicode">유니코드순</option>
     </select>
 </div>
 
@@ -110,7 +109,9 @@ title: 급수별 한자 목록
             title="{{ k.title }}"
             data-onyomi="{{ onyomi_sort }}"
             data-strokes="{{ k.strokes | plus: 0 | default: 9999 }}"
-            data-radical="{{ radical_key }}">
+            data-radical="{{ radical_key }}"
+            data-unicode="{{ k.unicode | default: '' }}"
+            data-char="{{ k.char }}">
             <span class="g">{{ k.char }}</span>
             <div class="title-line">
               <span class="title">{{ k.title }}</span>
@@ -165,9 +166,11 @@ title: 급수별 한자 목록
       '음독 오름차순': 'onyomi',
       '획수순': 'strokes',
       '부수순': 'radical',
+      '유니코드순': 'unicode',
       'onyomi': 'onyomi',
       'strokes': 'strokes',
-      'radical': 'radical'
+      'radical': 'radical',
+      'unicode': 'unicode'
     };
     const normKey = v => keyMap[v] || v;
 
@@ -190,6 +193,19 @@ title: 급수별 한자 목록
         if (key === 'radical') {
           return (el.dataset.radical || '');
         }
+        if (key === 'unicode') {
+          // 우선 data-unicode("U+61A7" 등)에서 16진 파싱
+          const u = (el.dataset.unicode || '').trim();   // "U+61A7"
+          const m = /^U\+([0-9A-Fa-f]+)$/.exec(u);
+          if (m) {
+            const cp = parseInt(m[1], 16);
+            if (Number.isFinite(cp)) return cp;
+          }
+          // 폴백: data-char 또는 카드 내 큰 글자에서 코드포인트 계산
+          const ch = el.dataset.char || el.querySelector('.g')?.textContent || '';
+          const cp2 = ch.codePointAt ? ch.codePointAt(0) : ch.charCodeAt(0);
+          return Number.isFinite(cp2) ? cp2 : 0x7fffffff;
+        }
         // onyomi
         return (el.dataset.onyomi || '').normalize('NFKD');
       };
@@ -211,6 +227,14 @@ title: 급수별 한자 목록
           const s = (Number(a.dataset.strokes)||9999) - (Number(b.dataset.strokes)||9999);
           if (s !== 0) return s;                          // 동률이면 획수
           return (a.dataset.onyomi||"").localeCompare((b.dataset.onyomi||""), "ja"); // 그다음 음독
+        }
+        if (key === 'unicode') {
+          const diff = Number(va) - Number(vb); // 코드포인트 오름차순
+          if (diff !== 0) return diff;
+          // 동률이면 보조정렬
+          const s = (Number(a.dataset.strokes)||9999) - (Number(b.dataset.strokes)||9999);
+          if (s !== 0) return s;
+          return (a.dataset.onyomi || '').localeCompare((b.dataset.onyomi || ''), 'ja');
         }
         // onyomi
         return String(va).localeCompare(String(vb), 'ja');

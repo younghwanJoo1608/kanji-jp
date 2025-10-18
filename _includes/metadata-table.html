@@ -99,7 +99,7 @@
             <ul class="compounds">
                 {% for w in page.compounds %}
                     <li>
-                      <span class="{% if w.type == '숙자훈' %}ateji{% endif %}">{{ w.word }}</span>
+                      <span class="{% if w.type == '숙자훈' %}ateji{% endif %}{% if w.type == '표외' %}offchart{% endif %}">{{ w.word }}</span>
                       {% if w.reading %}
                         <small class="reading">{{ w.reading }}</small>
                       {% endif %}

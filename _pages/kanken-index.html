@@ -24,7 +24,8 @@ title: 급수별 한자 목록
     {% endfor %}
 </div>
 
-<div class="sort-bar">
+<div class="toolbar">
+  <div class="sort-bar">
     <label for="sort-select">정렬:</label>
     <select id="sort-select">
       <option value="onyomi">음독 오름차순</option>
@@ -32,6 +33,8 @@ title: 급수별 한자 목록
       <option value="radical">부수순</option>
       <option value="unicode">유니코드순</option>
     </select>
+  </div>
+  <div class="level-count"><span id="level-count"></span></div>
 </div>
 
   {%- comment -%} 섹션 렌더링 {%- endcomment -%}
@@ -56,6 +59,7 @@ title: 급수별 한자 목록
   
     <section class="level-section"
              data-level="{{ lv }}"
+             data-count="{{ items | size }}"
              aria-label="{{ label_kr }} 한자 목록"
              {% if forloop.first %}style="display:grid"{% endif %}>
       {% if items and items.size > 0 %}
@@ -127,39 +131,42 @@ title: 급수별 한자 목록
         <p class="muted">아직 {{ label_kr }}으로 등록된 한자가 없습니다.</p>
       {% endif %}
     </section>
+    <div class="pagination" data-level="{{ lv }}"></div>
   {% endfor %}
   
-  <script>
-    // 강희자전 214부수 순서 (일본 표기 기준 / 일부 표기差 포함)
-    const RADICAL_ORDER = [
-      "一","丨","丶","丿","乙","亅","二","亠","人","儿","入","八","冂","冖","冫","几","凵","刀","力","勹","匕","匚","匸","十","卜","卩","厂","厶","又",
-      "口","囗","土","士","夂","夊","夕","大","女","子","宀","寸","小","尢","尸","屮","山","巛","工","己","巾","干","幺","广","廴","廾","弋","弓","彐","彡","彳",
-      "心","戈","戸","手","支","攴","文","斗","斤","方","无","日","曰","月","木","欠","止","歹","殳","毋","比","毛","氏","气","水","火","爪","父","爻","爿","片","牙",
-      "牛","犬","玄","玉","瓜","瓦","甘","生","用","田","疋","疒","癶","白","皮","皿","目","矛","矢","石","示","禸","禾","穴","立","竹","米","糸","缶","网","羊","羽",
-      "老","而","耒","耳","聿","肉","臣","自","至","臼","舌","舛","舟","艮","色","艸","虍","虫","血","行","衣","襾","見","角","言","谷","豆","豕","豸","貝","赤","走",
-      "足","身","車","辛","辰","辵","邑","酉","釆","里","金","長","門","阜","隶","隹","雨","青","非","面","革","韋","韭","音","頁","風","飛","食","首","香","馬","骨",
-      "高","髟","鬥","鬯","鬲","鬼","魚","鳥","鹵","鹿","麥","麻","黃","黍","黑","黹","黽","鼎","鼓","鼠","鼻","齊","齒","龍","龜","龠"
-    ];
+<script>
+  // 강희자전 214부수 순서 (일본 표기 기준 / 일부 표기差 포함)
+  const RADICAL_ORDER = [
+    "一","丨","丶","丿","乙","亅","二","亠","人","儿","入","八","冂","冖","冫","几","凵","刀","力","勹","匕","匚","匸","十","卜","卩","厂","厶","又",
+    "口","囗","土","士","夂","夊","夕","大","女","子","宀","寸","小","尢","尸","屮","山","巛","工","己","巾","干","幺","广","廴","廾","弋","弓","彐","彡","彳",
+    "心","戈","戸","手","支","攴","文","斗","斤","方","无","日","曰","月","木","欠","止","歹","殳","毋","比","毛","氏","气","水","火","爪","父","爻","爿","片","牙",
+    "牛","犬","玄","玉","瓜","瓦","甘","生","用","田","疋","疒","癶","白","皮","皿","目","矛","矢","石","示","禸","禾","穴","立","竹","米","糸","缶","网","羊","羽",
+    "老","而","耒","耳","聿","肉","臣","自","至","臼","舌","舛","舟","艮","色","艸","虍","虫","血","行","衣","襾","見","角","言","谷","豆","豕","豸","貝","赤","走",
+    "足","身","車","辛","辰","辵","邑","酉","釆","里","金","長","門","阜","隶","隹","雨","青","非","面","革","韋","韭","音","頁","風","飛","食","首","香","馬","骨",
+    "高","髟","鬥","鬯","鬲","鬼","魚","鳥","鹵","鹿","麥","麻","黃","黍","黑","黹","黽","鼎","鼓","鼠","鼻","齊","齒","龍","龜","龠"
+  ];
 
-    // 변형/편방 → 본래 부수 매핑 (필요시 추가)
-    const RADICAL_ALIAS = {
-      "氵":"水", "扌":"手", "亻":"人", "礻":"示", "忄":"心", "飠":"食", "辶":"辵", "衤":"衣", "艹":"艸",
-      "川":"巛", 
-      "阝":"阜",  // 좌/우 위치에 따라 邑(우)일 수도 있어서, 데이터에 '邑'을 직접 넣는 걸 권장
-      "广":"广", // 예외 없음(그대로)
-      "冫":"冫"
-    };
+  // 변형/편방 → 본래 부수 매핑 (필요시 추가)
+  const RADICAL_ALIAS = {
+    "氵":"水", "扌":"手", "亻":"人", "礻":"示", "忄":"心", "飠":"食", "辶":"辵", "衤":"衣", "艹":"艸",
+    "川":"巛", 
+    "阝":"阜",  // 좌/우 위치에 따라 邑(우)일 수도 있어서, 데이터에 '邑'을 직접 넣는 걸 권장
+    "广":"广", // 예외 없음(그대로)
+    "冫":"冫"
+  };
 
-    const rankOfRadical = (r) => {
-      const base = RADICAL_ALIAS[r] || r;
-      const idx = RADICAL_ORDER.indexOf(base);
-      return idx >= 0 ? idx : 9999; // 미정의는 맨 뒤
-    };
+  const rankOfRadical = (r) => {
+    const base = RADICAL_ALIAS[r] || r;
+    const idx = RADICAL_ORDER.indexOf(base);
+    return idx >= 0 ? idx : 9999; // 미정의는 맨 뒤
+  };
 
-    document.addEventListener('DOMContentLoaded', function () {
-      const sections = document.querySelectorAll('.level-section');
-      const buttons  = document.querySelectorAll('.level-tabs .level-btn');
-      const select   = document.getElementById('sort-select');
+  document.addEventListener('DOMContentLoaded', function () {
+    const sections = document.querySelectorAll('.level-section');
+    const paginations  = document.querySelectorAll('.pagination');
+    const buttons  = document.querySelectorAll('.level-tabs .level-btn');
+    const select   = document.getElementById('sort-select');
+    const PER_PAGE = 50;
 
     // 혹시 HTML의 value가 한글로 남아 있어도 안전하게 매핑
     const keyMap = {
@@ -176,6 +183,53 @@ title: 급수별 한자 목록
 
     function currentSection() {
       return Array.from(sections).find(s => s.style.display !== 'none');
+    }
+
+    // ★ 페이지네이션 표시
+    function renderPagination(section, total) {
+      const totalPages = Math.ceil(total / PER_PAGE);
+      const container = document.querySelector(`.pagination[data-level="${section.dataset.level}"]`);
+      container.innerHTML = '';
+      if (totalPages <= 1) {
+        container.style.display = 'none';          // ★ 페이지 1개면 숨김
+        return;
+      }
+      container.style.display = 'flex'; 
+
+      const nav = document.createDocumentFragment();
+
+      const makeBtn = (label, page, active=false, disabled=false) => {
+        const btn = document.createElement('button');
+        btn.textContent = label;
+        if (active) btn.classList.add('active');
+        if (disabled) btn.disabled = true;
+        btn.addEventListener('click', () => showPage(section, page));
+        return btn;
+      };
+
+      let current = Number(section.dataset.page || 1);
+      nav.appendChild(makeBtn('〈', current-1, false, current<=1));
+      for (let i=1; i<=totalPages; i++) {
+        nav.appendChild(makeBtn(i, i, i===current));
+      }
+      nav.appendChild(makeBtn('〉', current+1, false, current>=totalPages));
+
+      container.appendChild(nav);
+    }
+
+    // ★ 실제 페이지 전환
+    function showPage(section, page=1) {
+      const grid = section.querySelector('.grid');
+      const cards = Array.from(grid.querySelectorAll('a.card'));
+      const total = cards.length;
+      const totalPages = Math.ceil(total / PER_PAGE);
+      page = Math.min(Math.max(1, page), totalPages);
+      section.dataset.page = page;
+
+      cards.forEach((c, i) => {
+        c.style.display = (i >= (page-1)*PER_PAGE && i < page*PER_PAGE) ? '' : 'none';
+      });
+      renderPagination(section, total);
     }
 
     function sortCards(section, rawKey) {
@@ -207,7 +261,8 @@ title: 급수별 한자 목록
           return Number.isFinite(cp2) ? cp2 : 0x7fffffff;
         }
         // onyomi
-        return (el.dataset.onyomi || '').normalize('NFKD');
+        // return (el.dataset.onyomi || '').normalize('NFKD');
+        return (el.dataset.onyomi || '').trim();
       };
 
       cards.sort((a, b) => {
@@ -237,23 +292,51 @@ title: 급수별 한자 목록
           return (a.dataset.onyomi || '').localeCompare((b.dataset.onyomi || ''), 'ja');
         }
         // onyomi
-        return String(va).localeCompare(String(vb), 'ja');
+        if (key === 'onyomi') {
+          const sa = (a.dataset.onyomi || '').trim();
+          const sb = (b.dataset.onyomi || '').trim();
+          const aEmpty = sa === '';
+          const bEmpty = sb === '';
+          if (aEmpty && bEmpty) return 0;  // 둘 다 없으면 그대로
+          if (aEmpty) return 1;            // a가 비었으면 뒤로
+          if (bEmpty) return -1;           // b가 비었으면 뒤로
+          return sa.normalize('NFKD').localeCompare(sb.normalize('NFKD'), 'ja');
+        }
       });
 
       cards.forEach(c => grid.appendChild(c));
+      showPage(section,1);
+    }
+
+    function updateCount() {
+      const sec = currentSection();
+      const n = sec ? Number(sec.dataset.count || sec.querySelectorAll('a.card').length) : 0;
+      const el = document.getElementById('level-count');
+      if (el) el.textContent = `총 ${n}개`;
     }
 
     function show(level) {
-      sections.forEach(s => s.style.display = (s.dataset.level === level ? 'grid' : 'none'));
+      sections.forEach(s => {
+        const on = (s.dataset.level === level);
+        s.style.display = on ? 'grid' : 'none';
+        if (on) { s.dataset.page = 1; }
+      });
+
+      paginations.forEach(p => {
+        p.style.display = (p.dataset.level === level) ? '' : 'none';
+      });
       buttons.forEach(b => b.classList.toggle('active', b.dataset.level === level));
       sortCards(currentSection(), select.value);
+      updateCount(); // ★ 탭 전환 시 갱신
     }
 
     // 초기 표시 & 정렬
     const defaultLevel = buttons[0]?.dataset.level;
     if (defaultLevel) {
       sections.forEach((s, i) => s.style.display = (i === 0 ? 'grid' : 'none'));
+      paginations.forEach((p, i) => p.style.display = (i === 0 ? '' : 'none'));
       sortCards(currentSection(), select.value);
+      updateCount(); // ★ 초기 표시 시 갱신
     }
 
     buttons.forEach(b => b.addEventListener('click', () => show(b.dataset.level)));

@@ -18,7 +18,7 @@ jis: 第1水準
 variants: 
 kun_meanings:
 compounds:
-  - { word: 人々, reading: ひとびと, gloss: "(많은)사람들." }
+  - { word: 名人, reading: メイジン, gloss: "명인. 솜씨가 뛰어난 사람." }
   - { word: 一人, reading: ひとり, gloss: "1명.", type: "숙자훈"  }
   - { word: 二人, reading: ふたり, gloss: "2명.", type: "숙자훈"  }
   - { word: 大人, reading: おとな, gloss: "어른, 성인.", type: "숙자훈"  }

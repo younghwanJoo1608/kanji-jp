@@ -19,7 +19,7 @@ jis: 第1水準
 variants: 
 kun_meanings:
 compounds:
-  - { word: 市立, reading: しりつ, gloss: "시립.", type: "표준" }
-  - { word: 設立, reading: せつりつ, gloss: "설립.", type: "표준" }
-  - { word: 立ち退く, reading: たちのく, gloss: "그 자리에서 떠남.", type: "숙자훈" }
+  - { word: 成立, reading: セイリツ, gloss: "성립.", type: "표준" }
+  - { word: 設立, reading: セツリツ, gloss: "설립.", type: "표준" }
+  - { word: 立場, reading: たちば, gloss: "(1) 설 곳. (2) 입장. 처지. (3) 관점.", type: "숙자훈" }
 ---

@@ -51,18 +51,19 @@
       
     .compounds { margin: 0; padding-left: 1.25rem; }
     .compounds .reading { color: #666; }
-    .compounds .ateji { color: #733a97; } /* 숙자훈 보라색 강조 */
-    .compounds .offchart { color: #c62828; } /* 표외 빨간색 강조 */
+    .compounds .ateji { color: #1616ff; } /* 숙자훈 파란색 강조 */
+    .compounds .offchart { color: #7f1783; } /* 표외 보라색 강조 */
+    .compounds .hard { color: #c62828; } /* 고급 빨간색 강조 */
 
     .kun_meanings { margin: 0; padding-left: 1.25rem; }
     .kun_meanings .reading { color: #666; }
-    .kun_meanings .offchart { color: #c62828; }
+    .kun_meanings .offchart { color: #7f1783; }
     
     /* 표외 */
     .onyomi { margin-right: .5em; }
-    .onyomi.offchart { color: #c62828; font-weight: 600; } /* 붉은색 강조 */
+    .onyomi.offchart { color: #7f1783; font-weight: 600; } /* 보라색 강조 */
     .kunyomi { margin-right: .5em; }
-    .kunyomi.offchart { color: #c62828; font-weight: 600; } /* 붉은색 강조 */
+    .kunyomi.offchart { color: #7f1783; font-weight: 600; } /* 보라색 강조 */
 
     /* 本文メモ */
     .kanji-notes p { margin: 1rem 0; }

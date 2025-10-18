@@ -17,6 +17,6 @@ jis: 第1水準
 variants: 
 kun_meanings:
 compounds:
-  - { word: 河川, reading: カセン, gloss: "하천.", type: "숙자훈" }
+  - { word: 河川, reading: カセン, gloss: "하천.", type: "표준" }
   - { word: 川原, reading: かわら, gloss: "강바닥, 하천 부지", type: "숙자훈" }
 ---

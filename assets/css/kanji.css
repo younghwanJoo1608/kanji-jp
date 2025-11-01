@@ -51,18 +51,24 @@
       
     .compounds { margin: 0; padding-left: 1.25rem; }
     .compounds .reading { color: #666; }
-    .compounds .ateji { color: #1616ff; } /* 숙자훈 파란색 강조 */
+    .compounds .standard { color: #1170ff; } /* 표외 보라색 강조 */
     .compounds .offchart { color: #7f1783; } /* 표외 보라색 강조 */
     .compounds .hard { color: #c62828; } /* 고급 빨간색 강조 */
 
-    .kun_meanings { margin: 0; padding-left: 1.25rem; }
-    .kun_meanings .reading { color: #666; }
-    .kun_meanings .offchart { color: #7f1783; }
-    
+    .compound-group-title { margin: 1.2rem 0 .4rem; font-weight: 600; }
+    .compound-list { margin: .2rem 0 1rem; padding-left: 1.2rem; }
+    .compound-list li { margin: .15rem 0; }
+    .compound-list .w { font-weight: 600; margin-right: .35rem; }
+    .compound-list .r { opacity:.85; margin-right: .35rem; }
+    .compound-list .t { opacity:.7; margin-right: .35rem; }
+    .compound-list .g { opacity:.95; }
+
     /* 표외 */
     .onyomi { margin-right: .5em; }
+    .onyomi.standard { color: #1170ff; font-weight: 600; } /* 하늘색 강조 */
     .onyomi.offchart { color: #7f1783; font-weight: 600; } /* 보라색 강조 */
     .kunyomi { margin-right: .5em; }
+    .kunyomi.standard { color: #1170ff; font-weight: 600; } /* 하늘색 강조 */
     .kunyomi.offchart { color: #7f1783; font-weight: 600; } /* 보라색 강조 */
 
     /* 本文メモ */

@@ -14,7 +14,7 @@
         <td>
           {% if page.onyomi.first.reading %}
             {% for o in page.onyomi %}
-              <span class="onyomi {% if o.type == '표외' %}offchart{% endif %}">
+              <span class="onyomi {% if o.type == '상용' %}standard{% endif %}">
                 {{ o.reading }}
               </span>
             {% endfor %}
@@ -29,7 +29,7 @@
         <td>
           {% if page.kunyomi.first.reading %}
             {% for o in page.kunyomi %}
-              <span class="kunyomi {% if o.type == '표외' %}offchart{% endif %}">
+              <span class="kunyomi {% if o.type == '상용' %}standard{% endif %}">
                 {{ o.reading }}
               </span>
             {% endfor %}
@@ -68,50 +68,94 @@
         <th>이체자</th>
         <td>{{ page.variants }}</td>
       </tr>
-  
-      <tr>
-        <th>훈독별 의미</th>
-        <td>
-            {% if page.kun_meanings %}
-            <ul class="kun_meanings">
-              {% for w in page.kun_meanings %}
-                  <li>
-                      <span class="{% if w.type == '표외' %}offchart{% endif %}">{{ w.word }}</span>
-                      {% if w.reading %}
-                        <small class="reading">{{ w.reading }}</small>
-                      {% endif %}
-                      {% if w.gloss %}
-                        {{ w.gloss }}
-                      {% endif %}
-                    </li>
-              {% endfor %}
-            </ul>
-            {% else %}
-                <!-- 비어 있을 경우 빈 칸 유지 -->
-            {% endif %}
-        </td>
-      </tr>
 
       <tr>
         <th>숙어</th>
         <td>
-            {% if page.compounds %}
-            <ul class="compounds">
-                {% for w in page.compounds %}
+          {%- if page.compounds and page.compounds.size > 0 -%}
+            {%- capture onyomi_csv -%}
+              {%- for o in page.onyomi -%}
+                {%- assign r = o.reading | replace:'-','' | replace:'・','' | replace:'（','' | replace:'）','' -%}
+                {{ r }}{% unless forloop.last %},{% endunless %}
+              {%- endfor -%}
+            {%- endcapture -%}
+            {%- assign onyomi_keys = onyomi_csv | split: ',' | uniq -%}
+
+            {%- capture kunyomi_csv -%}
+              {%- for k in page.kunyomi -%}
+                {%- assign raw = k.reading -%}
+                {%- if raw contains '-' -%}
+                  {%- assign stem = raw | split:'-' | first -%}
+                {%- else -%}
+                  {%- assign stem = raw -%}
+                {%- endif -%}
+                {%- assign r = stem | replace:'・','' | replace:'（','' | replace:'）','' -%}
+                {{ r }}{% unless forloop.last %},{% endunless %}
+              {%- endfor -%}
+            {%- endcapture -%}
+            {%- assign kunyomi_keys = kunyomi_csv | split: ',' | uniq -%}
+
+            {%- assign yomi_order = onyomi_keys | concat: kunyomi_keys | uniq -%}
+
+            {%- comment -%} 음독/훈독 yomi 그룹 출력 (상단 큰 제목 없음) {%- endcomment -%}
+            {%- for y in yomi_order -%}
+              {%- assign group_items = "" | split: "" -%}
+
+              {%- if onyomi_keys contains y -%}
+                {%- assign group_items = page.compounds | where:'yomi', y -%}
+
+              {%- elsif kunyomi_keys contains y -%}
+                {%- for it in page.compounds -%}
+                  {%- assign cy = it.yomi | default:'' -%}
+                  {%- assign cy_norm = cy | replace:'-','' | replace:'・','' | replace:'（','' | replace:'）','' -%}
+                  {%- assign head = cy_norm | slice: 0, y.size -%}
+                  {%- if head == y -%}
+                    {%- assign group_items = group_items | push: it -%}
+                  {%- endif -%}
+                {%- endfor -%}
+
+              {%- else -%}
+                {%- assign group_items = page.compounds | where:'yomi', y -%}
+              {%- endif -%}
+
+              {%- if group_items and group_items.size > 0 -%}
+                <h4 class="compound-group-title">
+                  {%- if onyomi_keys contains y -%}音読 - {{ y }}
+                  {%- elsif kunyomi_keys contains y -%}訓読 - {{ y }}
+                  {%- else -%}{{ y }}
+                  {%- endif -%}
+                </h4>
+                <ul class="compounds">
+                  {%- for it in group_items -%}
                     <li>
-                      <span class="{% if w.type == '숙자훈' %}ateji{% endif %}{% if w.type == '표외' %}offchart{% endif %}">{{ w.word }}</span>
-                      {% if w.reading %}
-                        <small class="reading">{{ w.reading }}</small>
+                      <span class="{% if it.type == '상용' %}standard{% endif %}">{{ it.word }}</span>
+                      {% if it.reading %}<small class="reading">{{ it.reading }}</small>{% endif %}
+                      {% if it.gloss %}{{ it.gloss }}{% endif %}
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- comment -%} 熟字訓 섹션 {%- endcomment -%}
+            {%- assign jukujikun = page.compounds | where:'yomi','숙자훈' -%}
+            {%- if jukujikun and jukujikun.size > 0 -%}
+              <h4 class="compound-group-title">숙자훈</h4>
+              <ul class="compounds">
+                  {%- for it in jukujikun -%}
+                    <li>
+                      <span class="{% if it.type == '상용' %}standard{% endif %}">{{ it.word }}</span>
+                      {% if it.reading %}
+                        <small class="reading">{{ it.reading }}</small>
                       {% endif %}
-                      {% if w.gloss %}
-                        {{ w.gloss }}
+                      {% if it.gloss %}
+                        {{ it.gloss }}
                       {% endif %}
                     </li>
-                {% endfor %}
-            </ul>
-            {% else %}
-                <!-- 비어 있을 경우 빈 칸 유지 -->
-            {% endif %}
+                  {%- endfor -%}
+                </ul>
+            {%- endif -%}
+          {%- endif -%}
         </td>
       </tr>
     </tbody>

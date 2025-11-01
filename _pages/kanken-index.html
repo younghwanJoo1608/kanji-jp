@@ -28,8 +28,8 @@ title: 급수별 한자 목록
   <div class="sort-bar">
     <label for="sort-select">정렬:</label>
     <select id="sort-select">
-      <option value="onyomi">음독 오름차순</option>
       <option value="strokes">획수순</option>
+      <option value="onyomi">음독 오름차순</option>
       <option value="radical">부수순</option>
       <option value="unicode">유니코드순</option>
     </select>
@@ -272,6 +272,11 @@ title: 급수별 한자 목록
         if (key === 'strokes') {
           const diff = va - vb;                           // 오름차순(작은→큰)
           if (diff !== 0) return diff;
+
+          const ra = rankOfRadical(a.dataset.radical || "");
+          const rb = rankOfRadical(b.dataset.radical || "");
+          if (ra !== rb) return ra - rb;  // 부수순
+
           return (a.dataset.onyomi || '').localeCompare((b.dataset.onyomi || ''), 'ja');
         }
         if (key === 'radical') {

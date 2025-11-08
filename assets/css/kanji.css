@@ -55,6 +55,14 @@
     .compounds .offchart { color: #7f1783; } /* 표외 보라색 강조 */
     .compounds .hard { color: #c62828; } /* 고급 빨간색 강조 */
 
+    .compounds .gloss-icon{
+        width: 1.4rem;
+        height: 1.4rem;
+        vertical-align: middle;
+        margin-right: .10em;
+        opacity: .95;
+    }
+
     .compound-group-title { margin: 1.2rem 0 .4rem; font-weight: 600; }
     .compound-list { margin: .2rem 0 1rem; padding-left: 1.2rem; }
     .compound-list li { margin: .15rem 0; }

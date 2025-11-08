@@ -130,7 +130,13 @@
                     <li>
                       <span class="{% if it.type == '상용' %}standard{% endif %}">{{ it.word }}</span>
                       {% if it.reading %}<small class="reading">{{ it.reading }}</small>{% endif %}
-                      {% if it.gloss %}{{ it.gloss }}{% endif %}
+                      {% if it.gloss %}
+                        {%- assign g = it.genre | default: '' -%}
+                        {%- if g == '생물' or g contains '생물' -%}
+                          <img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물" width="14" height="14" />
+                        {%- endif -%}
+                        {{ it.gloss }}
+                      {% endif %}
                     </li>
                   {%- endfor -%}
                 </ul>
@@ -149,6 +155,10 @@
                         <small class="reading">{{ it.reading }}</small>
                       {% endif %}
                       {% if it.gloss %}
+                        {%- assign g = it.genre | default: '' -%}
+                        {%- if g == '생물' or g contains '생물' -%}
+                          <img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물" width="14" height="14" />
+                        {%- endif -%}
                         {{ it.gloss }}
                       {% endif %}
                     </li>

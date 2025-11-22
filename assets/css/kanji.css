@@ -71,6 +71,20 @@
     .compound-list .t { opacity:.7; margin-right: .35rem; }
     .compound-list .g { opacity:.95; }
 
+    .idioms { margin: 0; padding-left: 1.25rem; }
+    .idioms .reading { color: #666; }
+    .idioms .standard { color: #1170ff; } /* 표외 보라색 강조 */
+    .idioms .offchart { color: #7f1783; } /* 표외 보라색 강조 */
+    .idioms .hard { color: #c62828; } /* 고급 빨간색 강조 */
+
+    .idioms .gloss-icon{
+        width: 1.4rem;
+        height: 1.4rem;
+        vertical-align: middle;
+        margin-right: .10em;
+        opacity: .95;
+    }
+
     /* 표외 */
     .onyomi { margin-right: .5em; }
     .onyomi.standard { color: #1170ff; font-weight: 600; } /* 하늘색 강조 */

@@ -13,7 +13,11 @@ title: 일본어 한자 사전
 {% assign enriched = "" %}
 {% for d in site.kanji %}
   {% assign url = d.url %}
-  {% assign ts = site.data.lastmod[url] | default: d.date | default: "0001-01-01T00:00:00Z" %}
+  {% comment %}
+    d.path는 "_kanji/4E00.md" 형태이므로, 여기서 파일명(4E00)만 추출하여 키로 사용
+  {% endcomment %}
+  {% assign filename = d.path | split: "/" | last | replace: ".md", "" %}
+  {% assign ts = site.data.lastmod[filename] | default: d.date | default: "0001-01-01T00:00:00Z" %}
   {% assign item = ts | append: "||" | append: url | append: "||" | append: d.title | append: "||" | append: d.char | append: "||" | append: d.unicode %}
   {% assign enriched = enriched | append: item | append: "##SEP##" %}
 {% endfor %}

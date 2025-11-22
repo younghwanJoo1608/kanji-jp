@@ -13,23 +13,14 @@ jobs:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }  # 커밋 기록 필요
 
-      # 커밋 시간 수집 → _data/lastmod.json 생성
-      - name: Generate lastmod data (commit times)
-        run: |
-          mkdir -p _data
-          echo "{" > _data/lastmod.json
-          first=1
-          # 컬렉션 경로에 맞춰 필요 시 패턴 조정
-          for f in $(git ls-files "_kanji/*.md"); do
-            ts=$(git log -1 --pretty=format:%cI -- "$f" || true)
-            # Jekyll 컬렉션 기본 permalink에 맞춰 URL 생성
-            slug="$(basename "$f" .md)"
-            url="/kanji/${slug}/"
-            [ $first -eq 0 ] && echo "," >> _data/lastmod.json
-            first=0
-            printf '  "%s": "%s"\n' "$url" "$ts" >> _data/lastmod.json
-          done
-          echo "}" >> _data/lastmod.json
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1' # .ruby-version 파일이 있다면 그것을 따르는 것이 좋음
+
+      # 커밋 시간 수집 → _data/lastmod.yml 생성 (Ruby 스크립트 사용)
+      - name: Generate lastmod data
+        run: ruby update_lastmod.rb
 
       - uses: actions/configure-pages@v5
       - uses: actions/jekyll-build-pages@v1

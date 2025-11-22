@@ -168,5 +168,24 @@
           {%- endif -%}
         </td>
       </tr>
+
+      <tr>
+        <th>관용구</th>
+        <td>
+          {%- if page.idioms and page.idioms.size > 0 -%}
+            <ul class="idioms">
+              {%- for it in page.idioms -%}
+                <li>
+                  {{ it.word }}
+                  {% if it.reading %}<small class="reading">{{ it.reading }}</small>{% endif %}
+                  {% if it.gloss %}
+                    {{ it.gloss }}
+                  {% endif %}
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </td>
+      </tr>
     </tbody>
   </table>

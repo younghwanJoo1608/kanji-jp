@@ -6,7 +6,16 @@
     <tbody>
       <tr>
         <th>의미</th>
-        <td>{{ page.meanings }}</td>
+        <td>
+          {% if page.meanings.first.meaning %}
+            {% for m in page.meanings %}
+              {% assign circle_code = 9311 | plus: forloop.index %}
+              <div>&#{{ circle_code }}; {{ m.meaning }}{% if m.example %} 「{{ m.example }}」{% endif %}</div>
+            {% endfor %}
+          {% else %}
+            {{ page.meanings }}
+          {% endif %}
+        </td>
       </tr>
   
       <tr>
@@ -108,8 +117,7 @@
                 {%- for it in page.compounds -%}
                   {%- assign cy = it.yomi | default:'' -%}
                   {%- assign cy_norm = cy | replace:'-','' | replace:'・','' | replace:'（','' | replace:'）','' -%}
-                  {%- assign head = cy_norm | slice: 0, y.size -%}
-                  {%- if head == y -%}
+                  {%- if cy_norm == y -%}
                     {%- assign group_items = group_items | push: it -%}
                   {%- endif -%}
                 {%- endfor -%}
@@ -131,11 +139,17 @@
                       <span class="{% if it.type == '상용' %}standard{% endif %}">{{ it.word }}</span>
                       {% if it.reading %}<small class="reading">{{ it.reading }}</small>{% endif %}
                       {% if it.gloss %}
+                        {%- comment -%} !!! 장르 !!! {%- endcomment -%}
                         {%- assign g = it.genre | default: '' -%}
                         {%- if g == '생물' or g contains '생물' -%}
-                          <img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물" width="14" height="14" />
+                          <img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물" width="16" height="16" />
                         {%- endif -%}
                         {{ it.gloss }}
+                        {%- comment -%} !!! 출처 !!! {%- endcomment -%}
+                        {%- assign g = it.reference | default: '' -%}
+                        {%- if g == '코토방크' or g == '고토방크' -%}
+                          <img class="reference-icon" src="{{ '/assets/icons/코토방크.svg' | relative_url }}" alt="코토방크" width="16" height="16" />
+                        {%- endif -%}
                       {% endif %}
                     </li>
                   {%- endfor -%}
@@ -155,11 +169,17 @@
                         <small class="reading">{{ it.reading }}</small>
                       {% endif %}
                       {% if it.gloss %}
+                        {%- comment -%} !!! 장르 !!! {%- endcomment -%}
                         {%- assign g = it.genre | default: '' -%}
                         {%- if g == '생물' or g contains '생물' -%}
-                          <img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물" width="14" height="14" />
+                          <img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물" width="16" height="16" />
                         {%- endif -%}
                         {{ it.gloss }}
+                        {%- comment -%} !!! 출처 !!! {%- endcomment -%}
+                        {%- assign g = it.reference | default: '' -%}
+                        {%- if g == '코토방크' or g == '고토방크' -%}
+                          <img class="reference-icon" src="{{ '/assets/icons/코토방크.svg' | relative_url }}" alt="코토방크" width="16" height="16" />
+                        {%- endif -%}
                       {% endif %}
                     </li>
                   {%- endfor -%}

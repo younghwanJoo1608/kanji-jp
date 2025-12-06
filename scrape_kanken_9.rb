@@ -25,120 +25,192 @@ def extract_kanji_data(url)
   return nil unless doc
 
   # 1. 기본 정보 추출
-  # h1 텍스트 예: "漢字「刀」について" 또는 "「刀」の漢字" 등
-  # 괄호 안의 문자 추출
   h1_text = doc.at_css('h1')&.text&.strip
   match = h1_text.match(/「(.+)」/)
   char = match ? match[1] : nil
   
-  # 만약 괄호 추출 실패 시, 다른 방법 시도 (예: meta title 등)
   unless char
-    # fallback: title 태그 등 확인, 혹은 h1 전체에서 한자만 추출 시도
-    # 여기서는 일단 nil 반환하여 스킵
     puts "  Failed to extract char from h1: #{h1_text}"
     return nil
   end
 
-  # 유니코드 계산
   unicode = "U+#{char.ord.to_s(16).upcase}"
 
   # 2. 테이블 데이터 추출
-  # meanings, onyomi, kunyomi, compounds는 사용자 요청에 따라 비워둠
   meanings = ""
   onyomi = []
   kunyomi = []
-  compounds = []
+  compounds = nil # 빈 배열 대신 nil (YAML에서 빈 값으로 표현)
   
   radical = ""
   strokes = ""
   kanken = "9級"
   jis = ""
 
-  doc.css('table.kanji_table tr').each do |tr|
-    th = tr.at_css('th')&.text&.strip
-    td = tr.at_css('td')&.text&.strip
-    next unless th && td
+  current_th = nil
 
-    case th
+  doc.css('table.kanjirighttb tr').each do |tr|
+    th_node = tr.at_css('th')
+    td_node = tr.at_css('td')
+    
+    # th가 있으면 업데이트, 없으면 이전 th 사용 (rowspan 대응)
+    if th_node
+      # ruby 태그 제거
+      th_node.search('rt').remove
+      current_th = th_node.text.strip
+    end
+
+    next unless td_node && current_th
+
+    # td 내부 ruby 태그 제거
+    td_node.search('rt').remove
+    td_text = td_node.text.strip
+
+    case current_th
     when "部首"
-      radical = td
+      # "部" 제외 및 첫 번째 한자만 추출
+      raw_radical = td_text.split('（').first.strip
+      radical = raw_radical.split('・').first.sub(/部$/, '').strip
     when "画数"
-      strokes = td.to_i
-    when "漢検"
-      kanken = td
+      normalized_strokes = td_text.tr('０-９', '0-9')
+      strokes = normalized_strokes.to_i
+    when "音読み"
+      onyomi.concat(extract_readings(td_node, false))
+    when "訓読み"
+      kunyomi.concat(extract_readings(td_node, true))
+    when "漢字検定"
+      kanken = td_text.tr('０-９', '0-9')
     when "JIS水準"
-      jis = td
+      jis = td_text.tr('０-９', '0-9')
     end
   end
 
-  # 3. 데이터 구조화
-  data = {
-    "title" => char,
-    "char" => char,
-    "unicode" => unicode,
-    "meanings" => meanings,
-    "onyomi" => onyomi,
-    "kunyomi" => kunyomi,
-    "radical" => radical,
-    "strokes" => strokes,
-    "kanken" => kanken,
-    "jis" => jis,
-    "variants" => nil,
-    "compounds" => compounds
-  }
+  # 3. 데이터 구조화 (YAML 수동 포맷팅)
+  yaml_content = <<~YAML
+---
+title: #{char}
+char: #{char}
+unicode: #{unicode}
+meanings: ''
+onyomi:
+YAML
 
-  return data
+  if onyomi.empty?
+    yaml_content += " []\n"
+  else
+    onyomi.each do |y|
+      line = "  - { reading: #{y['reading']}"
+      line += ", type: \"#{y['type']}\"" if y['type']
+      line += " }\n"
+      yaml_content += line
+    end
+  end
+
+  yaml_content += "kunyomi:\n"
+  if kunyomi.empty?
+    yaml_content += " []\n"
+  else
+    kunyomi.each do |y|
+      line = "  - { reading: #{y['reading']}"
+      line += ", type: \"#{y['type']}\"" if y['type']
+      line += " }\n"
+      yaml_content += line
+    end
+  end
+
+  yaml_content += <<~YAML
+radical: #{radical}
+strokes: #{strokes}
+kanken: #{kanken}
+jis: #{jis}
+variants:
+compounds:
+---
+YAML
+
+  return yaml_content
+end
+
+def extract_readings(td_node, is_kunyomi)
+  readings = []
+  current_type = nil
+
+  td_node.children.each do |child|
+    if child.name == 'span' && child['class']&.include?('yomi_icon')
+      img = child.at_css('img')
+      if img && img['src'] =~ /yomi_icon[1-3]\.svg/
+        current_type = "상용"
+      elsif img && img['src'] =~ /yomi_icon4\.svg/
+        current_type = nil
+      end
+    elsif child.name == 'img' && child['src'] =~ /yomi_icon[1-3]\.svg/
+      current_type = "상용"
+    elsif child.text? || child.name == 'a'
+      text = child.text.strip
+      next if text.empty? || text == '・'
+
+      # 쉼표나 점으로 구분된 경우 처리
+      parts = text.split('・')
+      parts.each do |part|
+        part = part.strip
+        next if part.empty?
+
+        if is_kunyomi
+          # 훈독 포맷팅: ま（ざる） -> ま-ざる
+          part = part.sub(/（(.+)）/, '-\1')
+        end
+
+        reading_data = { "reading" => part }
+        reading_data["type"] = current_type if current_type
+        readings << reading_data
+      end
+      
+      # 아이콘은 보통 바로 뒤의 읽기에만 적용되므로 초기화
+      current_type = nil
+    end
+  end
+  
+  readings
 end
 
 # 메인 로직
 puts "Fetching list from #{LIST_URL}..."
 list_doc = fetch_page(LIST_URL)
 
-if list_doc
-  # 목록에서 한자 링크 추출
-  # HTML 구조: <ul class="search_parts"><li><a href="...">...</a></li></ul>
-  # 링크는 https://kanji.jitenon.jp/kanji/숫자 형태일 수도 있고 상대 경로일 수도 있음.
-  links = list_doc.css('.search_parts li a').map { |a| a['href'] }
-  
-  # /kanji/숫자 패턴을 포함하는 링크만 필터링
-  links.select! { |l| l =~ %r{/kanji/\d+} }
-  
-  puts "Found #{links.size} kanji links."
-
-  links.each_with_index do |link, index|
-    full_url = link.start_with?('http') ? link : "#{BASE_URL}#{link}"
-    
-    puts "[#{index + 1}/#{links.size}] Processing #{full_url}..."
-    
-    data = extract_kanji_data(full_url)
-    
-    if data
-      # 파일명: 유니코드 (예: 4E00.md)
-      filename = "#{data['char'].ord.to_s(16).upcase}.md"
-      filepath = File.join(TARGET_DIR, filename)
-      
-      # YAML Front Matter 생성
-      yaml_content = data.to_yaml
-      # to_yaml은 "---\n"으로 시작하므로, 맨 앞의 ---를 제거하거나 그대로 두고
-      # Jekyll 형식에 맞게 조정. 보통 to_yaml 결과 그대로 써도 됨.
-      
-      # 하지만 to_yaml은 복잡한 객체를 !ruby/object 등으로 표현할 수 있으므로
-      # 순수 해시만 변환했으니 괜찮음.
-      # 다만 가독성을 위해 직접 포맷팅하거나 clean up 할 수도 있음.
-      
-      File.open(filepath, "w") do |f|
-        f.write(yaml_content)
-        f.write("---\n") # 컨텐츠 영역 구분
-      end
-      
-      puts "  Saved to #{filepath}"
-    else
-      puts "  Failed to extract data."
-    end
-    
-    # 서버 부하 방지를 위한 딜레이
-    sleep 1
-  end
-else
+unless list_doc
   puts "Failed to fetch list page."
+  exit 1
+end
+
+# 목록 페이지에서 개별 한자 링크 추출
+links = list_doc.css('.search_parts li a').map { |a| a['href'] }
+            .select { |href| href =~ %r{/kanji/\d+} }
+            .map { |href| URI.join(BASE_URL, href).to_s }
+            .uniq
+
+puts "Found #{links.size} kanji links."
+
+links.each_with_index do |url, index|
+  puts "[#{index + 1}/#{links.size}] Processing #{url}..."
+  
+  yaml_content = extract_kanji_data(url)
+  
+  if yaml_content
+    unicode_match = yaml_content.match(/unicode: (U\+[0-9A-F]+)/)
+    if unicode_match
+      unicode = unicode_match[1].sub('U+', '')
+      filename = File.join(TARGET_DIR, "#{unicode}.md")
+      
+      File.open(filename, 'w') do |f|
+        f.write(yaml_content)
+      end
+      puts "  Saved to #{filename}"
+    else
+      puts "  Failed to extract unicode from generated YAML."
+    end
+  else
+    puts "  Failed to extract data."
+  end
+  
+  sleep 1 # 서버 부하 방지
 end

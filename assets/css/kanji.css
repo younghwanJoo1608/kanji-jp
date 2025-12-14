@@ -56,8 +56,6 @@
     .compounds .hard { color: #c62828; } /* 고급 빨간색 강조 */
 
     .compounds .gloss-icon{
-        width: 1.4rem;
-        height: 1.4rem;
         vertical-align: middle;
         margin-right: .10em;
         opacity: .95;
@@ -78,8 +76,6 @@
     .idioms .hard { color: #c62828; } /* 고급 빨간색 강조 */
 
     .idioms .gloss-icon{
-        width: 1.4rem;
-        height: 1.4rem;
         vertical-align: middle;
         margin-right: .10em;
         opacity: .95;

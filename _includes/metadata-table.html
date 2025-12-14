@@ -142,13 +142,17 @@
                         {%- comment -%} !!! 장르 !!! {%- endcomment -%}
                         {%- assign g = it.genre | default: '' -%}
                         {%- if g == '생물' or g contains '생물' -%}
-                          <img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물" width="16" height="16" />
+                          <img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물" width="24" height="24" />
+                        {%- elsif g == '불교' -%}
+                          <img class="gloss-icon" src="{{ '/assets/icons/불교.svg' | relative_url }}" alt="불교" width="24" height="24" />
+                        {%- elsif g == '지명' or g == '나라' -%}
+                          <img class="gloss-icon" src="{{ '/assets/icons/지명.svg' | relative_url }}" alt="지명" width="24" height="24" />
                         {%- endif -%}
-                        {{ it.gloss }}
+                        {{ it.gloss | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩' }}
                         {%- comment -%} !!! 출처 !!! {%- endcomment -%}
                         {%- assign g = it.reference | default: '' -%}
                         {%- if g == '코토방크' or g == '고토방크' -%}
-                          <img class="reference-icon" src="{{ '/assets/icons/코토방크.svg' | relative_url }}" alt="코토방크" width="16" height="16" />
+                          <img class="reference-icon" src="{{ '/assets/icons/코토방크.svg' | relative_url }}" alt="코토방크" width="24" height="24" />
                         {%- endif -%}
                       {% endif %}
                     </li>
@@ -172,13 +176,17 @@
                         {%- comment -%} !!! 장르 !!! {%- endcomment -%}
                         {%- assign g = it.genre | default: '' -%}
                         {%- if g == '생물' or g contains '생물' -%}
-                          <img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물" width="16" height="16" />
+                          <img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물" width="24" height="24" />
+                        {%- elsif g == '불교' -%}
+                          <img class="gloss-icon" src="{{ '/assets/icons/불교.svg' | relative_url }}" alt="불교" width="24" height="24" />
+                        {%- elsif g == '지명' or g == '나라' -%}
+                          <img class="gloss-icon" src="{{ '/assets/icons/지명.svg' | relative_url }}" alt="지명" width="24" height="24" />
                         {%- endif -%}
-                        {{ it.gloss }}
+                        {{ it.gloss | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩' }}
                         {%- comment -%} !!! 출처 !!! {%- endcomment -%}
                         {%- assign g = it.reference | default: '' -%}
                         {%- if g == '코토방크' or g == '고토방크' -%}
-                          <img class="reference-icon" src="{{ '/assets/icons/코토방크.svg' | relative_url }}" alt="코토방크" width="16" height="16" />
+                          <img class="reference-icon" src="{{ '/assets/icons/코토방크.svg' | relative_url }}" alt="코토방크" width="24" height="24" />
                         {%- endif -%}
                       {% endif %}
                     </li>

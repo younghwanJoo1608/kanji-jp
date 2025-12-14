@@ -28,6 +28,11 @@
         margin: .25rem .5rem .25rem 0;
     }
     
+    /* ★ 일본어 폰트 우선 적용 클래스 */
+    .jp-font {
+        font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", "Noto Sans KR", sans-serif;
+    }
+    
     /* メタ情報テーブル */
     .kanji-meta {
         width: 100%;

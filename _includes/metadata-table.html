@@ -8,10 +8,24 @@
         <th>의미</th>
         <td>
           {% if page.meanings.first.meaning %}
-            {% for m in page.meanings %}
-              {% assign circle_code = 9311 | plus: forloop.index %}
-              <div>&#{{ circle_code }}; {{ m.meaning }}{% if m.example %} <span class="jp-font">「{{ m.example }}」</span>{% endif %}</div>
-            {% endfor %}
+            {% if page.meanings.first.reading %}
+              {% assign grouped_meanings = page.meanings | group_by: "reading" %}
+              {% for group in grouped_meanings %}
+                {% assign group_circle_code = 12927 | plus: forloop.index %}
+                <div class="meaning-group" style="margin-bottom: 0.5em;">
+                  <span class="jp-font" style="font-weight:bold;">&#{{ group_circle_code }}; {{ group.name }}</span>
+                  {% for m in group.items %}
+                    {% assign circle_code = 9311 | plus: forloop.index %}
+                    <div style="padding-left: 1em;">&#{{ circle_code }}; {{ m.meaning }}{% if m.example %} <span class="jp-font">「{{ m.example }}」</span>{% endif %}</div>
+                  {% endfor %}
+                </div>
+              {% endfor %}
+            {% else %}
+              {% for m in page.meanings %}
+                {% assign circle_code = 9311 | plus: forloop.index %}
+                <div>&#{{ circle_code }}; {{ m.meaning }}{% if m.example %} <span class="jp-font">「{{ m.example }}」</span>{% endif %}</div>
+              {% endfor %}
+            {% endif %}
           {% else %}
             {{ page.meanings }}
           {% endif %}
@@ -23,8 +37,21 @@
         <td>
           {% if page.onyomi.first.reading %}
             {% for o in page.onyomi %}
-              <span class="onyomi {% if o.type == '상용' %}standard{% endif %}">
+              <span class="onyomi {% if o.type == '상용' %}standard{% elsif o.type == '고급' %}hard{% endif %}">
                 {{ o.reading }}
+                {%- comment -%} 출처 {%- endcomment -%}
+                {%- assign r = o.reference | default: '' -%}
+                {%- if r != '' -%}
+                  {%- capture icon_kangorin -%}<img class="reference-icon" src="{{ '/assets/icons/신한어림.svg' | relative_url }}" alt="신한어림" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
+                  {%- capture icon_jitsuu -%}<img class="reference-icon" src="{{ '/assets/icons/자통.svg' | relative_url }}" alt="자통" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
+                  {%- capture icon_shinjigen -%}<img class="reference-icon" src="{{ '/assets/icons/신자원.svg' | relative_url }}" alt="신자원" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
+                  {%- capture icon_kanjigen -%}<img class="reference-icon" src="{{ '/assets/icons/한자원.svg' | relative_url }}" alt="한자원" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
+                  {%- if r == '신한어림' -%}{{ icon_kangorin }}
+                  {%- elsif r == '자통' -%}{{ icon_jitsuu }}
+                  {%- elsif r == '신자원' -%}{{ icon_shinjigen }}
+                  {%- elsif r == '한자원' -%}{{ icon_kanjigen }}
+                  {%- endif -%}
+                {%- endif -%}
               </span>
             {% endfor %}
           {% else %}
@@ -38,8 +65,21 @@
         <td>
           {% if page.kunyomi.first.reading %}
             {% for o in page.kunyomi %}
-              <span class="kunyomi {% if o.type == '상용' %}standard{% endif %}">
+              <span class="kunyomi {% if o.type == '상용' %}standard{% elsif o.type == '고급' %}hard{% endif %}">
                 {{ o.reading }}
+                {%- comment -%} 출처 {%- endcomment -%}
+                {%- assign r = o.reference | default: '' -%}
+                {%- if r != '' -%}
+                  {%- capture icon_kangorin -%}<img class="reference-icon" src="{{ '/assets/icons/신한어림.svg' | relative_url }}" alt="신한어림" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
+                  {%- capture icon_jitsuu -%}<img class="reference-icon" src="{{ '/assets/icons/자통.svg' | relative_url }}" alt="자통" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
+                  {%- capture icon_shinjigen -%}<img class="reference-icon" src="{{ '/assets/icons/신자원.svg' | relative_url }}" alt="신자원" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
+                  {%- capture icon_kanjigen -%}<img class="reference-icon" src="{{ '/assets/icons/한자원.svg' | relative_url }}" alt="한자원" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
+                  {%- if r == '신한어림' -%}{{ icon_kangorin }}
+                  {%- elsif r == '자통' -%}{{ icon_jitsuu }}
+                  {%- elsif r == '신자원' -%}{{ icon_shinjigen }}
+                  {%- elsif r == '한자원' -%}{{ icon_kanjigen }}
+                  {%- endif -%}
+                {%- endif -%}
               </span>
             {% endfor %}
           {% else %}
@@ -139,9 +179,9 @@
                       <span class="{% if it.type == '상용' %}standard{% endif %} jp-font">{{ it.word }}</span>
                       {% if it.reading %}<small class="reading">{{ it.reading }}</small>{% endif %}
                       {% if it.gloss %}
-                        {%- capture icon_bio -%}<img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물" width="24" height="24" />{%- endcapture -%}
-                        {%- capture icon_buddha -%}<img class="gloss-icon" src="{{ '/assets/icons/불교.svg' | relative_url }}" alt="불교" width="24" height="24" />{%- endcapture -%}
-                        {%- capture icon_place -%}<img class="gloss-icon" src="{{ '/assets/icons/지명.svg' | relative_url }}" alt="지명" width="24" height="24" />{%- endcapture -%}
+                        {%- capture icon_bio -%}<img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물" width="18"  />{%- endcapture -%}
+                        {%- capture icon_buddha -%}<img class="gloss-icon" src="{{ '/assets/icons/불교.svg' | relative_url }}" alt="불교" width="18" />{%- endcapture -%}
+                        {%- capture icon_place -%}<img class="gloss-icon" src="{{ '/assets/icons/지명.svg' | relative_url }}" alt="지명" width="18"  />{%- endcapture -%}
                         {%- comment -%} !!! 장르 !!! {%- endcomment -%}
                         {%- assign g = it.genre | default: '' -%}
                         {%- if g == '생물' or g contains '생물' -%}{{ icon_bio }}
@@ -149,11 +189,30 @@
                         {%- elsif g == '지명' or g == '나라' -%}{{ icon_place }}
                         {%- endif -%}
                         {{ it.gloss | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩' | replace:'[생물]',icon_bio | replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place }}
-                        {%- comment -%} !!! 출처 !!! {%- endcomment -%}
-                        {%- assign g = it.reference | default: '' -%}
-                        {%- if g == '코토방크' or g == '고토방크' -%}
-                          <img class="reference-icon" src="{{ '/assets/icons/코토방크.svg' | relative_url }}" alt="코토방크" width="24" height="24" />
+                        
+                        {%- comment -%} 출처 {%- endcomment -%}
+                        {%- assign r = it.reference | default: '' -%}
+                        {%- if r != '' -%}
+                          {%- capture icon_kangorin -%}<img class="reference-icon" src="{{ '/assets/icons/신한어림.svg' | relative_url }}" alt="신한어림" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
+                          {%- capture icon_jitsuu -%}<img class="reference-icon" src="{{ '/assets/icons/자통.svg' | relative_url }}" alt="자통" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
+                          {%- capture icon_shinjigen -%}<img class="reference-icon" src="{{ '/assets/icons/신자원.svg' | relative_url }}" alt="신자원" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
+                          {%- capture icon_kanjigen -%}<img class="reference-icon" src="{{ '/assets/icons/한자원.svg' | relative_url }}" alt="한자원" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
+                          {%- if r == '신한어림' -%}{{ icon_kangorin }}
+                          {%- elsif r == '자통' -%}{{ icon_jitsuu }}
+                          {%- elsif r == '신자원' -%}{{ icon_shinjigen }}
+                          {%- elsif r == '한자원' -%}{{ icon_kanjigen }}
+                          {%- endif -%}
                         {%- endif -%}
+
+                        {%- comment -%} 다른 표기 {%- endcomment -%}
+                        {%- assign g = it.variation | default: '' -%}
+                        {%- if g != '' -%}
+                          <img class="gloss-icon" src="{{ '/assets/icons/표기.svg' | relative_url }}" alt="표기" height="18" style="margin-left: 0.5em" />
+                        {%- endif -%}{{ g }}
+                        {%- assign g = it.replace | default: '' -%}
+                        {%- if g != '' -%}
+                          <img class="gloss-icon" src="{{ '/assets/icons/카키가에.svg' | relative_url }}" alt="카키가에" height="18" style="margin-left: 0.5em" />
+                        {%- endif -%}{{ g }}
                       {% endif %}
                     </li>
                   {%- endfor -%}
@@ -173,17 +232,36 @@
                         <small class="reading">{{ it.reading }}</small>
                       {% endif %}
                       {% if it.gloss %}
-                        {%- capture icon_bio -%}<img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물" width="24" height="24" />{%- endcapture -%}
-                        {%- capture icon_buddha -%}<img class="gloss-icon" src="{{ '/assets/icons/불교.svg' | relative_url }}" alt="불교" width="24" height="24" />{%- endcapture -%}
-                        {%- capture icon_place -%}<img class="gloss-icon" src="{{ '/assets/icons/지명.svg' | relative_url }}" alt="지명" width="24" height="24" />{%- endcapture -%}
+                        {%- capture icon_bio -%}<img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물" width="18" />{%- endcapture -%}
+                        {%- capture icon_buddha -%}<img class="gloss-icon" src="{{ '/assets/icons/불교.svg' | relative_url }}" alt="불교" width="18"  />{%- endcapture -%}
+                        {%- capture icon_place -%}<img class="gloss-icon" src="{{ '/assets/icons/지명.svg' | relative_url }}" alt="지명" width="18" />{%- endcapture -%}
                         {%- comment -%} !!! 장르 !!! {%- endcomment -%}
                         {%- assign g = it.genre | default: '' -%}
                         {{ it.gloss | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩' | replace:'[생물]',icon_bio | replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place }}
-                        {%- comment -%} !!! 출처 !!! {%- endcomment -%}
-                        {%- assign g = it.reference | default: '' -%}
-                        {%- if g == '코토방크' or g == '고토방크' -%}
-                          <img class="reference-icon" src="{{ '/assets/icons/코토방크.svg' | relative_url }}" alt="코토방크" width="24" height="24" />
+                        
+                        {%- comment -%} 출처 {%- endcomment -%}
+                        {%- assign r = it.reference | default: '' -%}
+                        {%- if r != '' -%}
+                          {%- capture icon_kangorin -%}<img class="reference-icon" src="{{ '/assets/icons/신한어림.svg' | relative_url }}" alt="신한어림" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
+                          {%- capture icon_jitsuu -%}<img class="reference-icon" src="{{ '/assets/icons/자통.svg' | relative_url }}" alt="자통" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
+                          {%- capture icon_shinjigen -%}<img class="reference-icon" src="{{ '/assets/icons/신자원.svg' | relative_url }}" alt="신자원" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
+                          {%- capture icon_kanjigen -%}<img class="reference-icon" src="{{ '/assets/icons/한자원.svg' | relative_url }}" alt="한자원" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
+                          {%- if r == '신한어림' -%}{{ icon_kangorin }}
+                          {%- elsif r == '자통' -%}{{ icon_jitsuu }}
+                          {%- elsif r == '신자원' -%}{{ icon_shinjigen }}
+                          {%- elsif r == '한자원' -%}{{ icon_kanjigen }}
+                          {%- endif -%}
                         {%- endif -%}
+
+                        {%- comment -%} 다른 표기 {%- endcomment -%}
+                        {%- assign g = it.variation | default: '' -%}
+                        {%- if g != '' -%}
+                          <img class="gloss-icon" src="{{ '/assets/icons/표기.svg' | relative_url }}" alt="표기" height="18" style="margin-left: 0.5em" />
+                        {%- endif -%}{{ g }}
+                        {%- assign g = it.replace | default: '' -%}
+                        {%- if g != '' -%}
+                          <img class="gloss-icon" src="{{ '/assets/icons/카키가에.svg' | relative_url }}" alt="카키가에" height="18" style="margin-left: 0.5em" />
+                        {%- endif -%}{{ g }}
                       {% endif %}
                     </li>
                   {%- endfor -%}

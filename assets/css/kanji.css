@@ -61,7 +61,12 @@
     .compounds .hard { color: #c62828; } /* 고급 빨간색 강조 */
 
     .compounds .gloss-icon{
-        vertical-align: middle;
+        vertical-align: -3px;
+        margin-right: .10em;
+        opacity: .95;
+    }
+    .compounds .reference-icon{
+        vertical-align: -3px;
         margin-right: .10em;
         opacity: .95;
     }
@@ -81,7 +86,7 @@
     .idioms .hard { color: #c62828; } /* 고급 빨간색 강조 */
 
     .idioms .gloss-icon{
-        vertical-align: middle;
+        vertical-align: -3px;
         margin-right: .10em;
         opacity: .95;
     }
@@ -89,10 +94,18 @@
     /* 표외 */
     .onyomi { margin-right: .5em; }
     .onyomi.standard { color: #1170ff; font-weight: 600; } /* 하늘색 강조 */
-    .onyomi.offchart { color: #7f1783; font-weight: 600; } /* 보라색 강조 */
+    .onyomi.hard { color: #c62828; font-weight: 600; } /* 고급 빨간색 강조 */
+    .onyomi.reference-icon{
+        margin-right: .10em;
+        opacity: .95;
+    }
     .kunyomi { margin-right: .5em; }
     .kunyomi.standard { color: #1170ff; font-weight: 600; } /* 하늘색 강조 */
-    .kunyomi.offchart { color: #7f1783; font-weight: 600; } /* 보라색 강조 */
+    .kunyomi.hard { color: #c62828; font-weight: 600; } /* 고급 빨간색 강조 */
+    .kunyomi.reference-icon{
+        margin-right: .10em;
+        opacity: .95;
+    }
 
     /* 本文メモ */
     .kanji-notes p { margin: 1rem 0; }

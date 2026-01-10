@@ -16,14 +16,14 @@
                   <span class="jp-font" style="font-weight:bold;">&#{{ group_circle_code }}; {{ group.name }}</span>
                   {% for m in group.items %}
                     {% assign circle_code = 9311 | plus: forloop.index %}
-                    <div style="padding-left: 1em;">&#{{ circle_code }}; {{ m.meaning }}{% if m.example %} <span class="jp-font">「{{ m.example }}」</span>{% endif %}</div>
+                    <div style="padding-left: 1em;">&#{{ circle_code }}; {{ m.meaning | replace:'[생물]',icon_bio | replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place}}{% if m.example %} <span class="jp-font">「{{ m.example }}」</span>{% endif %}</div>
                   {% endfor %}
                 </div>
               {% endfor %}
             {% else %}
               {% for m in page.meanings %}
                 {% assign circle_code = 9311 | plus: forloop.index %}
-                <div>&#{{ circle_code }}; {{ m.meaning }}{% if m.example %} <span class="jp-font">「{{ m.example }}」</span>{% endif %}</div>
+                <div>&#{{ circle_code }}; {{ m.meaning | replace:'[생물]',icon_bio | replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place }}{% if m.example %} <span class="jp-font">「{{ m.example }}」</span>{% endif %}</div>
               {% endfor %}
             {% endif %}
           {% else %}
@@ -208,11 +208,12 @@
                         {%- assign g = it.variation | default: '' -%}
                         {%- if g != '' -%}
                           <img class="gloss-icon" src="{{ '/assets/icons/표기.svg' | relative_url }}" alt="표기" height="18" style="margin-left: 0.5em" />
-                        {%- endif -%}{{ g }}
+                        {%- endif -%}{{ g  | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩'}}
                         {%- assign g = it.replace | default: '' -%}
                         {%- if g != '' -%}
                           <img class="gloss-icon" src="{{ '/assets/icons/카키가에.svg' | relative_url }}" alt="카키가에" height="18" style="margin-left: 0.5em" />
-                        {%- endif -%}{{ g }}
+                        {%- endif -%}{{ g  | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩'}}
+                        
                       {% endif %}
                     </li>
                   {%- endfor -%}
@@ -257,11 +258,11 @@
                         {%- assign g = it.variation | default: '' -%}
                         {%- if g != '' -%}
                           <img class="gloss-icon" src="{{ '/assets/icons/표기.svg' | relative_url }}" alt="표기" height="18" style="margin-left: 0.5em" />
-                        {%- endif -%}{{ g }}
+                        {%- endif -%}{{ g  | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩'}}
                         {%- assign g = it.replace | default: '' -%}
                         {%- if g != '' -%}
                           <img class="gloss-icon" src="{{ '/assets/icons/카키가에.svg' | relative_url }}" alt="카키가에" height="18" style="margin-left: 0.5em" />
-                        {%- endif -%}{{ g }}
+                        {%- endif -%}{{ g  | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩'}}
                       {% endif %}
                     </li>
                   {%- endfor -%}
@@ -277,6 +278,25 @@
           {%- if page.idioms and page.idioms.size > 0 -%}
             <ul class="idioms">
               {%- for it in page.idioms -%}
+                <li>
+                  <span class="jp-font">{{ it.word }}</span>
+                  {% if it.reading %}<small class="reading">{{ it.reading }}</small>{% endif %}
+                  {% if it.gloss %}
+                    {{ it.gloss }}
+                  {% endif %}
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </td>
+      </tr>
+
+      <tr>
+        <th>사자성어</th>
+        <td>
+          {%- if page.saja and page.saja.size > 0 -%}
+            <ul class="saja">
+              {%- for it in page.saja -%}
                 <li>
                   <span class="jp-font">{{ it.word }}</span>
                   {% if it.reading %}<small class="reading">{{ it.reading }}</small>{% endif %}

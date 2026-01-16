@@ -17,6 +17,12 @@
                   {% for m in group.items %}
                     {% assign circle_code = 9311 | plus: forloop.index %}
                     <div style="padding-left: 1em;">&#{{ circle_code }}; {{ m.meaning | replace:'[생물]',icon_bio | replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place}}{% if m.example %} <span class="jp-font">「{{ m.example }}」</span>{% endif %}</div>
+                    {% if m.submeanings %}
+                      {% for sub in m.submeanings %}
+                        {% assign sub_code = 13007 | plus: forloop.index %}
+                        <div style="padding-left: 2em;">&#{{ sub_code }}; {{ sub.meaning | replace:'[생물]',icon_bio | replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place}}{% if sub.example %} <span class="jp-font">「{{ sub.example }}」</span>{% endif %}</div>
+                      {% endfor %}
+                    {% endif %}
                   {% endfor %}
                 </div>
               {% endfor %}
@@ -24,6 +30,12 @@
               {% for m in page.meanings %}
                 {% assign circle_code = 9311 | plus: forloop.index %}
                 <div>&#{{ circle_code }}; {{ m.meaning | replace:'[생물]',icon_bio | replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place }}{% if m.example %} <span class="jp-font">「{{ m.example }}」</span>{% endif %}</div>
+                {% if m.submeanings %}
+                  {% for sub in m.submeanings %}
+                    {% assign sub_code = 13007 | plus: forloop.index %}
+                    <div style="padding-left: 1em;">&#{{ sub_code }}; {{ sub.meaning | replace:'[생물]',icon_bio | replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place}}{% if sub.example %} <span class="jp-font">「{{ sub.example }}」</span>{% endif %}</div>
+                  {% endfor %}
+                {% endif %}
               {% endfor %}
             {% endif %}
           {% else %}
@@ -188,7 +200,7 @@
                         {%- elsif g == '불교' -%}{{ icon_buddha }}
                         {%- elsif g == '지명' or g == '나라' -%}{{ icon_place }}
                         {%- endif -%}
-                        {{ it.gloss | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩' | replace:'[생물]',icon_bio | replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place }}
+                        {{ it.gloss | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩' | replace:'(11)','⑪' | replace:'(12)','⑫' | replace:'[생물]',icon_bio | replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place }}
                         
                         {%- comment -%} 출처 {%- endcomment -%}
                         {%- assign r = it.reference | default: '' -%}
@@ -208,11 +220,11 @@
                         {%- assign g = it.variation | default: '' -%}
                         {%- if g != '' -%}
                           <img class="gloss-icon" src="{{ '/assets/icons/표기.svg' | relative_url }}" alt="표기" height="18" style="margin-left: 0.5em" />
-                        {%- endif -%}{{ g  | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩'}}
+                        {%- endif -%}{{ g  | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩' | replace:'(11)','⑪' | replace:'(12)','⑫'}}
                         {%- assign g = it.replace | default: '' -%}
                         {%- if g != '' -%}
                           <img class="gloss-icon" src="{{ '/assets/icons/카키가에.svg' | relative_url }}" alt="카키가에" height="18" style="margin-left: 0.5em" />
-                        {%- endif -%}{{ g  | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩'}}
+                        {%- endif -%}{{ g  | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩' | replace:'(11)','⑪' | replace:'(12)','⑫'}}
                         
                       {% endif %}
                     </li>
@@ -238,7 +250,7 @@
                         {%- capture icon_place -%}<img class="gloss-icon" src="{{ '/assets/icons/지명.svg' | relative_url }}" alt="지명" width="18" />{%- endcapture -%}
                         {%- comment -%} !!! 장르 !!! {%- endcomment -%}
                         {%- assign g = it.genre | default: '' -%}
-                        {{ it.gloss | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩' | replace:'[생물]',icon_bio | replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place }}
+                        {{ it.gloss | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩' | replace:'(11)','⑪' | replace:'(12)','⑫' | replace:'[생물]',icon_bio | replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place }}
                         
                         {%- comment -%} 출처 {%- endcomment -%}
                         {%- assign r = it.reference | default: '' -%}
@@ -258,11 +270,11 @@
                         {%- assign g = it.variation | default: '' -%}
                         {%- if g != '' -%}
                           <img class="gloss-icon" src="{{ '/assets/icons/표기.svg' | relative_url }}" alt="표기" height="18" style="margin-left: 0.5em" />
-                        {%- endif -%}{{ g  | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩'}}
+                        {%- endif -%}{{ g  | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩' | replace:'(11)','⑪' | replace:'(12)','⑫'}}
                         {%- assign g = it.replace | default: '' -%}
                         {%- if g != '' -%}
                           <img class="gloss-icon" src="{{ '/assets/icons/카키가에.svg' | relative_url }}" alt="카키가에" height="18" style="margin-left: 0.5em" />
-                        {%- endif -%}{{ g  | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩'}}
+                        {%- endif -%}{{ g  | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' | replace:'(10)','⑩' | replace:'(11)','⑪' | replace:'(12)','⑫'}}
                       {% endif %}
                     </li>
                   {%- endfor -%}

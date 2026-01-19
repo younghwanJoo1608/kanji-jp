@@ -5,7 +5,8 @@ char: 川
 unicode: U+5DDD
 
 # 構造化プロパティ
-meanings: "강, 시내"
+meanings:
+  - { meaning: "강. 강의 흐름.", example : "河川" }
 onyomi: 
   - { reading: セン, type: "상용" }
 kunyomi: 

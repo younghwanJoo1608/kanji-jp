@@ -1,2 +1,9 @@
 # Jekyll build output
 _site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+
+# Bundler 가 생성한 폴더 무시
+.bundle/
+vendor/

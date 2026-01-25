@@ -5,23 +5,31 @@ char: 立
 unicode: U+7ACB
 
 # 構造化プロパティ
-meanings: "서다."
+meanings:
+  - { meaning: "서다. 똑바로 서다.", example : "起立" }
+  - { meaning: "세우다. 결정되다. 성립시키다.", example : "成立" }
+  - { meaning: "계절이 시작되다.", example : "立春" }
+  - { meaning: "리터. 용량의 단위.",  }
 onyomi: 
   - { reading: リツ, type: "상용" }
   - { reading: リュウ, type: "상용" }
 kunyomi: 
   - { reading: た-つ, type: "상용" }
   - { reading: た-てる, type: "상용" }
+  - { reading: リットル, }
 radical: 立（たつ）
 strokes: 5
 kanken: 10級
 jis: 第1水準
 variants: 
 compounds:
-  - { word: 立つ, reading: たつ, gloss: "(1) 일어서다. 일어나다.", yomi: "た",   }
-  - { word: 立てる, reading: たてる, gloss: "(1) 세우다. (2) 일으키다. (3) 마구 …해대다.", yomi: "た",   }
+  - { word: 立つ, reading: たつ, gloss: "(1) 일어서다. 일어나다. (2) 초목이 수직으로 뻗어나다. (3) 박히다. (4) 어떤 지위나 위치에 몸담다. (5) 공중에 오르다. (6) 출발하다. (7) 현상이나 작용이 심해지다. (8) 훌륭한 일을 하다. (9) 조리있다.", yomi: "た",   }
+  - { word: 立てる, reading: たてる, gloss: "(1) 가는 물건 등을 수직으로 내밀다. (2) 찌르다. (3) 파도나 바람 등을 일으키다. (4) 어떤 지위나 위치에 앉히다. (5) 현상이나 작용이 나타나도록 하다. (6) 향하게 하다. (7) 새로 만들어내다. (8) 기능을 발휘시키다. (9) 훌륭히 이루어지게 하다. (10) 상위의 사람으로서 존경하다.", yomi: "た",   }
+  - { word: 立, reading: リットル, gloss: "부피(용적)의 단위. 1리 리터는 1000 제곱센티미터. 리터.", yomi: "リットル",   }
 
-  - { word: 成立, reading: セイリツ, gloss: "성립.", yomi: "リツ",   }
-  - { word: 設立, reading: セツリツ, gloss: "설립.", yomi: "リツ",   }
-  - { word: 立場, reading: たちば, gloss: "(1) 설 곳. (2) 입장. 처지. (3) 관점.", yomi: "たつ",   }
+  - { word: 起立, reading: キリツ, gloss: "일어서는 것. 앉은 자세에서 일어서는 것.", yomi: "リツ",   }
+  - { word: 成立, reading: セイリツ, gloss: "(1) 일이 이루어지는 것. (2) 완성되는 것. 정리되는 것.", yomi: "リツ",   }
+  - { word: 設立, reading: セツリツ, gloss: "학교·회사 등의 조직이나 기관을 새롭게 만드는 일.", yomi: "リツ",   }
+  - { word: 立春, reading: リッシュン, gloss: "24절기 중 하나. 양력으로 절분의 다음 날, 2월 4일경. 달력상으로 봄이 시작되는 날.", yomi: "リツ",   }
+  - { word: 立場, reading: たちば, gloss: "(1) 서 있는 곳. (2) 그 사람이 처해 있는 처지. 그 사람의 체면이나 설 자리. (3) 사물의 견해나 사고방식의 기초. 관점.", yomi: "たつ",   }
 ---

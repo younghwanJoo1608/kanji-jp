@@ -6,11 +6,11 @@ require 'fileutils'
 require 'yaml'
 
 # 타겟 디렉토리
-TARGET_DIR = "_kanji_9"
+TARGET_DIR = "_kanji_8"
 FileUtils.mkdir_p(TARGET_DIR)
 
 # 목록 페이지 URL
-LIST_URL = "https://kanji.jitenon.jp/cat/kyu09"
+LIST_URL = "https://kanji.jitenon.jp/cat/kyu08"
 BASE_URL = "https://kanji.jitenon.jp"
 
 def fetch_page(url)
@@ -37,10 +37,8 @@ def extract_kanji_data(url)
   unicode = "U+#{char.ord.to_s(16).upcase}"
 
   # 2. 테이블 데이터 추출
-  meanings = ""
   onyomi = []
   kunyomi = []
-  compounds = nil # 빈 배열 대신 nil (YAML에서 빈 값으로 표현)
   
   radical = ""
   strokes = ""
@@ -53,22 +51,18 @@ def extract_kanji_data(url)
     th_node = tr.at_css('th')
     td_node = tr.at_css('td')
     
-    # th가 있으면 업데이트, 없으면 이전 th 사용 (rowspan 대응)
     if th_node
-      # ruby 태그 제거
       th_node.search('rt').remove
       current_th = th_node.text.strip
     end
 
     next unless td_node && current_th
 
-    # td 내부 ruby 태그 제거
     td_node.search('rt').remove
     td_text = td_node.text.strip
 
     case current_th
     when "部首"
-      # "部" 제외 및 첫 번째 한자만 추출
       raw_radical = td_text.split('（').first.strip
       radical = raw_radical.split('・').first.sub(/部$/, '').strip
     when "画数"
@@ -85,16 +79,38 @@ def extract_kanji_data(url)
     end
   end
 
+  # 2.5 훈독을 활용한 숙어(compounds) 생성 (요청사항 2)
+  compounds_entries = []
+  unless kunyomi.empty?
+    kunyomi.each do |k|
+      r_str = k['reading']
+      if r_str.include?('-')
+        yomi_part, okuri_part = r_str.split('-', 2)
+      else
+        yomi_part = r_str
+        okuri_part = ""
+      end
+      
+      # word: 한자 + 오쿠리가나 (따옴표 없음)
+      # reading: 전체 읽기 (따옴표 없음)
+      # gloss: "" (따옴표 있음)
+      # yomi: 한자 부분 읽기 (따옴표 있음)
+      compounds_entries << "  - { word: #{char}#{okuri_part}, reading: #{yomi_part}#{okuri_part}, gloss: \"\", yomi: \"#{yomi_part}\" }"
+    end
+  end
+
   # 3. 데이터 구조화 (YAML 수동 포맷팅)
   yaml_content = <<~YAML
 ---
 title: #{char}
 char: #{char}
 unicode: #{unicode}
-meanings: ''
+meanings:
+  - { meaning: "", example : "" }
 onyomi:
 YAML
 
+  # 음독 출력
   if onyomi.empty?
     yaml_content += " []\n"
   else
@@ -106,6 +122,7 @@ YAML
     end
   end
 
+  # 훈독 출력
   yaml_content += "kunyomi:\n"
   if kunyomi.empty?
     yaml_content += " []\n"
@@ -125,9 +142,16 @@ kanken: #{kanken}
 jis: #{jis}
 variants:
 compounds:
----
 YAML
 
+  # 숙어(compounds) 출력
+  if compounds_entries.empty?
+    yaml_content += "\n"
+  else
+    yaml_content += compounds_entries.join("\n") + "\n"
+  end
+
+  yaml_content += "---\n"
   return yaml_content
 end
 
@@ -149,7 +173,6 @@ def extract_readings(td_node, is_kunyomi)
       text = child.text.strip
       next if text.empty? || text == '・'
 
-      # 쉼표나 점으로 구분된 경우 처리
       parts = text.split('・')
       parts.each do |part|
         part = part.strip
@@ -165,7 +188,6 @@ def extract_readings(td_node, is_kunyomi)
         readings << reading_data
       end
       
-      # 아이콘은 보통 바로 뒤의 읽기에만 적용되므로 초기화
       current_type = nil
     end
   end
@@ -182,7 +204,6 @@ unless list_doc
   exit 1
 end
 
-# 목록 페이지에서 개별 한자 링크 추출
 links = list_doc.css('.search_parts li a').map { |a| a['href'] }
             .select { |href| href =~ %r{/kanji/\d+} }
             .map { |href| URI.join(BASE_URL, href).to_s }
@@ -212,5 +233,6 @@ links.each_with_index do |url, index|
     puts "  Failed to extract data."
   end
   
-  sleep 1 # 서버 부하 방지
+  sleep 1 
+  break
 end

@@ -67,7 +67,7 @@ def fetch_kanjipedia_data(char)
   end
 
   # 찾은 li 내부의 div > p 내용을 파싱
-  # 구조: <p> <img icon1> "Reading ①..." <img icon2> "Reading2 ①..." </p>
+  # 구조: <p> <img icon1> "Reading ①…" <img icon2> "Reading2 ①…" </p>
   p_node = first_li.at_css('div p')
   # 구조가 li > p 일수도 있으므로 확인
   p_node ||= first_li.at_css('p')
@@ -94,9 +94,9 @@ def fetch_kanjipedia_data(char)
 
       if expect_reading
         # reading과 본문 분리 (① 같은 숫자로 시작하는 부분 찾기)
-        # 예: "ガ ①え。..." -> reading="ガ", body="①え。..."
-        # 예: "ひのと。..." -> reading=nil, body="ひのと。..." (아이콘 없었으면 여기 안옴, 근데 아이콘 있었으면 무조건 reading 있다고 가정?)
-        # 유저 예시: "icon... > カク ①..."
+        # 예: "ガ ①え。…" -> reading="ガ", body="①え。…"
+        # 예: "ひのと。…" -> reading=nil, body="ひのと。…" (아이콘 없었으면 여기 안옴, 근데 아이콘 있었으면 무조건 reading 있다고 가정?)
+        # 유저 예시: "icon… > カク ①…"
         
         match = text.match(/^([^①-⑳]+)(.*)/)
         if match
@@ -115,13 +115,13 @@ def fetch_kanjipedia_data(char)
         # 아이콘 없이 시작하는 경우 current_reading = nil
       end
 
-      # 본문 파싱 (①, ②... 로 분리)
+      # 본문 파싱 (①, ②… 로 분리)
       # 숫자가 맨 앞에 없을 수도 있음 (단일 의미일 때)
-      # "①... ②..." 형태라면 split
+      # "①… ②…" 형태라면 split
       
       if body.match?(/[①-⑳]/)
         parts = body.split(/([①-⑳])/).drop(1) # 첫번째 빈 문자열 제거하거나, 매칭된 구분자와 쌍으로 나옴
-        # split(/([pat])/): [pre, match, post, match, post...]
+        # split(/([pat])/): [pre, match, post, match, post…]
         # body="①A②B" -> ["", "①", "A", "②", "B"]
         
         # 쌍으로 순회
@@ -142,14 +142,14 @@ def fetch_kanjipedia_data(char)
 end
 
 def parse_single_meaning(text, reading)
-  # 1. 서브 의미 처리 ((ア), (イ)...)
+  # 1. 서브 의미 처리 ((ア), (イ)…)
   if text.match?(/\([アイウエオカキクケコ]\)/)
-    # ⑤ちょう。(ア)書物の... (イ)...
+    # ⑤ちょう。(ア)書物の… (イ)…
     # 첫번째 파트(메인)와 서브 파트 분리
     sub_parts = text.split(/\(([アイウエオカキクケコ])\)/)
-    # "⑤ちょう。" (아) "..." (이) "..."
+    # "⑤ちょう。" (아) "…" (이) "…"
     # index 0: 메인 의미 (또는 비어있음)
-    # index 1: marker (ア), index 2: content...
+    # index 1: marker (ア), index 2: content…
     
     main_meaning_text = sub_parts.shift.strip
     
@@ -200,7 +200,7 @@ def extract_example(text)
     # 낫표 덩어리들을 추출해야 함.
     # 뒤에서부터 낫표 덩어리를 찾아서 제거?
     # 유저: "가장 처음에 등장하는 단어만 넣어 줘."
-    # 예: "...「丁男」「壮丁」" -> ...「丁男」...
+    # 예: "…「丁男」「壮丁」" -> …「丁男」…
     
     # 전략: 텍스트에서 낫표로 감싸진 부분들이 "뒤쪽에 몰려있는지" 확인
     # "意味 text 「Ex1」「Ex2」"
@@ -344,10 +344,10 @@ YAML
     yaml_content += " []\n"
   else
     kp_meanings.each do |m|
-      # meaning: "..."
-      # example: "..."
-      # reading: "..."
-      # submeanings: [...]
+      # meaning: "…"
+      # example: "…"
+      # reading: "…"
+      # submeanings: […]
       
       line = "  - { meaning: \"#{m['meaning']}\""
       line += ", reading: \"#{m['reading']}\"" if m['reading']
@@ -380,7 +380,7 @@ YAML
   
   if compounds_list.empty?
     # Leave empty or []? Previous behavior was newline. User example shows list.
-    # User's previous request (Step 851) "compounds: [newline] - { ... }"
+    # User's previous request (Step 851) "compounds: [newline] - { … }"
     # If empty, maybe just nothing or ' []'?
     # Let's keep it empty newline if empty, as per previous files.
   else
@@ -429,7 +429,7 @@ def extract_readings(td_node, is_kunyomi)
 end
 
 # 메인 실행부
-puts "Fetching list from #{LIST_URL}..."
+puts "Fetching list from #{LIST_URL}…"
 list_doc = fetch_page(LIST_URL)
 exit 1 unless list_doc
 
@@ -438,7 +438,7 @@ links = list_doc.css('.search_parts li a').map { |a| a['href'] }
             .map { |href| URI.join(BASE_URL, href).to_s }.uniq
 
 links.each_with_index do |url, index|
-  puts "[#{index + 1}/#{links.size}] Processing #{url}..."
+  puts "[#{index + 1}/#{links.size}] Processing #{url}…"
   yaml_content = extract_kanji_data(url)
   if yaml_content
     unicode_match = yaml_content.match(/unicode: (U\+[0-9A-F]+)/)

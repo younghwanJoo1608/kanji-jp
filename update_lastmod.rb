@@ -6,7 +6,7 @@ require 'time'
 kanji_files = Dir.glob("_kanji/*.md")
 lastmod_data = {}
 
-puts "Processing #{kanji_files.length} kanji files..."
+puts "Processing #{kanji_files.length} kanji files…"
 
 kanji_files.each do |file|
   # 파일 내용 읽어서 title 추출 (URL 생성용)

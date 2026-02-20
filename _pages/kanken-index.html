@@ -13,12 +13,14 @@ title: 급수별 한자 목록
       {% if lv contains "준" %}
         {% assign n = lv | replace:"준","" %}
         {% assign label_kr_btn = "준" | append:n | append:"급" %}
+        {% assign label_jp_btn = "準" | append:n | append:"級" %}
       {% else %}
         {% assign label_kr_btn = lv | append:"급" %}
+        {% assign label_jp_btn = lv | append:"級" %}
       {% endif %}
       <button type="button"
               class="level-btn{% if forloop.first %} active{% endif %}"
-              data-level="{{ lv }}">
+              data-level="{{ label_jp_btn }}">
         {{ label_kr_btn }}
       </button>
     {% endfor %}
@@ -58,7 +60,7 @@ title: 급수별 한자 목록
     {% assign items = items_kr | concat: items_jp | concat: items_jp_fw %}
   
     <section class="level-section"
-             data-level="{{ lv }}"
+             data-level="{{ label_jp }}"
              data-count="{{ items | size }}"
              aria-label="{{ label_kr }} 한자 목록"
              {% if forloop.first %}style="display:grid"{% endif %}>
@@ -131,7 +133,7 @@ title: 급수별 한자 목록
         <p class="muted">아직 {{ label_kr }}으로 등록된 한자가 없습니다.</p>
       {% endif %}
     </section>
-    <div class="pagination" data-level="{{ lv }}"></div>
+    <div class="pagination" data-level="{{ label_jp }}"></div>
   {% endfor %}
   
 {% include kanji-list-script.html %}

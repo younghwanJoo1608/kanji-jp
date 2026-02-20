@@ -149,12 +149,22 @@
 
     <tr>
       <th>칸켄 급수</th>
-      <td>{{ page.kanken }}</td>
+      <td>
+        {%- if page.kanken -%}
+        {%- assign lvl_class = page.kanken | replace: '급', '' | replace: '級', '' | replace: '준', 'pre' | replace: '準', 'pre' -%}
+        <a href="{{ '/kanken/' | relative_url }}?level={{ page.kanken | url_encode }}" class="badge-level badge-kanken-{{ lvl_class }}">{{ page.kanken }}</a>
+        {%- endif -%}
+      </td>
     </tr>
 
     <tr>
       <th>JIS 수준</th>
-      <td>{{ page.jis }}</td>
+      <td>
+        {%- if page.jis -%}
+        {%- assign jis_class = page.jis | replace: '第', '' | replace: '水準', '' -%}
+        <a href="{{ '/jis/' | relative_url }}?level={{ page.jis | url_encode }}" class="badge-level badge-jis-{{ jis_class }}">{{ page.jis }}</a>
+        {%- endif -%}
+      </td>
     </tr>
 
     <tr>

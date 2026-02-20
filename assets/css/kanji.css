@@ -52,6 +52,43 @@
         vertical-align: middle;
         margin-left: 0.5rem;
     }
+
+    /* 급수 및 JIS 수준 배지 */
+    .badge-level {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        text-decoration: none;
+        vertical-align: middle;
+        transition: filter 0.2s, transform 0.1s;
+    }
+    .badge-level:hover {
+        filter: brightness(0.95);
+        transform: translateY(-1px);
+    }
+    
+    /* 무지개색 매핑 (낮은 급수 = 빨강 -> 높은 급수 = 보라) */
+    /* 칸켄 (10~1) */
+    .badge-kanken-10 { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+    .badge-kanken-9 { background-color: #fbe9e7; color: #d84315; border: 1px solid #ffccbc; }
+    .badge-kanken-8 { background-color: #fff3e0; color: #ef6c00; border: 1px solid #ffe0b2; }
+    .badge-kanken-7 { background-color: #fff8e1; color: #f9a825; border: 1px solid #ffecb3; }
+    .badge-kanken-6 { background-color: #f1f8e9; color: #558b2f; border: 1px solid #dcedc8; }
+    .badge-kanken-5 { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+    .badge-kanken-4 { background-color: #e0f2f1; color: #00695c; border: 1px solid #b2dfdb; }
+    .badge-kanken-3 { background-color: #e0f7fa; color: #00838f; border: 1px solid #b2ebf2; }
+    .badge-kanken-pre2 { background-color: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }
+    .badge-kanken-2 { background-color: #e8eaf6; color: #283593; border: 1px solid #c5cae9; }
+    .badge-kanken-pre1 { background-color: #ede7f6; color: #4527a0; border: 1px solid #d1c4e9; }
+    .badge-kanken-1 { background-color: #f3e5f5; color: #6a1b9a; border: 1px solid #e1bee7; }
+
+    /* JIS (1~4) */
+    .badge-jis-1 { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+    .badge-jis-2 { background-color: #fff8e1; color: #f9a825; border: 1px solid #ffecb3; }
+    .badge-jis-3 { background-color: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }
+    .badge-jis-4 { background-color: #f3e5f5; color: #6a1b9a; border: 1px solid #e1bee7; }
     
     /* ★ 字形を大きく見せるクラス（本文中でも使用可） */
     .kanji-glyph {

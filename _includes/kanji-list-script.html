@@ -210,15 +210,24 @@
 
     // 초기 표시 & 정렬
     if (buttons.length > 0) {
-      // 탭 버튼이 있는 경우 (예: 칸켄 급수별 목록)
-      const defaultLevel = buttons[0]?.dataset.level;
-      if (defaultLevel) {
-        sections.forEach((s, i) => s.style.display = (i === 0 ? 'grid' : 'none'));
-        paginations.forEach((p, i) => p.style.display = (i === 0 ? '' : 'none'));
-        sortCards(currentSection(), select?.value);
-        updateCount(); // ★ 초기 표시 시 갱신
+      // URL에서 level 파라미터 읽기
+      const urlParams = new URLSearchParams(window.location.search);
+      const targetLevel = urlParams.get('level');
+      
+      let initialBtn = Array.from(buttons).find(b => b.dataset.level === targetLevel);
+      let initialLevel = initialBtn ? initialBtn.dataset.level : buttons[0]?.dataset.level;
+
+      if (initialLevel) {
+        show(initialLevel);
       }
-      buttons.forEach(b => b.addEventListener('click', () => show(b.dataset.level)));
+
+      buttons.forEach(b => b.addEventListener('click', () => {
+        show(b.dataset.level);
+        // URL 업데이트 (선택사항, 새로고침 시 상태 유지)
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.set('level', b.dataset.level);
+        window.history.replaceState({}, '', newUrl);
+      }));
     } else {
       // 단일 페이지 목록 (예: 국자 목록)
       sortCards(currentSection(), select?.value);

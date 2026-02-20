@@ -12,6 +12,7 @@ layout: default
       <span class="badge-kokuji">国字</span>
       {% endif %}
     </h1>
+    <div id="kanji-animation" class="kanji-animation" title="클릭하여 획순 애니메이션 다시 재생"></div>
   </header>
 
     {% include metadata-table.html %}
@@ -20,3 +21,43 @@ layout: default
     {{ content }}
   </section>
 </article>
+
+<script src="{{ '/assets/js/kanjivganimate.min.js' | relative_url }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const unicodeStr = '{{ page.unicode }}'.replace('U+', '').toLowerCase();
+    // KanjiVG 파일명은 5자리 hex (ex: 05c40)
+    let hexCode = unicodeStr.padStart(5, '0');
+    
+    fetch(`{{ '/assets/kanjivg/' | relative_url }}${hexCode}.svg`)
+      .then(r => {
+        if (!r.ok) throw new Error('SVG Not found');
+        return r.text();
+      })
+      .then(svgText => {
+        // SVG 파일 내부의 DOCTYPE 선언 등 불필요한 부분을 제거
+        const svgStart = svgText.indexOf('<svg');
+        const svgEnd = svgText.indexOf('</svg>') + 6;
+        if (svgStart !== -1 && svgEnd !== -1) {
+             svgText = svgText.substring(svgStart, svgEnd);
+        }
+        const container = document.getElementById('kanji-animation');
+        container.innerHTML = svgText;
+        const svg = container.querySelector('svg');
+        if (svg) {
+          svg.classList.add('kanjiVG');
+          // 기본 클릭 애니메이션 바인딩
+          new KanjivgAnimate('.kanjiVG', 500);
+          
+          // 처음 진입 시 1회 자동 재생
+          if (window.KVGAnimator) {
+             setTimeout(() => {
+                const autoAnimator = new window.KVGAnimator(500);
+                autoAnimator.play(svg);
+             }, 300); // 렌더링 후 약간 딜레이 주고 재생
+          }
+        }
+      })
+      .catch(e => console.log('KanjiVG load info:', e));
+  });
+</script>

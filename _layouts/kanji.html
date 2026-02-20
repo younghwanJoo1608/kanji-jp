@@ -5,7 +5,13 @@ layout: default
   <header class="kanji-header">
 
     {% include glyph.html c=page.char %}
-    <h1 class="kanji-title jp-font">{{ page.char }}<small class="code">{{ page.unicode }}</small></h1>
+    <h1 class="kanji-title jp-font">
+      {{ page.char }}
+      <small class="code">{{ page.unicode }}</small>
+      {% if page.type == '国字' or page.type == '국자' %}
+      <span class="badge-kokuji">国字</span>
+      {% endif %}
+    </h1>
   </header>
 
     {% include metadata-table.html %}

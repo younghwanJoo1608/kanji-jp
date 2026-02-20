@@ -1,0 +1,116 @@
+---
+layout: default
+permalink: /jis/
+title: JIS 수준별 한자 목록
+---
+
+<h1>JIS 수준별 한자 목록</h1>
+<p>아래 버튼을 눌러 JIS 수준별 한자를 확인하세요.</p>
+
+<div class="level-tabs">
+    {% assign levels = "第1水準,第2水準,第3水準,第4水準" | split: "," %}
+    {% for lv in levels %}
+      <button type="button"
+              class="level-btn{% if forloop.first %} active{% endif %}"
+              data-level="{{ lv }}">
+        {{ lv }}
+      </button>
+    {% endfor %}
+</div>
+
+<div class="toolbar">
+  <div class="sort-bar">
+    <label for="sort-select">정렬:</label>
+    <select id="sort-select">
+      <option value="strokes">획수순</option>
+      <option value="onyomi">음독 오름차순</option>
+      <option value="radical">부수순</option>
+      <option value="unicode">유니코드순</option>
+    </select>
+  </div>
+  <div class="level-count"><span id="level-count"></span></div>
+</div>
+
+{%- comment -%} 섹션 렌더링 {%- endcomment -%}
+{% for lv in levels %}
+
+  {% assign items = site.kanji | where:"jis", lv %}
+
+  <section class="level-section"
+            data-level="{{ lv }}"
+            data-count="{{ items | size }}"
+            aria-label="{{ lv }} 한자 목록"
+            {% if forloop.first %}style="display:grid"{% endif %}>
+    {% if items and items.size > 0 %}
+      <div class="grid">
+      {% assign sorted = items | sort: "title" %}
+      {% for k in sorted %}
+        {%- comment -%}
+          카드용 읽기 텍스트 (각 배열의 첫 항목만)
+        {%- endcomment -%}
+        {% assign ony_text = "" %}
+        {% if k.onyomi %}
+          {% if k.onyomi.first and k.onyomi.first.reading %}
+            {% assign ony_text = k.onyomi.first.reading %}
+          {% else %}
+            {% assign ony_text = k.onyomi | split: "," | first %}
+          {% endif %}
+        {% endif %}
+
+        {% assign kun_text = "" %}
+        {% if k.kunyomi %}
+          {% if k.kunyomi.first and k.kunyomi.first.reading %}
+            {% assign kun_text = k.kunyomi.first.reading %}
+          {% else %}
+            {% assign kun_text = k.kunyomi | split: "," | first %}
+          {% endif %}
+        {% endif %}
+
+        {% assign readings = "" %}
+        {% if ony_text != "" %}{% assign readings = ony_text %}{% endif %}
+        {% if kun_text != "" %}
+          {% if readings != "" %}{% assign readings = readings | append: "・" %}{% endif %}
+          {% assign readings = readings | append: kun_text %}
+        {% endif %}
+
+        {% assign onyomi_sort = "" %}
+        {% if k.onyomi and k.onyomi.first and k.onyomi.first.reading %}
+          {% assign onyomi_sort = k.onyomi | map: "reading" | join: " " %}
+        {% else %}
+          {% assign onyomi_sort = k.onyomi | default: "" %}
+        {% endif %}
+        {% assign onyomi_sort = onyomi_sort | strip | escape %}
+
+        {%- comment -%} 부수 키: 괄호/설명 제거해서 핵심만 {%- endcomment -%}
+        {% assign radical_key = k.radical | default: "" %}
+        {% assign radical_key = radical_key | split: " " | first %}
+        {% assign radical_key = radical_key | split: "（" | first | split: "(" | first %}
+        {% assign radical_key = radical_key | strip | escape %}
+
+        <a class="card"
+          href="{{ k.url | relative_url }}"
+          title="{{ k.title }}"
+          data-onyomi="{{ onyomi_sort }}"
+          data-strokes="{{ k.strokes | plus: 0 | default: 9999 }}"
+          data-radical="{{ radical_key }}"
+          data-unicode="{{ k.unicode | default: '' }}"
+          data-char="{{ k.char }}">
+          <span class="g">{{ k.char }}</span>
+          <div class="title-line">
+            <span class="title">{{ k.title }}</span>
+            {% if readings != "" %}
+              <span class="readings-inline">（{{ readings }}）</span>
+            {% endif %}
+          </div>
+          <small>{{ k.unicode }}</small>
+        </a>
+      {% endfor %}
+    </div>
+    {% else %}
+      <p class="muted">아직 {{ lv }}으로 등록된 한자가 없습니다.</p>
+    {% endif %}
+  </section>
+  <div class="pagination" data-level="{{ lv }}"></div>
+{% endfor %}
+  
+{% include kanji-list-script.html %}

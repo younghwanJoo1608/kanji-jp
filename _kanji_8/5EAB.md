@@ -3,7 +3,7 @@ title: 庫
 char: 庫
 unicode: U+5EAB
 meanings:
-  - { meaning: "くら。物をしまっておく建物。", example: "庫蔵" }
+  - { meaning: "곳간. 창고. 물건을 넣어 두는 건물.", example: "庫蔵" }
 onyomi:
   - { reading: コ, type: "상용" }
   - { reading: ク, type: "상용" }
@@ -15,6 +15,6 @@ kanken: 8級
 jis: 第1水準
 variants:
 compounds:
-  - { word: 庫, reading: くら, gloss: "", yomi: "くら" }
-  - { word: 庫蔵, reading: "", gloss: "", yomi: "" }
+  - { word: 庫, reading: くら, gloss: "가재나 상품 등을 넣어 두는 건물. 창고.", yomi: "くら" }
+  - { word: 庫蔵, reading: "コゾウ", gloss: "재보 등을 넣어 두는 창고.", yomi: "コ" }
 ---

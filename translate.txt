@@ -1,5 +1,7 @@
 .md 문서의 meanings에서 meaning의 일본어를 형식을 유지하고 한국어로 번역한다.
 **meanings에서 meaning을 제외한 나머지 부분은 절대로 수정해서는 안 된다.**
+이 meaning은 해당 문서의 title에 해당하는 한자의 뜻 중에 하나이며,
+각 meaning의 의미를 담고 있는 숙어가 example에 들어가 있다는 점에 유의하며 일관성 있게 번역해라.
 
 또, 문서의 compouds에서 gloss도 한국어로 번역해야 한다.
 **compounds의 gloss를 제외한 나머지 부분은 절대로 수정해서는 안 된다.**

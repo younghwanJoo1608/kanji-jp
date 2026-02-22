@@ -75,17 +75,24 @@
     /* 급수 및 JIS 수준 배지 */
     .badge-level {
         display: inline-block;
-        padding: 2px 8px;
-        border-radius: 4px;
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
         font-size: 0.85rem;
-        font-weight: bold;
+        font-weight: 500;
         text-decoration: none;
-        vertical-align: middle;
-        transition: filter 0.2s, transform 0.1s;
+        color: white;
+        transition: transform 0.2s, opacity 0.2s;
     }
-    .badge-level:hover {
-        filter: brightness(0.95);
+    
+    a.badge-level:hover {
         transform: translateY(-1px);
+        opacity: 0.9;
+    }
+    
+    /* 빈 급수/수준 뱃지 */
+    .badge-none {
+        background-color: #666;
+        color: white;
     }
     
     /* 무지개색 매핑 (낮은 급수 = 빨강 -> 높은 급수 = 보라) */

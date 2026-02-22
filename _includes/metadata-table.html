@@ -144,7 +144,11 @@
 
     <tr>
       <th>획수</th>
-      <td>{{ page.strokes }}</td>
+      <td>
+        {%- if page.strokes -%}
+        <a href="{{ '/strokes/' | relative_url }}?level={{ page.strokes | url_encode }}" class="badge-level badge-stroke">{{ page.strokes }}획</a>
+        {%- endif -%}
+      </td>
     </tr>
 
     <tr>

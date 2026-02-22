@@ -116,6 +116,9 @@
     .badge-jis-3 { background-color: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }
     .badge-jis-4 { background-color: #f3e5f5; color: #6a1b9a; border: 1px solid #e1bee7; }
     
+    /* 획수 배지 */
+    .badge-stroke { background-color: #ffffff; color: #000000; border: 1px solid #ddd; }
+    
     /* ★ 字形を大きく見せるクラス（本文中でも使用可） */
     .kanji-glyph {
         font-family: "Noto Serif KR", "Noto Serif CJK KR", "BatangChe", "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", "Songti SC", "SimSun", serif;
@@ -267,6 +270,20 @@
         color: #fff !important;
         border-color: #111 !important;
         box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    
+    /* 획수 탭 버튼 커스텀 (흰 배경, 검정 텍스트) */
+    .stroke-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-bottom: 1rem;
+    }
+    .stroke-tabs .stroke-btn.active {
+        background: #f0f0f0 !important;
+        color: #000 !important;
+        border-color: #bbb !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,.05) !important;
     }
 
     /* 툴 바 */

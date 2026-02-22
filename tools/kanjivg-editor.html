@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>KanjiVG 조립 & 밸런스 에디터</title>
+<style>
+    body { display: flex; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; height: 100vh; margin: 0; background: #222; color: #eee; overflow: hidden; }
+    #left { width: 440px; padding: 20px; display: flex; flex-direction: column; gap: 15px; background: #2a2a2a; box-shadow: 2px 0 10px rgba(0,0,0,0.6); z-index: 10; overflow-y: hidden; }
+    h3, h4, p { margin: 0; }
+    #editor { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; background: #111; user-select: none; }
+    #svg-container { position: relative; }
+    svg { background: #e0e0e0; width: 436px; height: 436px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+    textarea { width: 100%; min-height: 120px; max-height: 250px; font-family: monospace; font-size: 11px; padding: 10px; box-sizing: border-box; background: #1a1a1a; color: #ddd; border: 1px solid #444; border-radius: 4px; resize: none; white-space: pre; }
+    .btn { padding: 10px 15px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; font-weight: bold; transition: background 0.2s; text-align: center; }
+    .btn:hover { background: #0056b3; }
+    .btn-success { background: #28a745; margin-top: auto; }
+    .btn-success:hover { background: #218838; }
+    
+    #panel { background: #333; padding: 15px; border-radius: 4px; border-left: 4px solid #007bff; display: none; flex: 1; min-height: 0; flex-direction: column; }
+    #component-list { flex: 1; overflow-y: auto; background: #1e1e1e; border: 1px solid #444; border-radius: 4px; padding: 10px; margin-top: 10px; }
+    
+    .hint { color: #aaa; font-size: 0.85em; margin-bottom: 5px; line-height: 1.4; }
+    
+    /* Tree Styles */
+    .tree-container { margin-left: 15px; border-left: 1px dashed #555; padding-left: 8px; }
+    .tree-item { cursor: pointer; padding: 4px 6px; margin: 2px 0; color: #ccc; border-radius: 3px; font-size: 13px; display: block; user-select: none; transition: background 0.1s; }
+    .tree-item:hover { background: #444; color: #fff; }
+    .tree-item.active { background: #007bff; color: #fff; font-weight: bold; }
+    
+    /* Handle Styles */
+    .resize-handle {
+        fill: #007bff;
+        stroke: #fff;
+        stroke-width: 0.5;
+        pointer-events: all;
+    }
+    .resize-handle:hover {
+        fill: #ffc107;
+    }
+</style>
+</head>
+<body>
+<div id="left">
+    <h3>🛠️ KanjiVG 비주얼 에디터</h3>
+    <textarea id="svg-input" placeholder="여기에 조립한 SVG 코드를 붙여넣기 하세요..."></textarea>
+    <button class="btn" onclick="loadSVG()">코드 불러오기 (Load SVG)</button>
+    
+    <div id="panel">
+        <h4 style="color: #66b3ff; margin-bottom: 5px;">조작할 부품/획/숫자 선택 (CAD 트리):</h4>
+        <div id="component-list"></div>
+        <p class="hint" style="margin-top: 15px;">👉 트리의 항목을 누른 뒤 파란 테두리 박스를 움직이세요. <strong>숫자 객체</strong>만 선택하면 숫자 위치만 이동합니다.</p>
+    </div>
+    
+    <button class="btn btn-success" onclick="applyChanges()">코드에 변경사항 반영하기 (+자동 복사)</button>
+</div>
+
+<div id="editor">
+    <div id="svg-container"></div>
+</div>
+
+<script>
+let parser = new DOMParser();
+let serializer = new XMLSerializer();
+let originalDoc = null;
+let currentDoc = null;
+let pathsOriginal = [];
+let textsOriginal = [];
+
+let pathsView = [];
+let textsView = [];
+let svgElement = null;
+let activeBox = null;
+let gHandles = null;
+
+let handles = {};
+let selectedElements = []; // array of {idx: i, type: 'both'|'path'|'text'}
+let originalPathDataForSelected = {};
+let originalTextMetricsForSelected = {};
+
+let bboxOrig = { x:0, y:0, r:0, b:0, w:0, h:0, cx:0, cy:0 };
+let currBox = { x:0, y:0, r:0, b:0 };
+
+let isDragging = false;
+let dragType = null;
+let dragDir = null;
+let startPt = { x:0, y:0 };
+let startBox = { x:0, y:0, r:0, b:0 };
+
+function loadSVG() {
+    let str = document.getElementById('svg-input').value;
+    if(!str.trim()) return;
+    try {
+        originalDoc = parser.parseFromString(str, "image/svg+xml");
+        currentDoc = originalDoc.cloneNode(true);
+        setupEditor();
+    } catch (e) {
+        alert("SVG를 파싱하는데 실패했습니다.");
+    }
+}
+
+function setupEditor() {
+    let container = document.getElementById('svg-container');
+    container.innerHTML = "";
+    document.getElementById('panel').style.display = 'flex';
+    let compList = document.getElementById('component-list');
+    compList.innerHTML = "";
+    selectedElements = [];
+    
+    svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svgElement.setAttribute('viewBox', '0 0 109 109');
+    
+    // Background click to deselect
+    let bgRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    bgRect.setAttribute('width', '109');
+    bgRect.setAttribute('height', '109');
+    bgRect.setAttribute('fill', 'transparent');
+    bgRect.addEventListener('mousedown', deselectAll);
+    svgElement.appendChild(bgRect);
+    
+    let gPaths = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    gPaths.style.fill = "none";
+    gPaths.style.stroke = "#000";
+    gPaths.style.strokeWidth = "3";
+    gPaths.style.strokeLinecap = "round";
+    gPaths.style.strokeLinejoin = "round";
+    
+    let gTexts = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    gTexts.style.fontSize = "8px";
+    gTexts.style.fill = "#d9534f";
+    gTexts.style.fontWeight = "bold";
+
+    pathsOriginal = Array.from(currentDoc.querySelectorAll('path[id*="-s"]'));
+    textsOriginal = Array.from(currentDoc.querySelectorAll('text'));
+    
+    pathsView = [];
+    textsView = [];
+
+    // Clone visuals
+    pathsOriginal.forEach((p, i) => {
+        let pClone = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        pClone.setAttribute('d', p.getAttribute('d'));
+        gPaths.appendChild(pClone);
+        pathsView.push(pClone);
+        
+        let tClone = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        if (textsOriginal[i]) {
+            tClone.textContent = textsOriginal[i].textContent;
+            tClone.setAttribute('transform', textsOriginal[i].getAttribute('transform'));
+            gTexts.appendChild(tClone);
+        }
+        textsView.push(tClone);
+    });
+
+    svgElement.appendChild(gPaths);
+    svgElement.appendChild(gTexts);
+    
+    // Active Bounding Box for interaction
+    activeBox = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    activeBox.setAttribute('fill', 'rgba(0,123,255,0.1)');
+    activeBox.setAttribute('stroke', '#007bff');
+    activeBox.setAttribute('stroke-dasharray', '4');
+    activeBox.setAttribute('stroke-width', '1');
+    activeBox.style.display = 'none';
+    activeBox.style.cursor = 'move';
+    activeBox.style.pointerEvents = 'all';
+    activeBox.addEventListener('mousedown', startDragBox);
+    svgElement.appendChild(activeBox);
+    
+    // Handles Group
+    gHandles = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    gHandles.style.display = 'none';
+
+    function createHandle(cursor, dir) {
+        let r = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        r.setAttribute("width", "5");
+        r.setAttribute("height", "5");
+        r.setAttribute("class", "resize-handle");
+        r.style.cursor = cursor;
+        r.addEventListener('mousedown', (e) => startDragHandle(e, dir));
+        gHandles.appendChild(r);
+        return r;
+    }
+
+    handles = {
+        nw: createHandle('nw-resize', 'NW'),
+        n:  createHandle('n-resize', 'N'),
+        ne: createHandle('ne-resize', 'NE'),
+        e:  createHandle('e-resize', 'E'),
+        se: createHandle('se-resize', 'SE'),
+        s:  createHandle('s-resize', 'S'),
+        sw: createHandle('sw-resize', 'SW'),
+        w:  createHandle('w-resize', 'W')
+    };
+    svgElement.appendChild(gHandles);
+    
+    container.appendChild(svgElement);
+    
+    let rootG = currentDoc.querySelector('g[id*="StrokePath"]') || currentDoc.querySelector('svg > g'); 
+    if(rootG) buildTreeUI(rootG, compList);
+    
+    document.removeEventListener('keydown', handleGlobalKeydown);
+    document.addEventListener('keydown', handleGlobalKeydown);
+    
+    deselectAll();
+}
+
+// Tree Builder Recursive
+function buildTreeUI(xmlNode, uiParent) {
+    if (xmlNode.tagName === 'path') {
+        let idx = pathsOriginal.indexOf(xmlNode);
+        if (idx >= 0) {
+            let idStr = xmlNode.getAttribute('id') || `Stroke`;
+            let type = xmlNode.getAttribute('kvg:type') || xmlNode.getAttributeNS('http://kanjivg.tagaini.net', 'type') || '';
+            let strokeNum = idStr.includes('-s') ? idStr.split('-s').pop() : (idx+1);
+            
+            let header = document.createElement('div');
+            header.className = 'tree-item';
+            header.innerText = `〰️ 획 ${strokeNum} ${type ? `(${type})` : ''} [전체]`;
+            header.onclick = (e) => { e.stopPropagation(); triggerSelect([{idx: idx, type: 'both'}], header); };
+            
+            let childrenContainer = document.createElement('div');
+            childrenContainer.className = 'tree-container';
+            
+            let pathOnly = document.createElement('div');
+            pathOnly.className = 'tree-item';
+            pathOnly.style.color = '#88ccee';
+            pathOnly.innerText = `↘️ 곡선 경로만`;
+            pathOnly.onclick = (e) => { e.stopPropagation(); triggerSelect([{idx: idx, type: 'path'}], pathOnly); };
+            childrenContainer.appendChild(pathOnly);
+            
+            if (textsOriginal[idx]) {
+                let textOnly = document.createElement('div');
+                textOnly.className = 'tree-item';
+                textOnly.style.color = '#ff8888';
+                textOnly.innerText = `🔢 숫자만 (${textsOriginal[idx].textContent})`;
+                textOnly.onclick = (e) => { e.stopPropagation(); triggerSelect([{idx: idx, type: 'text'}], textOnly); };
+                childrenContainer.appendChild(textOnly);
+            }
+            
+            uiParent.appendChild(header);
+            uiParent.appendChild(childrenContainer);
+        }
+    } else if (xmlNode.tagName === 'g') {
+        let pathsInGroup = Array.from(xmlNode.querySelectorAll('path'));
+        let indices = pathsInGroup.map(p => pathsOriginal.indexOf(p)).filter(i => i >= 0);
+        
+        if (indices.length > 0) {
+            let elemName = xmlNode.getAttribute('kvg:element') || xmlNode.getAttributeNS('http://kanjivg.tagaini.net', 'element');
+            let partName = xmlNode.getAttribute('kvg:part') || xmlNode.getAttributeNS('http://kanjivg.tagaini.net', 'part');
+            let idStr = xmlNode.getAttribute('id') || 'Group';
+            
+            let labelTag = elemName ? `[${elemName}]` : `그룹`;
+            if (partName) labelTag += ` (part ${partName})`;
+            let rawID = idStr.includes('kvg:') ? idStr.split('kvg:').pop() : idStr;
+            let label = `📁 ${labelTag} - <span style="font-size:10px;color:#888;">${rawID}</span>`;
+            
+            let header = document.createElement('div');
+            header.className = 'tree-item';
+            header.innerHTML = label;
+            
+            let elements = indices.map(i => ({idx: i, type: 'both'}));
+            header.onclick = (e) => { e.stopPropagation(); triggerSelect(elements, header); };
+            
+            let childrenContainer = document.createElement('div');
+            childrenContainer.className = 'tree-container';
+            
+            uiParent.appendChild(header);
+            uiParent.appendChild(childrenContainer);
+            
+            Array.from(xmlNode.children).forEach(child => {
+                buildTreeUI(child, childrenContainer);
+            });
+        }
+    }
+}
+
+function triggerSelect(elements, treeNode) {
+    commitTransform();
+    
+    document.querySelectorAll('.tree-item').forEach(el => el.classList.remove('active'));
+    if (treeNode) treeNode.classList.add('active');
+    
+    selectedElements = elements;
+    if(selectedElements.length === 0) {
+        updateSelectionUI();
+        return;
+    }
+    
+    storeOriginalState();
+    updateSelectionUI();
+}
+
+function deselectAll() {
+    triggerSelect([]);
+}
+
+function storeOriginalState() {
+    let minX=999, minY=999, maxX=-999, maxY=-999;
+    
+    originalPathDataForSelected = {};
+    originalTextMetricsForSelected = {};
+    
+    selectedElements.forEach(item => {
+        let bbox = null;
+        let i = item.idx;
+        
+        if (item.type === 'both' || item.type === 'path') {
+            bbox = pathsView[i].getBBox();
+            originalPathDataForSelected[i] = pathsView[i].getAttribute('d');
+        }
+        
+        if (item.type === 'both' || item.type === 'text') {
+            let t = textsView[i];
+            if (t) {
+                if (item.type === 'text') bbox = t.getBBox();
+                let m = t.getAttribute('transform').match(/matrix\(1 0 0 1 ([\d.-]+) ([\d.-]+)\)/);
+                if (m) {
+                    originalTextMetricsForSelected[i] = { x: parseFloat(m[1]), y: parseFloat(m[2]) };
+                }
+            }
+        }
+        
+        if(bbox) {
+            minX = Math.min(minX, bbox.x);
+            minY = Math.min(minY, bbox.y);
+            let bw = bbox.width || 8;  // fallback for text width if 0
+            let bh = bbox.height || 8;
+            maxX = Math.max(maxX, bbox.x + bw);
+            maxY = Math.max(maxY, bbox.y + bh);
+        }
+    });
+
+    if (minX !== 999) {
+        bboxOrig = {
+            x: minX, y: minY, r: maxX, b: maxY,
+            w: Math.max(0.1, maxX - minX),
+            h: Math.max(0.1, maxY - minY),
+            cx: (minX + maxX)/2, cy: (minY + maxY)/2
+        };
+        currBox = { ...bboxOrig };
+    }
+}
+
+function updateSelectionUI() {
+    if (selectedElements.length === 0) {
+        activeBox.style.display = 'none';
+        gHandles.style.display = 'none';
+        return;
+    }
+    
+    activeBox.style.display = 'block';
+    gHandles.style.display = 'block';
+    
+    let padding = 3;
+    let ax = currBox.x - padding;
+    let ay = currBox.y - padding;
+    let aw = currBox.r - currBox.x + padding*2;
+    let ah = currBox.b - currBox.y + padding*2;
+    
+    activeBox.setAttribute('x', ax);
+    activeBox.setAttribute('y', ay);
+    activeBox.setAttribute('width', Math.max(aw, 0.1));
+    activeBox.setAttribute('height', Math.max(ah, 0.1));
+    
+    let hs = 5;
+    let positions = {
+        nw: [ax - hs/2, ay - hs/2],
+        n:  [ax + aw/2 - hs/2, ay - hs/2],
+        ne: [ax + aw - hs/2, ay - hs/2],
+        e:  [ax + aw - hs/2, ay + ah/2 - hs/2],
+        se: [ax + aw - hs/2, ay + ah - hs/2],
+        s:  [ax + aw/2 - hs/2, ay + ah - hs/2],
+        sw: [ax - hs/2, ay + ah - hs/2],
+        w:  [ax - hs/2, ay + ah/2 - hs/2]
+    };
+    for (let key in handles) {
+        handles[key].setAttribute('x', positions[key][0]);
+        handles[key].setAttribute('y', positions[key][1]);
+    }
+}
+
+// ============== Interaction / Mouse Logic ==============
+function startDragBox(e) {
+    if (selectedElements.length === 0) return;
+    e.stopPropagation();
+    isDragging = true;
+    dragType = 'MOVE';
+    
+    let pt = svgElement.createSVGPoint();
+    pt.x = e.clientX; pt.y = e.clientY;
+    startPt = pt.matrixTransform(svgElement.getScreenCTM().inverse());
+    startBox = { ...currBox };
+    
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('mouseup', endDrag);
+}
+
+function startDragHandle(e, dir) {
+    e.stopPropagation();
+    isDragging = true;
+    dragType = 'HANDLE';
+    dragDir = dir;
+    
+    let pt = svgElement.createSVGPoint();
+    pt.x = e.clientX; pt.y = e.clientY;
+    startPt = pt.matrixTransform(svgElement.getScreenCTM().inverse());
+    startBox = { ...currBox };
+    
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('mouseup', endDrag);
+}
+
+function onDrag(e) {
+    if(!isDragging) return;
+    e.preventDefault();
+    let pt = svgElement.createSVGPoint();
+    pt.x = e.clientX; pt.y = e.clientY;
+    let svgP = pt.matrixTransform(svgElement.getScreenCTM().inverse());
+    
+    let diffX = svgP.x - startPt.x;
+    let diffY = svgP.y - startPt.y;
+    
+    if (dragType === 'MOVE') {
+        currBox.x = startBox.x + diffX;
+        currBox.r = startBox.r + diffX;
+        currBox.y = startBox.y + diffY;
+        currBox.b = startBox.b + diffY;
+    } else if (dragType === 'HANDLE') {
+        if (dragDir.includes('N')) currBox.y = startBox.y + diffY;
+        if (dragDir.includes('S')) currBox.b = startBox.b + diffY;
+        if (dragDir.includes('W')) currBox.x = startBox.x + diffX;
+        if (dragDir.includes('E')) currBox.r = startBox.r + diffX;
+        
+        // Prevent negative cross-overs
+        if (currBox.y > currBox.b - 1) currBox.y = currBox.b - 1;
+        if (currBox.x > currBox.r - 1) currBox.x = currBox.r - 1;
+    }
+    
+    applyTransform();
+    updateSelectionUI();
+}
+
+function endDrag() {
+    isDragging = false;
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('mouseup', endDrag);
+    commitTransform();
+}
+
+function handleGlobalKeydown(e) {
+    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+    if (selectedElements.length === 0) return;
+    
+    let step = e.shiftKey ? 5 : 1;
+    let moved = false;
+    
+    if(e.key === "ArrowUp") { currBox.y -= step; currBox.b -= step; moved = true; }
+    else if(e.key === "ArrowDown") { currBox.y += step; currBox.b += step; moved = true; }
+    else if(e.key === "ArrowLeft") { currBox.x -= step; currBox.r -= step; moved = true; }
+    else if(e.key === "ArrowRight") { currBox.x += step; currBox.r += step; moved = true; }
+    
+    if(moved) {
+        e.preventDefault();
+        applyTransform();
+        updateSelectionUI();
+        commitTransform(); 
+    }
+}
+
+// ============== Transform Engine ==============
+function getTransformedPath(d, scaleX, scaleY, dx, dy, cx, cy) {
+    return d.replace(/([a-zA-Z])([^a-zA-Z]*)/g, function(match, cmd, argsStr) {
+        let args = (argsStr.match(/-?\d*\.?\d+/g) || []).map(Number);
+        
+        let isAbsolute = ['M','L','T','C','S','Q','H','V'].includes(cmd);
+        let isRelative = ['m','l','t','c','s','q','h','v'].includes(cmd);
+        
+        for (let j=0; j<args.length; j++) {
+            if (isAbsolute) {
+                if (cmd === 'V') {
+                    args[j] = (args[j]-cy)*scaleY + cy + dy;
+                } else if (cmd === 'H') {
+                    args[j] = (args[j]-cx)*scaleX + cx + dx;
+                } else {
+                    if (j%2 === 0) args[j] = (args[j]-cx)*scaleX + cx + dx;
+                    else args[j] = (args[j]-cy)*scaleY + cy + dy;
+                }
+            } else if (isRelative) {
+                if (cmd === 'v') {
+                    args[j] = args[j]*scaleY;
+                } else if (cmd === 'h') {
+                    args[j] = args[j]*scaleX;
+                } else {
+                    if (j%2 === 0) args[j] = args[j]*scaleX;
+                    else args[j] = args[j]*scaleY;
+                }
+            }
+        }
+        return cmd + args.map(n => Number(n.toFixed(2))).join(',');
+    });
+}
+
+function applyTransform() {
+    let scaleX = (currBox.r - currBox.x) / bboxOrig.w;
+    let scaleY = (currBox.b - currBox.y) / bboxOrig.h;
+    let dx = (currBox.x + currBox.r)/2 - bboxOrig.cx;
+    let dy = (currBox.y + currBox.b)/2 - bboxOrig.cy;
+
+    selectedElements.forEach(item => {
+        let i = item.idx;
+        if (item.type === 'both' || item.type === 'path') {
+            let origD = originalPathDataForSelected[i];
+            if (origD) {
+                let newD = getTransformedPath(origD, scaleX, scaleY, dx, dy, bboxOrig.cx, bboxOrig.cy);
+                pathsView[i].setAttribute('d', newD);
+            }
+        }
+        if (item.type === 'both' || item.type === 'text') {
+            let origM = originalTextMetricsForSelected[i];
+            if (origM && textsView[i]) {
+                let nx = (origM.x - bboxOrig.cx) * scaleX + bboxOrig.cx + dx;
+                let ny = (origM.y - bboxOrig.cy) * scaleY + bboxOrig.cy + dy;
+                textsView[i].setAttribute('transform', `matrix(1 0 0 1 ${nx.toFixed(2)} ${ny.toFixed(2)})`);
+            }
+        }
+    });
+}
+
+function commitTransform() {
+    if (selectedElements.length === 0) return;
+    
+    selectedElements.forEach(item => {
+        let i = item.idx;
+        if (item.type === 'both' || item.type === 'path') {
+            pathsOriginal[i].setAttribute('d', pathsView[i].getAttribute('d'));
+            originalPathDataForSelected[i] = pathsView[i].getAttribute('d');
+        }
+        if (item.type === 'both' || item.type === 'text') {
+            if (textsOriginal[i] && textsView[i]) {
+                textsOriginal[i].setAttribute('transform', textsView[i].getAttribute('transform'));
+                let m = textsView[i].getAttribute('transform').match(/matrix\(1 0 0 1 ([\d.-]+) ([\d.-]+)\)/);
+                if (m) originalTextMetricsForSelected[i] = { x: parseFloat(m[1]), y: parseFloat(m[2]) };
+            }
+        }
+    });
+
+    bboxOrig = { 
+        x: currBox.x, y: currBox.y, r: currBox.r, b: currBox.b,
+        w: Math.max(0.1, currBox.r - currBox.x),
+        h: Math.max(0.1, currBox.b - currBox.y),
+        cx: (currBox.x + currBox.r)/2, cy: (currBox.y + currBox.b)/2 
+    };
+}
+
+function applyChanges() {
+    commitTransform();
+    let result = serializer.serializeToString(currentDoc);
+    
+    result = result.replace(/xmlns=""/g, '')
+                   .replace(/><(\/?g|\/?path|\/?text)/g, '>\n<$1'); 
+    
+    let txtArea = document.getElementById('svg-input');
+    txtArea.value = result;
+    txtArea.select();
+    document.execCommand('copy');
+    
+    let btn = document.querySelector('.btn-success');
+    btn.innerText = "복사 완료! (클립보드에 복사되었습니다)";
+    btn.style.background = "#138496";
+    setTimeout(() => { btn.innerText = "코드에 변경사항 반영하기 (+자동 복사)"; btn.style.background = "#28a745"; }, 2500);
+}
+</script>
+</body>
+</html>

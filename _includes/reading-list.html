@@ -1,0 +1,11 @@
+{%- assign readings = include.readings -%}
+{%- assign kind = include.kind -%}
+{%- if readings.first.reading -%}
+  {%- for item in readings -%}
+    <span class="{{ kind }} {% if item.type == '상용' %}standard{% elsif item.type == '고급' %}hard{% endif %}">
+      {{ item.reading }}{% include reference-icon.html ref=item.reference %}
+    </span>
+  {%- endfor -%}
+{%- else -%}
+  {{ readings }}
+{%- endif -%}

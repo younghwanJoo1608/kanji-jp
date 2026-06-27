@@ -1,0 +1,69 @@
+{%- assign items = include.items -%}
+{%- assign include_jukujikun = include.include_jukujikun -%}
+
+{%- capture onyomi_csv -%}
+  {%- for o in page.onyomi -%}
+    {%- assign r = o.reading | replace:'-','' | replace:'・','' | replace:'（','' | replace:'）','' -%}
+    {{ r }}{% unless forloop.last %},{% endunless %}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign onyomi_keys = onyomi_csv | split: ',' | uniq -%}
+
+{%- capture kunyomi_csv -%}
+  {%- for k in page.kunyomi -%}
+    {%- assign raw = k.reading -%}
+    {%- if raw contains '-' -%}
+      {%- assign stem = raw | split:'-' | first -%}
+    {%- else -%}
+      {%- assign stem = raw -%}
+    {%- endif -%}
+    {%- assign r = stem | replace:'・','' | replace:'（','' | replace:'）','' -%}
+    {{ r }}{% unless forloop.last %},{% endunless %}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign kunyomi_keys = kunyomi_csv | split: ',' | uniq -%}
+{%- assign yomi_order = onyomi_keys | concat: kunyomi_keys | uniq -%}
+
+{%- for y in yomi_order -%}
+  {%- assign group_items = "" | split: "" -%}
+
+  {%- if onyomi_keys contains y -%}
+    {%- assign group_items = items | where:'yomi', y -%}
+  {%- elsif kunyomi_keys contains y -%}
+    {%- for item in items -%}
+      {%- assign cy = item.yomi | default:'' -%}
+      {%- assign cy_norm = cy | replace:'-','' | replace:'・','' | replace:'（','' | replace:'）','' -%}
+      {%- if cy_norm == y -%}
+        {%- assign group_items = group_items | push: item -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- else -%}
+    {%- assign group_items = items | where:'yomi', y -%}
+  {%- endif -%}
+
+  {%- if group_items and group_items.size > 0 -%}
+    <h4 class="compound-group-title">
+      {%- if onyomi_keys contains y -%}音読 - {{ y }}
+      {%- elsif kunyomi_keys contains y -%}訓読 - {{ y }}
+      {%- else -%}{{ y }}
+      {%- endif -%}
+    </h4>
+    <ul class="compounds">
+      {%- for item in group_items -%}
+        {% include compound-item.html item=item hard=include.hard show_reference=include.show_reference %}
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if include_jukujikun -%}
+  {%- assign jukujikun = items | where:'yomi','숙자훈' -%}
+  {%- if jukujikun and jukujikun.size > 0 -%}
+    <h4 class="compound-group-title">숙자훈</h4>
+    <ul class="compounds">
+      {%- for item in jukujikun -%}
+        {% include compound-item.html item=item hard=include.hard show_reference=include.show_reference %}
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+{%- endif -%}

@@ -4,14 +4,10 @@ title: 한자 일람
 permalink: /kanji/
 ---
 <h1>한자 일람</h1>
-<p>추가된 순서입니다</p>
+<p>한자순입니다.</p>
 <div class="grid">
   {% assign all = site.kanji | sort: 'title' %}
   {% for k in all %}
-    <a class="card" href="{{ k.url | relative_url }}">
-      <span class="g">{{ k.char }}</span>
-      <div>{{ k.title }}</div>
-      <small>{{ k.unicode }}</small>
-    </a>
+    {% include kanji-card.html kanji=k %}
   {% endfor %}
 </div>

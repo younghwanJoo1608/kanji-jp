@@ -1,0 +1,10 @@
+{%- assign genre = include.genre | default: "" -%}
+{%- if genre == "생물" or genre contains "생물" -%}
+  {% include gloss-icon.html kind="생물" %}
+{%- elsif genre == "불교" -%}
+  {% include gloss-icon.html kind="불교" %}
+{%- elsif genre == "지명" or genre == "나라" -%}
+  {% include gloss-icon.html kind="지명" %}
+{%- elsif genre == "단위" -%}
+  {% include gloss-icon.html kind="단위" %}
+{%- endif -%}

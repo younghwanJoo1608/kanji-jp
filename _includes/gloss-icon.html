@@ -1,0 +1,11 @@
+{%- assign kind = include.kind | default: "" -%}
+{%- case kind -%}
+{%- when "생물" -%}
+  <img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물" width="18" />
+{%- when "불교" -%}
+  <img class="gloss-icon" src="{{ '/assets/icons/불교.svg' | relative_url }}" alt="불교" width="18" />
+{%- when "지명" -%}
+  <img class="gloss-icon" src="{{ '/assets/icons/지명.svg' | relative_url }}" alt="지명" width="18" />
+{%- when "단위" -%}
+  <img class="gloss-icon" src="{{ '/assets/icons/단위.svg' | relative_url }}" alt="단위" width="18" />
+{%- endcase -%}

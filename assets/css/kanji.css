@@ -1,46 +1,71 @@
 /* ベース */
 :root {
         --max-width: 960px;
+        --paper: #f6f1e7;
+        --paper-soft: #fbf8f1;
+        --surface: #fffdf8;
+        --ink: #17140f;
+        --muted-ink: #6f685e;
+        --hairline: #ddd4c5;
+        --hairline-strong: #c7bba9;
+        --seal: #a8422b;
+        --seal-soft: #f4e5dc;
+        --indigo: #2f4a60;
     }
     body { font-family: -apple-system, BlinkMacSystemFont, "Noto Sans KR","Malgun Gothic", "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
         line-height: 1.7;
         margin: 0;
         word-break: keep-all;
+        background: var(--paper);
+        color: var(--ink);
     }
-    .container { max-width: var(--max-width); margin: 2rem auto; padding: 0 1rem; }
-    .site-header, .site-footer { padding: 1rem; background: #fafafa; border-bottom: 1px solid #eee; }
-    .site-footer { border-top: 1px solid #eee; border-bottom: none; }
-    .site-title { font-weight: 700; text-decoration: none; color: inherit; display: block; margin-bottom: 0.8rem; font-size: 1.1rem; }
-    .site-nav { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .container { max-width: var(--max-width); margin: 2.5rem auto; padding: 0 1rem; }
+    .site-header, .site-footer {
+        padding: 1rem;
+        background: rgba(251, 248, 241, .92);
+        border-bottom: 1px solid var(--hairline);
+    }
+    .site-footer { border-top: 1px solid var(--hairline); border-bottom: none; color: var(--muted-ink); }
+    .site-title { font-weight: 800; text-decoration: none; color: var(--ink); display: block; margin-bottom: 0.75rem; font-size: 1.08rem; }
+    .site-nav { display: flex; gap: 1.1rem; flex-wrap: wrap; align-items: center; }
     .site-nav a.about-link { margin-left: auto; }
     .site-nav a {
+        position: relative;
         text-decoration: none;
-        color: #555;
-        background-color: #fff;
-        padding: 0.35rem 0.8rem;
-        border-radius: 20px;
+        color: var(--muted-ink);
+        background: transparent;
+        padding: 0.25rem 0;
+        border-radius: 0;
         font-size: 0.85rem;
-        font-weight: 600;
-        border: 1px solid #ddd;
-        transition: all 0.2s ease;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        font-weight: 700;
+        border: 0;
+        transition: color 0.18s ease;
+        box-shadow: none;
     }
     .site-nav a:hover {
-        background-color: #f7f7f7;
-        color: #111;
-        border-color: #bbb;
+        background: transparent;
+        color: var(--ink);
     }
     .site-nav a.active {
-        background-color: #111;
-        color: #fff;
-        border-color: #111;
+        background: transparent;
+        color: var(--ink);
+        border-color: transparent;
+    }
+    .site-nav a.active::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -0.45rem;
+        height: 2px;
+        background: var(--seal);
     }
     
     /* 漢字ページ */
     .kanji-entry { display: grid; gap: 1rem; }
     .kanji-header { display: flex; align-items: center; gap: 1rem; }
     .kanji-title { margin: 0; font-size: 1.5rem; font-weight: 700; }
-    .kanji-title .code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Roboto Mono", monospace; font-size: .9rem; color: #666; }
+    .kanji-title .code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Roboto Mono", monospace; font-size: .9rem; color: var(--muted-ink); }
     
     /* 획순 애니메이션 컨테이너 */
     .kanji-animation {
@@ -91,8 +116,9 @@
     
     /* 빈 급수/수준 뱃지 */
     .badge-none {
-        background-color: #666;
-        color: white;
+        background-color: #f2f2f0;
+        color: #6d6a64;
+        border: 1px solid #d8d6d0;
     }
     
     /* 무지개색 매핑 (낮은 급수 = 빨강 -> 높은 급수 = 보라) */
@@ -115,7 +141,7 @@
     .badge-jis-2 { background-color: #fff8e1; color: #f9a825; border: 1px solid #ffecb3; }
     .badge-jis-3 { background-color: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }
     .badge-jis-4 { background-color: #f3e5f5; color: #6a1b9a; border: 1px solid #e1bee7; }
-    
+
     /* 획수 배지 */
     .badge-stroke { background-color: #ffffff; color: #000000; border: 1px solid #ddd; }
     
@@ -142,11 +168,11 @@
     .kanji-meta .col-th { width: 9rem; }  /* 라벨 칸 고정폭 (취향에 맞게 8~12rem 조절) */
     .kanji-meta .col-td { width: auto; }  /* 값 칸은 나머지 전부 */
 
-    .kanji-meta th, .kanji-meta td { border-bottom: 1px solid #eee; padding: .5rem .75rem; vertical-align: top; }
+    .kanji-meta th, .kanji-meta td { border-bottom: 1px solid var(--hairline); padding: .5rem .75rem; vertical-align: top; }
     .kanji-meta th {
         white-space: nowrap;       /* 라벨은 줄바꿈 없이 한 줄 */
         text-align: left;
-        color: #555;
+        color: var(--muted-ink);
     }
     .kanji-meta td {
         overflow-wrap: anywhere;   /* 긴 단어/코드에도 줄바꿈 허용 */
@@ -155,17 +181,13 @@
     }
       
     .compounds { margin: 0; padding-left: 1.25rem; }
-    .compounds .reading { color: #666; }
+    .compounds .reading { color: var(--muted-ink); }
     .compounds .standard { color: #1170ff; } /* 표외 보라색 강조 */
     .compounds .offchart { color: #7f1783; } /* 표외 보라색 강조 */
     .compounds .hard { color: #c62828; } /* 고급 빨간색 강조 */
 
-    .compounds .gloss-icon{
-        vertical-align: -3px;
-        margin-right: .10em;
-        opacity: .95;
-    }
-    .compounds .reference-icon{
+    .gloss-icon,
+    .reference-icon {
         vertical-align: -3px;
         margin-right: .10em;
         opacity: .95;
@@ -180,33 +202,16 @@
     .compound-list .g { opacity:.95; }
 
     .idioms { margin: 0; padding-left: 1.25rem; }
-    .idioms .reading { color: #666; }
+    .idioms .reading { color: var(--muted-ink); }
     .idioms .standard { color: #1170ff; } /* 표외 보라색 강조 */
     .idioms .offchart { color: #7f1783; } /* 표외 보라색 강조 */
     .idioms .hard { color: #c62828; } /* 고급 빨간색 강조 */
 
-    .idioms .gloss-icon{
-        vertical-align: -3px;
-        margin-right: .10em;
-        opacity: .95;
-    }
-
     .saja { margin: 0; padding-left: 1.25rem; }
-    .saja .reading { color: #666; }
+    .saja .reading { color: var(--muted-ink); }
     .saja .standard { color: #1170ff; } /* 표외 보라색 강조 */
     .saja .offchart { color: #7f1783; } /* 표외 보라색 강조 */
     .saja .hard { color: #c62828; } /* 고급 빨간색 강조 */
-
-    .saja .gloss-icon{
-        vertical-align: -3px;
-        margin-right: .10em;
-        opacity: .95;
-    }
-    .saja .reference-icon{
-        vertical-align: -3px;
-        margin-right: .10em;
-        opacity: .95;
-    }
 
     /* 표외 */
     .onyomi { margin-right: .5em; }
@@ -228,23 +233,116 @@
     .kanji-notes p { margin: 1rem 0; }
     
     /* 一覧ページのカード */
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: .75rem; }
-    .card { border: 1px solid #eee; border-radius: 12px; padding: .75rem; background: #fff; text-decoration: none; color: inherit; }
-    .card .g { font-family: "Noto Serif JP", serif; font-size: 44px; line-height: 1; display: block; }
-    .card small { color: #666; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: .9rem; }
+    .card {
+        --card-accent: rgba(168, 66, 43, .58);
+        --card-accent-solid: var(--seal);
+        position: relative;
+        min-height: 9.5rem;
+        border: 1px solid var(--hairline);
+        border-radius: 6px;
+        padding: .85rem .95rem .75rem;
+        background: var(--surface);
+        text-decoration: none;
+        color: inherit;
+        box-shadow: inset 3px 0 0 var(--card-accent);
+        transition: border-color .16s ease, background-color .16s ease, transform .16s ease;
+    }
+    .card:hover {
+        border-color: var(--card-accent-solid);
+        background: #fffaf1;
+        transform: translateY(-1px);
+    }
+    .card-kanken-10 { --card-accent: rgba(198, 40, 40, .42); --card-accent-solid: #c62828; }
+    .card-kanken-9 { --card-accent: rgba(216, 67, 21, .42); --card-accent-solid: #d84315; }
+    .card-kanken-8 { --card-accent: rgba(239, 108, 0, .42); --card-accent-solid: #ef6c00; }
+    .card-kanken-7 { --card-accent: rgba(249, 168, 37, .44); --card-accent-solid: #f9a825; }
+    .card-kanken-6 { --card-accent: rgba(85, 139, 47, .40); --card-accent-solid: #558b2f; }
+    .card-kanken-5 { --card-accent: rgba(46, 125, 50, .40); --card-accent-solid: #2e7d32; }
+    .card-kanken-4 { --card-accent: rgba(0, 105, 92, .40); --card-accent-solid: #00695c; }
+    .card-kanken-3 { --card-accent: rgba(0, 131, 143, .40); --card-accent-solid: #00838f; }
+    .card-kanken-pre2 { --card-accent: rgba(21, 101, 192, .40); --card-accent-solid: #1565c0; }
+    .card-kanken-2 { --card-accent: rgba(40, 53, 147, .40); --card-accent-solid: #283593; }
+    .card-kanken-pre1 { --card-accent: rgba(69, 39, 160, .40); --card-accent-solid: #4527a0; }
+    .card-kanken-1 { --card-accent: rgba(106, 27, 154, .40); --card-accent-solid: #6a1b9a; }
+    .card-jis-1 { --card-accent: rgba(198, 40, 40, .42); --card-accent-solid: #c62828; }
+    .card-jis-2 { --card-accent: rgba(249, 168, 37, .44); --card-accent-solid: #f9a825; }
+    .card-jis-3 { --card-accent: rgba(21, 101, 192, .40); --card-accent-solid: #1565c0; }
+    .card-jis-4 { --card-accent: rgba(106, 27, 154, .40); --card-accent-solid: #6a1b9a; }
+    .card-none { --card-accent: rgba(150, 146, 137, .42); --card-accent-solid: #9a968c; }
+    .card .g {
+        font-family: "Noto Serif JP", "Noto Serif CJK JP", "Yu Mincho", "Hiragino Mincho ProN", serif;
+        font-size: 54px;
+        line-height: 1;
+        display: block;
+        margin-top: .35rem;
+        letter-spacing: 0;
+    }
+    .card small { color: var(--muted-ink); }
+    .card-level {
+        position: absolute;
+        top: .7rem;
+        right: .75rem;
+        color: var(--seal);
+        border: 1px solid rgba(168, 66, 43, .35);
+        background: var(--seal-soft);
+        border-radius: 3px;
+        padding: .05rem .34rem;
+        font-size: .68rem;
+        font-weight: 800;
+        line-height: 1.4;
+        letter-spacing: 0;
+    }
+    .card-level.badge-kanken-10 { background-color: #ffebee; color: #c62828; border-color: #ffcdd2; }
+    .card-level.badge-kanken-9 { background-color: #fbe9e7; color: #d84315; border-color: #ffccbc; }
+    .card-level.badge-kanken-8 { background-color: #fff3e0; color: #ef6c00; border-color: #ffe0b2; }
+    .card-level.badge-kanken-7 { background-color: #fff8e1; color: #f9a825; border-color: #ffecb3; }
+    .card-level.badge-kanken-6 { background-color: #f1f8e9; color: #558b2f; border-color: #dcedc8; }
+    .card-level.badge-kanken-5 { background-color: #e8f5e9; color: #2e7d32; border-color: #c8e6c9; }
+    .card-level.badge-kanken-4 { background-color: #e0f2f1; color: #00695c; border-color: #b2dfdb; }
+    .card-level.badge-kanken-3 { background-color: #e0f7fa; color: #00838f; border-color: #b2ebf2; }
+    .card-level.badge-kanken-pre2 { background-color: #e3f2fd; color: #1565c0; border-color: #bbdefb; }
+    .card-level.badge-kanken-2 { background-color: #e8eaf6; color: #283593; border-color: #c5cae9; }
+    .card-level.badge-kanken-pre1 { background-color: #ede7f6; color: #4527a0; border-color: #d1c4e9; }
+    .card-level.badge-kanken-1 { background-color: #f3e5f5; color: #6a1b9a; border-color: #e1bee7; }
+    .card-level.badge-jis-1 { background-color: #ffebee; color: #c62828; border-color: #ffcdd2; }
+    .card-level.badge-jis-2 { background-color: #fff8e1; color: #f9a825; border-color: #ffecb3; }
+    .card-level.badge-jis-3 { background-color: #e3f2fd; color: #1565c0; border-color: #bbdefb; }
+    .card-level.badge-jis-4 { background-color: #f3e5f5; color: #6a1b9a; border-color: #e1bee7; }
+    .card-level.badge-none { background-color: #f2f2f0; color: #6d6a64; border-color: #d8d6d0; }
     .card .title-line {
-        font-size: 1rem;
-        font-weight: 600;
+        font-size: .95rem;
+        font-weight: 750;
         margin-top: .25rem;
         line-height: 1.3;
-        white-space: nowrap;
     }
 
     .card .title-line .readings-inline {
-        color: #666;
-        font-weight: 400;
+        color: var(--muted-ink);
+        font-weight: 500;
         margin-left: 0.15em;
-        font-size: 0.7rem;
+        font-size: 0.72rem;
+    }
+    .card-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .3rem .45rem;
+        margin-top: .55rem;
+        color: var(--muted-ink);
+        font-size: .76rem;
+        font-weight: 650;
+    }
+    .card-meta span + span::before {
+        content: "·";
+        margin-right: .45rem;
+        color: var(--hairline-strong);
+    }
+    .card-code {
+        display: block;
+        margin-top: .45rem;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Roboto Mono", monospace;
+        font-size: .72rem;
+        color: #8a8174;
     }
     
     /* 급수 탭 버튼 */
@@ -252,24 +350,25 @@
     .level-tabs .level-btn {
         -webkit-appearance: none;
         appearance: none;
-        border: 1px solid #e5e5e5;
-        border-radius: 12px;
-        padding: .5rem .9rem;
-        background: #fff;
+        border: 1px solid var(--hairline);
+        border-radius: 4px;
+        padding: .42rem .72rem;
+        background: var(--paper-soft);
+        color: var(--muted-ink);
         cursor: pointer;
-        font-weight: 600;
+        font-weight: 800;
         transition: background .15s ease, box-shadow .15s ease, border-color .15s ease, color .15s ease;
     }
     
     /* hover */
-    .level-tabs .level-btn:hover { background: #f7f7f7; }
+    .level-tabs .level-btn:hover { background: #fffaf1; border-color: var(--hairline-strong); color: var(--ink); }
     
     /* active(선택됨) — 우선순위 올리고, 일부 테마가 이기는 경우 대비해 !important 사용 */
     .level-tabs .level-btn.active {
-        background: #111 !important;
-        color: #fff !important;
-        border-color: #111 !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,.08);
+        background: var(--seal) !important;
+        color: #fffaf1 !important;
+        border-color: var(--seal) !important;
+        box-shadow: 0 2px 8px rgba(108, 48, 35, .16);
     }
     
     /* 획수 탭 버튼 커스텀 (흰 배경, 검정 텍스트) */
@@ -280,10 +379,10 @@
         margin-bottom: 1rem;
     }
     .stroke-tabs .stroke-btn.active {
-        background: #f0f0f0 !important;
-        color: #000 !important;
-        border-color: #bbb !important;
-        box-shadow: 0 2px 4px rgba(0,0,0,.05) !important;
+        background: var(--indigo) !important;
+        color: #fffaf1 !important;
+        border-color: var(--indigo) !important;
+        box-shadow: 0 2px 8px rgba(47,74,96,.16) !important;
     }
 
     /* 툴 바 */
@@ -303,21 +402,22 @@
         margin: .5rem 0 1rem;
     }
     .sort-bar label {
-        color: #444;
-        font-weight: 600;
+        color: var(--muted-ink);
+        font-weight: 750;
     }
     .sort-bar select {
-        border: 1px solid #e5e5e5;
-        border-radius: 8px;
+        border: 1px solid var(--hairline);
+        border-radius: 5px;
         padding: .35rem .6rem;
-        background: #fff;
+        background: var(--surface);
+        color: var(--ink);
     }
 
     /* 개수 */
     .level-count {
         margin-left: auto;
-        color: #666;
-        font-weight: 600;
+        color: var(--muted-ink);
+        font-weight: 750;
         font-variant-numeric: tabular-nums;
     }
 
@@ -330,18 +430,41 @@
         margin: 1rem 0 2rem;
     }
     .pagination button {
-        border: 1px solid #ddd;
-        background: #fff;
+        border: 1px solid var(--hairline);
+        background: var(--surface);
         padding: .3rem .6rem;
-        border-radius: 6px;
+        border-radius: 4px;
         cursor: pointer;
         font-weight: 500;
         transition: background .15s ease;
     }
-    .pagination button:hover { background: #f5f5f5; }
+    .pagination button:hover { background: #fffaf1; }
     .pagination button.active {
-        background: #111;
-        color: #fff;
-        border-color: #111;
+        background: var(--ink);
+        color: #fffaf1;
+        border-color: var(--ink);
     }
 
+    @media (max-width: 520px) {
+        .container { margin: 2rem auto; }
+        .site-nav { gap: .6rem .9rem; }
+        .grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: .75rem;
+        }
+        .card {
+            min-height: 8.4rem;
+            padding: .75rem .75rem .65rem;
+        }
+        .card .g { font-size: 46px; }
+        .card .title-line { font-size: .88rem; }
+        .card .title-line .readings-inline {
+            display: block;
+            margin-left: 0;
+            margin-top: .05rem;
+            font-size: .66rem;
+        }
+        .card-meta { font-size: .7rem; gap: .2rem .35rem; }
+        .card-meta span + span::before { margin-right: .35rem; }
+        .card-code { font-size: .66rem; }
+    }

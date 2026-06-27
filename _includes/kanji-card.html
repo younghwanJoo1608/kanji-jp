@@ -1,0 +1,93 @@
+{%- assign k = include.kanji -%}
+
+{%- assign ony_text = "" -%}
+{%- if k.onyomi -%}
+  {%- if k.onyomi.first and k.onyomi.first.reading -%}
+    {%- assign ony_text = k.onyomi.first.reading -%}
+  {%- else -%}
+    {%- assign ony_text = k.onyomi | split: "," | first -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- assign kun_text = "" -%}
+{%- if k.kunyomi -%}
+  {%- if k.kunyomi.first and k.kunyomi.first.reading -%}
+    {%- assign kun_text = k.kunyomi.first.reading -%}
+  {%- else -%}
+    {%- assign kun_text = k.kunyomi | split: "," | first -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- assign readings = "" -%}
+{%- if ony_text != "" -%}{%- assign readings = ony_text -%}{%- endif -%}
+{%- if kun_text != "" -%}
+  {%- if readings != "" -%}{%- assign readings = readings | append: "・" -%}{%- endif -%}
+  {%- assign readings = readings | append: kun_text -%}
+{%- endif -%}
+
+{%- assign onyomi_sort = "" -%}
+{%- if k.onyomi and k.onyomi.first and k.onyomi.first.reading -%}
+  {%- assign onyomi_sort = k.onyomi | map: "reading" | join: " " -%}
+{%- else -%}
+  {%- assign onyomi_sort = k.onyomi | default: "" -%}
+{%- endif -%}
+{%- assign onyomi_sort = onyomi_sort | strip | escape -%}
+
+{%- assign radical_key = k.radical | default: "" -%}
+{%- assign radical_key = radical_key | split: " " | first -%}
+{%- assign radical_key = radical_key | split: "（" | first | split: "(" | first -%}
+{%- assign radical_key = radical_key | strip | escape -%}
+
+{%- assign badge_context = include.badge | default: "kanken" -%}
+{%- assign card_level = "" -%}
+{%- assign card_level_class = "" -%}
+{%- assign card_tone_class = "" -%}
+{%- if badge_context == "jis" -%}
+  {%- if k.jis -%}
+    {%- assign card_level = k.jis -%}
+    {%- assign jis_class = k.jis | replace: '第', '' | replace: '水準', '' -%}
+    {%- assign card_level_class = " badge-jis-" | append: jis_class -%}
+    {%- assign card_tone_class = " card-jis-" | append: jis_class -%}
+  {%- else -%}
+    {%- assign card_level = "外字" -%}
+    {%- assign card_level_class = " badge-none" -%}
+    {%- assign card_tone_class = " card-none" -%}
+  {%- endif -%}
+{%- else -%}
+  {%- if k.kanken -%}
+    {%- assign card_level = k.kanken -%}
+    {%- assign lvl_class = k.kanken | replace: '급', '' | replace: '級', '' | replace: '준', 'pre' | replace: '準', 'pre' -%}
+    {%- assign card_level_class = " badge-kanken-" | append: lvl_class -%}
+    {%- assign card_tone_class = " card-kanken-" | append: lvl_class -%}
+  {%- else -%}
+    {%- assign card_level = "配当外" -%}
+    {%- assign card_level_class = " badge-none" -%}
+    {%- assign card_tone_class = " card-none" -%}
+  {%- endif -%}
+{%- endif -%}
+{%- assign radical_label = radical_key | default: "" -%}
+
+<a class="card{{ card_tone_class }}"
+  href="{{ k.url | relative_url }}"
+  title="{{ k.title }}"
+  data-onyomi="{{ onyomi_sort }}"
+  data-strokes="{{ k.strokes | plus: 0 | default: 9999 }}"
+  data-radical="{{ radical_key }}"
+  data-unicode="{{ k.unicode | default: '' }}"
+  data-char="{{ k.char }}">
+  {% if card_level != "" %}
+    <span class="card-level{{ card_level_class }}">{{ card_level }}</span>
+  {% endif %}
+  <span class="g">{{ k.char }}</span>
+  <div class="title-line">
+    <span class="title">{{ k.title }}</span>
+    {% if readings != "" %}
+      <span class="readings-inline">（{{ readings }}）</span>
+    {% endif %}
+  </div>
+  <div class="card-meta">
+    {% if radical_label != "" %}<span>{{ radical_label }}部</span>{% endif %}
+    {% if k.strokes %}<span>{{ k.strokes }}획</span>{% endif %}
+  </div>
+  <small class="card-code">{{ k.unicode }}</small>
+</a>

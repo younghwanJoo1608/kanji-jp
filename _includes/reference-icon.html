@@ -1,0 +1,21 @@
+{%- assign r = include.ref | default: "" -%}
+{%- if r != "" -%}
+  {%- case r -%}
+  {%- when "신한어림" -%}
+    <img class="reference-icon" src="{{ '/assets/icons/신한어림.svg' | relative_url }}" alt="신한어림" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />
+  {%- when "자통" -%}
+    <img class="reference-icon" src="{{ '/assets/icons/자통.svg' | relative_url }}" alt="자통" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />
+  {%- when "신자원" -%}
+    <img class="reference-icon" src="{{ '/assets/icons/신자원.svg' | relative_url }}" alt="신자원" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />
+  {%- when "한자원" -%}
+    <img class="reference-icon" src="{{ '/assets/icons/한자원.svg' | relative_url }}" alt="한자원" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />
+  {%- when "대한화사전" -%}
+    <img class="reference-icon" src="{{ '/assets/icons/대한화사전.svg' | relative_url }}" alt="대한화사전" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />
+  {%- when "코지엔" -%}
+    <img class="reference-icon" src="{{ '/assets/icons/코지엔.svg' | relative_url }}" alt="코지엔" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />
+  {%- when "자통망" -%}
+    <img class="reference-icon" src="{{ '/assets/icons/자통망.svg' | relative_url }}" alt="자통망" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />
+  {%- else -%}
+    {{ r }}
+  {%- endcase -%}
+{%- endif -%}

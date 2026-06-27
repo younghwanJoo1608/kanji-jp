@@ -1,0 +1,19 @@
+{%- assign show_genre_icons = include.show_genre_icons | default: "true" -%}
+{%- if show_genre_icons == "false" -%}
+  {%- assign icon_bio = "" -%}
+  {%- assign icon_buddha = "" -%}
+  {%- assign icon_place = "" -%}
+  {%- assign icon_unit = "" -%}
+{%- else -%}
+  {%- capture icon_bio -%}{% include gloss-icon.html kind="생물" %}{%- endcapture -%}
+  {%- capture icon_buddha -%}{% include gloss-icon.html kind="불교" %}{%- endcapture -%}
+  {%- capture icon_place -%}{% include gloss-icon.html kind="지명" %}{%- endcapture -%}
+  {%- capture icon_unit -%}{% include gloss-icon.html kind="단위" %}{%- endcapture -%}
+{%- endif -%}
+{{- include.text
+  | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④'
+  | replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧'
+  | replace:'(9)','⑨' | replace:'(10)','⑩' | replace:'(11)','⑪' | replace:'(12)','⑫'
+  | replace:'[생물]',icon_bio | replace:'[불교]',icon_buddha | replace:'[지명]',icon_place
+  | replace:'[나라]',icon_place | replace:'[단위]',icon_unit
+-}}

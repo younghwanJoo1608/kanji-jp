@@ -1,140 +1,69 @@
+{%- assign compounds_normal = "" | split: "" -%}
+{%- assign compounds_advanced = "" | split: "" -%}
+{%- if page.compounds and page.compounds.size > 0 -%}
+  {%- for item in page.compounds -%}
+    {%- if item.reference and item.reference != "" -%}
+      {%- assign compounds_advanced = compounds_advanced | push: item -%}
+    {%- else -%}
+      {%- assign compounds_normal = compounds_normal | push: item -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+
 <table class="kanji-meta">
   <colgroup>
-    <col class="col-th"> <!-- 라벨 칸 -->
-    <col class="col-td"> <!-- 값 칸 -->
+    <col class="col-th">
+    <col class="col-td">
   </colgroup>
   <tbody>
     <tr>
       <th>의미</th>
       <td>
         {% if page.meanings.first.meaning %}
-        {% if page.meanings.first.reading %}
-        {% assign grouped_meanings = page.meanings | group_by: "reading" %}
-        {% for group in grouped_meanings %}
-        {% assign group_circle_code = 12927 | plus: forloop.index %}
-        <div class="meaning-group" style="margin-bottom: 0.5em;">
-          <span class="jp-font" style="font-weight:bold;">&#{{ group_circle_code }}; {{ group.name }}</span>
-          {% for m in group.items %}
-          {% assign circle_code = 9311 | plus: forloop.index %}
-          <div style="padding-left: 1em;">&#{{ circle_code }}; {{ m.meaning | replace:'[생물]',icon_bio |
-            replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place | replace:'[단위]',icon_unit }}{% if m.example %} <span
-              class="jp-font">「{{ m.example }}」</span>{% endif %}</div>
-          {% if m.submeanings %}
-          {% for sub in m.submeanings %}
-          {% assign sub_code = 13007 | plus: forloop.index %}
-          <div style="padding-left: 2em;">&#{{ sub_code }}; {{ sub.meaning | replace:'[생물]',icon_bio |
-            replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place | replace:'[단위]',icon_unit }}{% if sub.example %}
-            <span class="jp-font">「{{ sub.example }}」</span>{% endif %}
-          </div>
-          {% endfor %}
+          {% if page.meanings.first.reading %}
+            {% assign grouped_meanings = page.meanings | group_by: "reading" %}
+            {% for group in grouped_meanings %}
+              {% assign group_circle_code = 12927 | plus: forloop.index %}
+              <div class="meaning-group" style="margin-bottom: 0.5em;">
+                <span class="jp-font" style="font-weight:bold;">&#{{ group_circle_code }}; {{ group.name }}</span>
+                {% for m in group.items %}
+                  {% assign circle_code = 9311 | plus: forloop.index %}
+                  <div style="padding-left: 1em;">&#{{ circle_code }}; {% include formatted-text.html text=m.meaning %}{% if m.example %} <span class="jp-font">「{{ m.example }}」</span>{% endif %}</div>
+                  {% if m.submeanings %}
+                    {% for sub in m.submeanings %}
+                      {% assign sub_code = 13007 | plus: forloop.index %}
+                      <div style="padding-left: 2em;">&#{{ sub_code }}; {% include formatted-text.html text=sub.meaning %}{% if sub.example %} <span class="jp-font">「{{ sub.example }}」</span>{% endif %}</div>
+                    {% endfor %}
+                  {% endif %}
+                {% endfor %}
+              </div>
+            {% endfor %}
+          {% else %}
+            {% for m in page.meanings %}
+              {% assign circle_code = 9311 | plus: forloop.index %}
+              <div>&#{{ circle_code }}; {% include formatted-text.html text=m.meaning %}{% if m.example %} <span class="jp-font">「{{ m.example }}」</span>{% endif %}</div>
+              {% if m.submeanings %}
+                {% for sub in m.submeanings %}
+                  {% assign sub_code = 13007 | plus: forloop.index %}
+                  <div style="padding-left: 1em;">&#{{ sub_code }}; {% include formatted-text.html text=sub.meaning %}{% if sub.example %} <span class="jp-font">「{{ sub.example }}」</span>{% endif %}</div>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
           {% endif %}
-          {% endfor %}
-        </div>
-        {% endfor %}
         {% else %}
-        {% for m in page.meanings %}
-        {% assign circle_code = 9311 | plus: forloop.index %}
-        <div>&#{{ circle_code }}; {{ m.meaning | replace:'[생물]',icon_bio | replace:'[불교]',icon_buddha |
-          replace:'[지명]',icon_place | replace:'[나라]',icon_place | replace:'[단위]',icon_unit }}{% if m.example %} <span class="jp-font">「{{ m.example
-            }}」</span>{% endif %}</div>
-        {% if m.submeanings %}
-        {% for sub in m.submeanings %}
-        {% assign sub_code = 13007 | plus: forloop.index %}
-        <div style="padding-left: 1em;">&#{{ sub_code }}; {{ sub.meaning | replace:'[생물]',icon_bio |
-          replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place | replace:'[단위]',icon_unit }}{% if sub.example %} <span
-            class="jp-font">「{{ sub.example }}」</span>{% endif %}</div>
-        {% endfor %}
-        {% endif %}
-        {% endfor %}
-        {% endif %}
-        {% else %}
-        {{ page.meanings }}
+          {{ page.meanings }}
         {% endif %}
       </td>
     </tr>
 
     <tr>
       <th>음독</th>
-      <td>
-        {% if page.onyomi.first.reading %}
-        {% for o in page.onyomi %}
-        <span class="onyomi {% if o.type == '상용' %}standard{% elsif o.type == '고급' %}hard{% endif %}">
-          {{ o.reading }}
-          {%- comment -%} 출처 {%- endcomment -%}
-          {%- assign r = o.reference | default: '' -%}
-          {%- if r != '' -%}
-          {%- capture icon_kangorin -%}<img class="reference-icon" src="{{ '/assets/icons/신한어림.svg' | relative_url }}"
-            alt="신한어림" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-          {%- capture icon_jitsuu -%}<img class="reference-icon" src="{{ '/assets/icons/자통.svg' | relative_url }}"
-            alt="자통" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-          {%- capture icon_shinjigen -%}<img class="reference-icon" src="{{ '/assets/icons/신자원.svg' | relative_url }}"
-            alt="신자원" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-          {%- capture icon_kanjigen -%}<img class="reference-icon" src="{{ '/assets/icons/한자원.svg' | relative_url }}"
-            alt="한자원" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-          {%- capture icon_daikanwa -%}<img class="reference-icon" src="{{ '/assets/icons/대한화사전.svg' | relative_url }}"
-            alt="대한화사전" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-          {%- capture icon_kojien -%}<img class="reference-icon" src="{{ '/assets/icons/코지엔.svg' | relative_url }}"
-            alt="코지엔" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-          {%- capture icon_zi -%}<img class="reference-icon" src="{{ '/assets/icons/자통망.svg' | relative_url }}"
-            alt="자통망" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-          {%- if r == '신한어림' -%}{{ icon_kangorin }}
-          {%- elsif r == '자통' -%}{{ icon_jitsuu }}
-          {%- elsif r == '신자원' -%}{{ icon_shinjigen }}
-          {%- elsif r == '한자원' -%}{{ icon_kanjigen }}
-          {%- elsif r == '대한화사전' -%}{{ icon_daikanwa }}
-          {%- elsif r == '코지엔' -%}{{ icon_kojien }}
-          {%- elsif r == '자통망' -%}{{ icon_zi }}
-          {%- else -%}{{ r }}
-          {%- endif -%}
-          {%- endif -%}
-        </span>
-        {% endfor %}
-        {% else %}
-        {{ page.onyomi }}
-        {% endif %}
-      </td>
+      <td>{% include reading-list.html readings=page.onyomi kind="onyomi" %}</td>
     </tr>
 
     <tr>
       <th>훈독</th>
-      <td>
-        {% if page.kunyomi.first.reading %}
-        {% for o in page.kunyomi %}
-        <span class="kunyomi {% if o.type == '상용' %}standard{% elsif o.type == '고급' %}hard{% endif %}">
-          {{ o.reading }}
-          {%- comment -%} 출처 {%- endcomment -%}
-          {%- assign r = o.reference | default: '' -%}
-          {%- if r != '' -%}
-          {%- capture icon_kangorin -%}<img class="reference-icon" src="{{ '/assets/icons/신한어림.svg' | relative_url }}"
-            alt="신한어림" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-          {%- capture icon_jitsuu -%}<img class="reference-icon" src="{{ '/assets/icons/자통.svg' | relative_url }}"
-            alt="자통" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-          {%- capture icon_shinjigen -%}<img class="reference-icon" src="{{ '/assets/icons/신자원.svg' | relative_url }}"
-            alt="신자원" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-          {%- capture icon_kanjigen -%}<img class="reference-icon" src="{{ '/assets/icons/한자원.svg' | relative_url }}"
-            alt="한자원" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-          {%- capture icon_daikanwa -%}<img class="reference-icon" src="{{ '/assets/icons/대한화사전.svg' | relative_url }}"
-            alt="대한화사전" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-          {%- capture icon_kojien -%}<img class="reference-icon" src="{{ '/assets/icons/코지엔.svg' | relative_url }}"
-            alt="코지엔" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-          {%- capture icon_zi -%}<img class="reference-icon" src="{{ '/assets/icons/자통망.svg' | relative_url }}"
-            alt="자통망" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-          {%- if r == '신한어림' -%}{{ icon_kangorin }}
-          {%- elsif r == '자통' -%}{{ icon_jitsuu }}
-          {%- elsif r == '신자원' -%}{{ icon_shinjigen }}
-          {%- elsif r == '한자원' -%}{{ icon_kanjigen }}
-          {%- elsif r == '대한화사전' -%}{{ icon_daikanwa }}
-          {%- elsif r == '코지엔' -%}{{ icon_kojien }}
-          {%- elsif r == '자통망' -%}{{ icon_zi }}
-          {%- else -%}{{ r }}
-          {%- endif -%}
-          {%- endif -%}
-        </span>
-        {% endfor %}
-        {% else %}
-        {{ page.kunyomi }}
-        {% endif %}
-      </td>
+      <td>{% include reading-list.html readings=page.kunyomi kind="kunyomi" %}</td>
     </tr>
 
     <tr>
@@ -146,7 +75,7 @@
       <th>획수</th>
       <td>
         {%- if page.strokes -%}
-        <a href="{{ '/strokes/' | relative_url }}?level={{ page.strokes | url_encode }}" class="badge-level badge-stroke">{{ page.strokes }}획</a>
+          <a href="{{ '/strokes/' | relative_url }}?level={{ page.strokes | url_encode }}" class="badge-level badge-stroke">{{ page.strokes }}획</a>
         {%- endif -%}
       </td>
     </tr>
@@ -155,10 +84,10 @@
       <th>칸켄 급수</th>
       <td>
         {%- if page.kanken -%}
-        {%- assign lvl_class = page.kanken | replace: '급', '' | replace: '級', '' | replace: '준', 'pre' | replace: '準', 'pre' -%}
-        <a href="{{ '/kanken/' | relative_url }}?level={{ page.kanken | url_encode }}" class="badge-level badge-kanken-{{ lvl_class }}">{{ page.kanken }}</a>
+          {%- assign lvl_class = page.kanken | replace: '급', '' | replace: '級', '' | replace: '준', 'pre' | replace: '準', 'pre' -%}
+          <a href="{{ '/kanken/' | relative_url }}?level={{ page.kanken | url_encode }}" class="badge-level badge-kanken-{{ lvl_class }}">{{ page.kanken }}</a>
         {%- else -%}
-        <span class="badge-level badge-none">配当外</span>
+          <span class="badge-level badge-none">配当外</span>
         {%- endif -%}
       </td>
     </tr>
@@ -167,10 +96,10 @@
       <th>JIS 수준</th>
       <td>
         {%- if page.jis -%}
-        {%- assign jis_class = page.jis | replace: '第', '' | replace: '水準', '' -%}
-        <a href="{{ '/jis/' | relative_url }}?level={{ page.jis | url_encode }}" class="badge-level badge-jis-{{ jis_class }}">{{ page.jis }}</a>
+          {%- assign jis_class = page.jis | replace: '第', '' | replace: '水準', '' -%}
+          <a href="{{ '/jis/' | relative_url }}?level={{ page.jis | url_encode }}" class="badge-level badge-jis-{{ jis_class }}">{{ page.jis }}</a>
         {%- else -%}
-        <span class="badge-level badge-none">外字</span>
+          <span class="badge-level badge-none">外字</span>
         {%- endif -%}
       </td>
     </tr>
@@ -185,327 +114,35 @@
       <td>{{ page.variants }}</td>
     </tr>
 
-    {%- assign compounds_normal = "" | split: "" -%}
-    {%- assign compounds_advanced = "" | split: "" -%}
-    {%- if page.compounds and page.compounds.size > 0 -%}
-    {%- for it in page.compounds -%}
-    {%- if it.reference and it.reference != '' -%}
-    {%- assign compounds_advanced = compounds_advanced | push: it -%}
-    {%- else -%}
-    {%- assign compounds_normal = compounds_normal | push: it -%}
-    {%- endif -%}
-    {%- endfor -%}
-    {%- endif -%}
-
     <tr>
       <th>숙어</th>
       <td>
         {%- if compounds_normal.size > 0 -%}
-        {%- capture onyomi_csv -%}
-        {%- for o in page.onyomi -%}
-        {%- assign r = o.reading | replace:'-','' | replace:'・','' | replace:'（','' | replace:'）','' -%}
-        {{ r }}{% unless forloop.last %},{% endunless %}
-        {%- endfor -%}
-        {%- endcapture -%}
-        {%- assign onyomi_keys = onyomi_csv | split: ',' | uniq -%}
-
-        {%- capture kunyomi_csv -%}
-        {%- for k in page.kunyomi -%}
-        {%- assign raw = k.reading -%}
-        {%- if raw contains '-' -%}
-        {%- assign stem = raw | split:'-' | first -%}
-        {%- else -%}
-        {%- assign stem = raw -%}
-        {%- endif -%}
-        {%- assign r = stem | replace:'・','' | replace:'（','' | replace:'）','' -%}
-        {{ r }}{% unless forloop.last %},{% endunless %}
-        {%- endfor -%}
-        {%- endcapture -%}
-        {%- assign kunyomi_keys = kunyomi_csv | split: ',' | uniq -%}
-
-        {%- assign yomi_order = onyomi_keys | concat: kunyomi_keys | uniq -%}
-
-        {%- comment -%} 음독/훈독 yomi 그룹 출력 {%- endcomment -%}
-        {%- for y in yomi_order -%}
-        {%- assign group_items = "" | split: "" -%}
-
-        {%- if onyomi_keys contains y -%}
-        {%- assign group_items = compounds_normal | where:'yomi', y -%}
-
-        {%- elsif kunyomi_keys contains y -%}
-        {%- for it in compounds_normal -%}
-        {%- assign cy = it.yomi | default:'' -%}
-        {%- assign cy_norm = cy | replace:'-','' | replace:'・','' | replace:'（','' | replace:'）','' -%}
-        {%- if cy_norm == y -%}
-        {%- assign group_items = group_items | push: it -%}
-        {%- endif -%}
-        {%- endfor -%}
-
-        {%- else -%}
-        {%- assign group_items = compounds_normal | where:'yomi', y -%}
-        {%- endif -%}
-
-        {%- if group_items and group_items.size > 0 -%}
-        <h4 class="compound-group-title">
-          {%- if onyomi_keys contains y -%}音読 - {{ y }}
-          {%- elsif kunyomi_keys contains y -%}訓読 - {{ y }}
-          {%- else -%}{{ y }}
-          {%- endif -%}
-        </h4>
-        <ul class="compounds">
-          {%- for it in group_items -%}
-          <li>
-            <span class="{% if it.type == '상용' %}standard{% endif %} jp-font">{{ it.word }}</span>
-            {% if it.reading %}<small class="reading">{{ it.reading }}</small>{% endif %}
-            {% if it.gloss %}
-            {%- capture icon_bio -%}<img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물"
-              width="18" />{%- endcapture -%}
-            {%- capture icon_buddha -%}<img class="gloss-icon" src="{{ '/assets/icons/불교.svg' | relative_url }}"
-              alt="불교" width="18" />{%- endcapture -%}
-            {%- capture icon_place -%}<img class="gloss-icon" src="{{ '/assets/icons/지명.svg' | relative_url }}" alt="지명"
-              width="18" />{%- endcapture -%}
-            {%- capture icon_unit -%}<img class="gloss-icon" src="{{ '/assets/icons/단위.svg' | relative_url }}" alt="단위"
-              width="18" />{%- endcapture -%}
-            {%- comment -%} !!! 장르 !!! {%- endcomment -%}
-            {%- assign g = it.genre | default: '' -%}
-            {%- if g == '생물' or g contains '생물' -%}{{ icon_bio }}
-            {%- elsif g == '불교' -%}{{ icon_buddha }}
-            {%- elsif g == '지명' or g == '나라' -%}{{ icon_place }}
-            {%- elsif g == '단위' -%}{{ icon_unit }}
-            {%- endif -%}
-            {{ it.gloss | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' |
-            replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' |
-            replace:'(10)','⑩' | replace:'(11)','⑪' | replace:'(12)','⑫' | replace:'[생물]',icon_bio |
-            replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place | replace:'[단위]',icon_unit }}
-
-
-
-            {%- comment -%} 다른 표기 {%- endcomment -%}
-            {%- assign g = it.variation | default: '' -%}
-            {%- if g != '' -%}
-            <img class="gloss-icon" src="{{ '/assets/icons/표기.svg' | relative_url }}" alt="표기" height="18"
-              style="margin-left: 0.5em" />
-            {%- endif -%}{{ g | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' |
-            replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' |
-            replace:'(10)','⑩' | replace:'(11)','⑪' | replace:'(12)','⑫'}}
-            {%- assign g = it.replace | default: '' -%}
-            {%- if g != '' -%}
-            <img class="gloss-icon" src="{{ '/assets/icons/카키가에.svg' | relative_url }}" alt="카키가에" height="18"
-              style="margin-left: 0.5em" />
-            {%- endif -%}{{ g | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' |
-            replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' |
-            replace:'(10)','⑩' | replace:'(11)','⑪' | replace:'(12)','⑫'}}
-
-            {%- endif -%}
-          </li>
-          {%- endfor -%}
-        </ul>
-        {%- endif -%}
-        {%- endfor -%}
-
-        {%- comment -%} 熟字訓 섹션 {%- endcomment -%}
-        {%- assign jukujikun = compounds_normal | where:'yomi','숙자훈' -%}
-        {%- if jukujikun and jukujikun.size > 0 -%}
-        <h4 class="compound-group-title">숙자훈</h4>
-        <ul class="compounds">
-          {%- for it in jukujikun -%}
-          <li>
-            <span class="{% if it.type == '상용' %}standard{% endif %} jp-font">{{ it.word }}</span>
-            {% if it.reading %}
-            <small class="reading">{{ it.reading }}</small>
-            {% endif %}
-            {% if it.gloss %}
-            {%- capture icon_bio -%}<img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물"
-              width="18" />{%- endcapture -%}
-            {%- capture icon_buddha -%}<img class="gloss-icon" src="{{ '/assets/icons/불교.svg' | relative_url }}"
-              alt="불교" width="18" />{%- endcapture -%}
-            {%- capture icon_place -%}<img class="gloss-icon" src="{{ '/assets/icons/지명.svg' | relative_url }}" alt="지명"
-              width="18" />{%- endcapture -%}
-            {%- capture icon_unit -%}<img class="gloss-icon" src="{{ '/assets/icons/단위.svg' | relative_url }}" alt="단위"
-              width="18" />{%- endcapture -%}
-            {%- comment -%} !!! 장르 !!! {%- endcomment -%}
-            {%- assign g = it.genre | default: '' -%}
-            {{ it.gloss | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' |
-            replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' |
-            replace:'(10)','⑩' | replace:'(11)','⑪' | replace:'(12)','⑫' | replace:'[생물]',icon_bio |
-            replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place | replace:'[단위]',icon_unit }}
-
-
-
-            {%- comment -%} 다른 표기 {%- endcomment -%}
-            {%- assign g = it.variation | default: '' -%}
-            {%- if g != '' -%}
-            <img class="gloss-icon" src="{{ '/assets/icons/표기.svg' | relative_url }}" alt="표기" height="18"
-              style="margin-left: 0.5em" />
-            {%- endif -%}{{ g | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' |
-            replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' |
-            replace:'(10)','⑩' | replace:'(11)','⑪' | replace:'(12)','⑫'}}
-            {%- assign g = it.replace | default: '' -%}
-            {%- if g != '' -%}
-            <img class="gloss-icon" src="{{ '/assets/icons/카키가에.svg' | relative_url }}" alt="카키가에" height="18"
-              style="margin-left: 0.5em" />
-            {%- endif -%}{{ g | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' |
-            replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' |
-            replace:'(10)','⑩' | replace:'(11)','⑪' | replace:'(12)','⑫'}}
-            {% endif %}
-          </li>
-          {%- endfor -%}
-        </ul>
-        {%- endif -%}
+          {% include compound-list.html items=compounds_normal include_jukujikun=true hard=false show_reference=false %}
         {%- endif -%}
       </td>
     </tr>
 
     {%- if compounds_advanced and compounds_advanced.size > 0 -%}
-    <tr>
-      <th>고급 어휘</th>
-      <td>
-        {%- capture onyomi_csv -%}
-        {%- for o in page.onyomi -%}
-        {%- assign r = o.reading | replace:'-','' | replace:'・','' | replace:'（','' | replace:'）','' -%}
-        {{ r }}{% unless forloop.last %},{% endunless %}
-        {%- endfor -%}
-        {%- endcapture -%}
-        {%- assign onyomi_keys = onyomi_csv | split: ',' | uniq -%}
-
-        {%- capture kunyomi_csv -%}
-        {%- for k in page.kunyomi -%}
-        {%- assign raw = k.reading -%}
-        {%- if raw contains '-' -%}
-        {%- assign stem = raw | split:'-' | first -%}
-        {%- else -%}
-        {%- assign stem = raw -%}
-        {%- endif -%}
-        {%- assign r = stem | replace:'・','' | replace:'（','' | replace:'）','' -%}
-        {{ r }}{% unless forloop.last %},{% endunless %}
-        {%- endfor -%}
-        {%- endcapture -%}
-        {%- assign kunyomi_keys = kunyomi_csv | split: ',' | uniq -%}
-
-        {%- assign yomi_order = onyomi_keys | concat: kunyomi_keys | uniq -%}
-
-        {%- comment -%} 음독/훈독 yomi 그룹 출력 {%- endcomment -%}
-        {%- for y in yomi_order -%}
-        {%- assign group_items = "" | split: "" -%}
-
-        {%- if onyomi_keys contains y -%}
-        {%- assign group_items = compounds_advanced | where:'yomi', y -%}
-
-        {%- elsif kunyomi_keys contains y -%}
-        {%- for it in compounds_advanced -%}
-        {%- assign cy = it.yomi | default:'' -%}
-        {%- assign cy_norm = cy | replace:'-','' | replace:'・','' | replace:'（','' | replace:'）','' -%}
-        {%- if cy_norm == y -%}
-        {%- assign group_items = group_items | push: it -%}
-        {%- endif -%}
-        {%- endfor -%}
-
-        {%- else -%}
-        {%- assign group_items = compounds_advanced | where:'yomi', y -%}
-        {%- endif -%}
-
-        {%- if group_items and group_items.size > 0 -%}
-        <h4 class="compound-group-title">
-          {%- if onyomi_keys contains y -%}音読 - {{ y }}
-          {%- elsif kunyomi_keys contains y -%}訓読 - {{ y }}
-          {%- else -%}{{ y }}
-          {%- endif -%}
-        </h4>
-        <ul class="compounds">
-          {%- for it in group_items -%}
-          <li>
-            <span class="{% if it.type == '상용' %}standard{% endif %} hard jp-font">{{ it.word }}</span>
-            {% if it.reading %}<small class="reading">{{ it.reading }}</small>{% endif %}
-            {% if it.gloss %}
-            {%- capture icon_bio -%}<img class="gloss-icon" src="{{ '/assets/icons/생물.svg' | relative_url }}" alt="동식물"
-              width="18" />{%- endcapture -%}
-            {%- capture icon_buddha -%}<img class="gloss-icon" src="{{ '/assets/icons/불교.svg' | relative_url }}"
-              alt="불교" width="18" />{%- endcapture -%}
-            {%- capture icon_place -%}<img class="gloss-icon" src="{{ '/assets/icons/지명.svg' | relative_url }}" alt="지명"
-              width="18" />{%- endcapture -%}
-            {%- capture icon_unit -%}<img class="gloss-icon" src="{{ '/assets/icons/단위.svg' | relative_url }}" alt="단위"
-              width="18" />{%- endcapture -%}
-            {%- comment -%} !!! 장르 !!! {%- endcomment -%}
-            {%- assign g = it.genre | default: '' -%}
-            {%- if g == '생물' or g contains '생물' -%}{{ icon_bio }}
-            {%- elsif g == '불교' -%}{{ icon_buddha }}
-            {%- elsif g == '지명' or g == '나라' -%}{{ icon_place }}
-            {%- elsif g == '단위' -%}{{ icon_unit }}
-            {%- endif -%}
-            {{ it.gloss | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' |
-            replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' |
-            replace:'(10)','⑩' | replace:'(11)','⑪' | replace:'(12)','⑫' | replace:'[생물]',icon_bio |
-            replace:'[불교]',icon_buddha | replace:'[지명]',icon_place | replace:'[나라]',icon_place | replace:'[단위]',icon_unit }}
-
-            {%- comment -%} 출처 {%- endcomment -%}
-            {%- assign r = it.reference | default: '' -%}
-            {%- if r != '' -%}
-            {%- capture icon_kangorin -%}<img class="reference-icon" src="{{ '/assets/icons/신한어림.svg' | relative_url }}"
-              alt="신한어림" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-            {%- capture icon_jitsuu -%}<img class="reference-icon" src="{{ '/assets/icons/자통.svg' | relative_url }}"
-              alt="자통" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-            {%- capture icon_shinjigen -%}<img class="reference-icon" src="{{ '/assets/icons/신자원.svg' | relative_url }}"
-              alt="신자원" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-            {%- capture icon_kanjigen -%}<img class="reference-icon" src="{{ '/assets/icons/한자원.svg' | relative_url }}"
-              alt="한자원" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-            {%- capture icon_daikanwa -%}<img class="reference-icon"
-              src="{{ '/assets/icons/대한화사전.svg' | relative_url }}" alt="대한화사전" width="18"
-              style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-            {%- capture icon_kojien -%}<img class="reference-icon" src="{{ '/assets/icons/코지엔.svg' | relative_url }}"
-              alt="코지엔" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-            {%- capture icon_zi -%}<img class="reference-icon" src="{{ '/assets/icons/자통망.svg' | relative_url }}"
-            alt="자통망" width="18" style="margin-left: 0.1em; vertical-align: -3px;" />{%- endcapture -%}
-            {%- if r == '신한어림' -%}{{ icon_kangorin }}
-            {%- elsif r == '자통' -%}{{ icon_jitsuu }}
-            {%- elsif r == '신자원' -%}{{ icon_shinjigen }}
-            {%- elsif r == '한자원' -%}{{ icon_kanjigen }}
-            {%- elsif r == '대한화사전' -%}{{ icon_daikanwa }}
-            {%- elsif r == '코지엔' -%}{{ icon_kojien }}
-            {%- elsif r == '자통망' -%}{{ icon_zi }}
-            {%- else -%}{{ r }}
-            {%- endif -%}
-            {%- endif -%}
-
-            {%- comment -%} 다른 표기 {%- endcomment -%}
-            {%- assign g = it.variation | default: '' -%}
-            {%- if g != '' -%}
-            <img class="gloss-icon" src="{{ '/assets/icons/표기.svg' | relative_url }}" alt="표기" height="18"
-              style="margin-left: 0.5em" />
-            {%- endif -%}{{ g | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' |
-            replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' |
-            replace:'(10)','⑩' | replace:'(11)','⑪' | replace:'(12)','⑫'}}
-            {%- assign g = it.replace | default: '' -%}
-            {%- if g != '' -%}
-            <img class="gloss-icon" src="{{ '/assets/icons/카키가에.svg' | relative_url }}" alt="카키가에" height="18"
-              style="margin-left: 0.5em" />
-            {%- endif -%}{{ g | replace:'(1)','①' | replace:'(2)','②' | replace:'(3)','③' | replace:'(4)','④' |
-            replace:'(5)','⑤' | replace:'(6)','⑥' | replace:'(7)','⑦' | replace:'(8)','⑧' | replace:'(9)','⑨' |
-            replace:'(10)','⑩' | replace:'(11)','⑪' | replace:'(12)','⑫'}}
-            {% endif %}
-          </li>
-          {%- endfor -%}
-        </ul>
-        {%- endif -%}
-        {%- endfor -%}
-      </td>
-    </tr>
+      <tr>
+        <th>고급 어휘</th>
+        <td>{% include compound-list.html items=compounds_advanced include_jukujikun=false hard=true show_reference=true %}</td>
+      </tr>
     {%- endif -%}
 
     <tr>
       <th>관용구</th>
       <td>
         {%- if page.idioms and page.idioms.size > 0 -%}
-        <ul class="idioms">
-          {%- for it in page.idioms -%}
-          <li>
-            <span class="jp-font">{{ it.word }}</span>
-            {% if it.reading %}<small class="reading">{{ it.reading }}</small>{% endif %}
-            {% if it.gloss %}
-            {{ it.gloss }}
-            {% endif %}
-          </li>
-          {%- endfor -%}
-        </ul>
+          <ul class="idioms">
+            {%- for item in page.idioms -%}
+              <li>
+                <span class="jp-font">{{ item.word }}</span>
+                {% if item.reading %}<small class="reading">{{ item.reading }}</small>{% endif %}
+                {% if item.gloss %}{% include formatted-text.html text=item.gloss %}{% endif %}
+              </li>
+            {%- endfor -%}
+          </ul>
         {%- endif -%}
       </td>
     </tr>
@@ -514,17 +151,15 @@
       <th>사자성어</th>
       <td>
         {%- if page.saja and page.saja.size > 0 -%}
-        <ul class="saja">
-          {%- for it in page.saja -%}
-          <li>
-            <span class="jp-font">{{ it.word }}</span>
-            {% if it.reading %}<small class="reading">{{ it.reading }}</small>{% endif %}
-            {% if it.gloss %}
-            {{ it.gloss }}
-            {% endif %}
-          </li>
-          {%- endfor -%}
-        </ul>
+          <ul class="saja">
+            {%- for item in page.saja -%}
+              <li>
+                <span class="jp-font">{{ item.word }}</span>
+                {% if item.reading %}<small class="reading">{{ item.reading }}</small>{% endif %}
+                {% if item.gloss %}{% include formatted-text.html text=item.gloss %}{% endif %}
+              </li>
+            {%- endfor -%}
+          </ul>
         {%- endif -%}
       </td>
     </tr>

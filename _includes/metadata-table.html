@@ -10,158 +10,124 @@
   {%- endfor -%}
 {%- endif -%}
 
-<table class="kanji-meta">
-  <colgroup>
-    <col class="col-th">
-    <col class="col-td">
-  </colgroup>
-  <tbody>
-    <tr>
-      <th>의미</th>
-      <td>
-        {% if page.meanings.first.meaning %}
-          {% if page.meanings.first.reading %}
-            {% assign grouped_meanings = page.meanings | group_by: "reading" %}
-            {% for group in grouped_meanings %}
-              {% assign group_circle_code = 12927 | plus: forloop.index %}
-              <div class="meaning-group" style="margin-bottom: 0.5em;">
-                <span class="jp-font" style="font-weight:bold;">&#{{ group_circle_code }}; {{ group.name }}</span>
-                {% for m in group.items %}
-                  {% assign circle_code = 9311 | plus: forloop.index %}
-                  <div style="padding-left: 1em;">&#{{ circle_code }}; {% include formatted-text.html text=m.meaning %}{% if m.example %} <span class="jp-font">「{{ m.example }}」</span>{% endif %}</div>
-                  {% if m.submeanings %}
-                    {% for sub in m.submeanings %}
-                      {% assign sub_code = 13007 | plus: forloop.index %}
-                      <div style="padding-left: 2em;">&#{{ sub_code }}; {% include formatted-text.html text=sub.meaning %}{% if sub.example %} <span class="jp-font">「{{ sub.example }}」</span>{% endif %}</div>
-                    {% endfor %}
-                  {% endif %}
-                {% endfor %}
-              </div>
-            {% endfor %}
-          {% else %}
-            {% for m in page.meanings %}
-              {% assign circle_code = 9311 | plus: forloop.index %}
-              <div>&#{{ circle_code }}; {% include formatted-text.html text=m.meaning %}{% if m.example %} <span class="jp-font">「{{ m.example }}」</span>{% endif %}</div>
-              {% if m.submeanings %}
-                {% for sub in m.submeanings %}
-                  {% assign sub_code = 13007 | plus: forloop.index %}
-                  <div style="padding-left: 1em;">&#{{ sub_code }}; {% include formatted-text.html text=sub.meaning %}{% if sub.example %} <span class="jp-font">「{{ sub.example }}」</span>{% endif %}</div>
-                {% endfor %}
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-        {% else %}
-          {{ page.meanings }}
-        {% endif %}
-      </td>
-    </tr>
+<div class="kanji-meta-layout">
+  <section class="kanji-summary" aria-label="기본 정보">
+    <dl class="kanji-summary-list">
+      <div>
+        <dt>부수</dt>
+        <dd>{{ page.radical }}</dd>
+      </div>
+      <div>
+        <dt>획수</dt>
+        <dd>
+          {%- if page.strokes -%}
+            <a href="{{ '/strokes/' | relative_url }}?level={{ page.strokes | url_encode }}" class="badge-level badge-stroke">{{ page.strokes }}획</a>
+          {%- endif -%}
+        </dd>
+      </div>
+      <div>
+        <dt>칸켄 급수</dt>
+        <dd>
+          {%- if page.kanken -%}
+            {%- assign lvl_class = page.kanken | replace: '급', '' | replace: '級', '' | replace: '준', 'pre' | replace: '準', 'pre' -%}
+            <a href="{{ '/kanken/' | relative_url }}?level={{ page.kanken | url_encode }}" class="badge-level badge-kanken-{{ lvl_class }}">{{ page.kanken }}</a>
+          {%- else -%}
+            <span class="badge-level badge-none">配当外</span>
+          {%- endif -%}
+        </dd>
+      </div>
+      <div>
+        <dt>JIS 수준</dt>
+        <dd>
+          {%- if page.jis -%}
+            {%- assign jis_class = page.jis | replace: '第', '' | replace: '水準', '' -%}
+            <a href="{{ '/jis/' | relative_url }}?level={{ page.jis | url_encode }}" class="badge-level badge-jis-{{ jis_class }}">{{ page.jis }}</a>
+          {%- else -%}
+            <span class="badge-level badge-none">外字</span>
+          {%- endif -%}
+        </dd>
+      </div>
+      <div>
+        <dt>Unicode</dt>
+        <dd><code>{{ page.unicode }}</code></dd>
+      </div>
+      <div>
+        <dt>이체자</dt>
+        <dd>{{ page.variants }}</dd>
+      </div>
+    </dl>
+  </section>
 
-    <tr>
-      <th>음독</th>
-      <td>{% include reading-list.html readings=page.onyomi kind="onyomi" %}</td>
-    </tr>
+  <section class="kanji-section kanji-meaning-section">
+    <h2>의미</h2>
+    <div class="kanji-section-body meaning-list">
+      {% include meaning-list.html %}
+    </div>
+  </section>
 
-    <tr>
-      <th>훈독</th>
-      <td>{% include reading-list.html readings=page.kunyomi kind="kunyomi" %}</td>
-    </tr>
+  <section class="kanji-section">
+    <h2>음훈</h2>
+    <div class="reading-panels">
+      <section class="reading-panel">
+        <h3>음독</h3>
+        <div>{% include reading-list.html readings=page.onyomi kind="onyomi" %}</div>
+      </section>
+      <section class="reading-panel">
+        <h3>훈독</h3>
+        <div>{% include reading-list.html readings=page.kunyomi kind="kunyomi" %}</div>
+      </section>
+    </div>
+  </section>
 
-    <tr>
-      <th>부수</th>
-      <td>{{ page.radical }}</td>
-    </tr>
+  {%- if compounds_normal.size > 0 -%}
+    <section class="kanji-section lexicon-section">
+      <h2>일반 사전 어휘</h2>
+      <div class="kanji-section-body">
+        {% include compound-list.html items=compounds_normal include_jukujikun=true hard=false show_reference=false %}
+      </div>
+    </section>
+  {%- endif -%}
 
-    <tr>
-      <th>획수</th>
-      <td>
-        {%- if page.strokes -%}
-          <a href="{{ '/strokes/' | relative_url }}?level={{ page.strokes | url_encode }}" class="badge-level badge-stroke">{{ page.strokes }}획</a>
-        {%- endif -%}
-      </td>
-    </tr>
+  {%- if compounds_advanced and compounds_advanced.size > 0 -%}
+    <section class="kanji-section lexicon-section lexicon-section-advanced">
+      <h2>고급 어휘</h2>
+      <div class="kanji-section-body">
+        {% include compound-list.html items=compounds_advanced include_jukujikun=false hard=true show_reference=true %}
+      </div>
+    </section>
+  {%- endif -%}
 
-    <tr>
-      <th>칸켄 급수</th>
-      <td>
-        {%- if page.kanken -%}
-          {%- assign lvl_class = page.kanken | replace: '급', '' | replace: '級', '' | replace: '준', 'pre' | replace: '準', 'pre' -%}
-          <a href="{{ '/kanken/' | relative_url }}?level={{ page.kanken | url_encode }}" class="badge-level badge-kanken-{{ lvl_class }}">{{ page.kanken }}</a>
-        {%- else -%}
-          <span class="badge-level badge-none">配当外</span>
-        {%- endif -%}
-      </td>
-    </tr>
+  {%- if page.idioms and page.idioms.size > 0 -%}
+    <section class="kanji-section lexicon-section">
+      <h2>관용구</h2>
+      <div class="kanji-section-body">
+        <ul class="idioms">
+          {%- for item in page.idioms -%}
+            <li>
+              <span class="jp-font">{{ item.word }}</span>
+              {% if item.reading %}<small class="reading">{{ item.reading }}</small>{% endif %}
+              {% if item.gloss %}{% include formatted-text.html text=item.gloss %}{% endif %}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </section>
+  {%- endif -%}
 
-    <tr>
-      <th>JIS 수준</th>
-      <td>
-        {%- if page.jis -%}
-          {%- assign jis_class = page.jis | replace: '第', '' | replace: '水準', '' -%}
-          <a href="{{ '/jis/' | relative_url }}?level={{ page.jis | url_encode }}" class="badge-level badge-jis-{{ jis_class }}">{{ page.jis }}</a>
-        {%- else -%}
-          <span class="badge-level badge-none">外字</span>
-        {%- endif -%}
-      </td>
-    </tr>
-
-    <tr>
-      <th>Unicode</th>
-      <td><code>{{ page.unicode }}</code></td>
-    </tr>
-
-    <tr>
-      <th>이체자</th>
-      <td>{{ page.variants }}</td>
-    </tr>
-
-    <tr>
-      <th>숙어</th>
-      <td>
-        {%- if compounds_normal.size > 0 -%}
-          {% include compound-list.html items=compounds_normal include_jukujikun=true hard=false show_reference=false %}
-        {%- endif -%}
-      </td>
-    </tr>
-
-    {%- if compounds_advanced and compounds_advanced.size > 0 -%}
-      <tr>
-        <th>고급 어휘</th>
-        <td>{% include compound-list.html items=compounds_advanced include_jukujikun=false hard=true show_reference=true %}</td>
-      </tr>
-    {%- endif -%}
-
-    <tr>
-      <th>관용구</th>
-      <td>
-        {%- if page.idioms and page.idioms.size > 0 -%}
-          <ul class="idioms">
-            {%- for item in page.idioms -%}
-              <li>
-                <span class="jp-font">{{ item.word }}</span>
-                {% if item.reading %}<small class="reading">{{ item.reading }}</small>{% endif %}
-                {% if item.gloss %}{% include formatted-text.html text=item.gloss %}{% endif %}
-              </li>
-            {%- endfor -%}
-          </ul>
-        {%- endif -%}
-      </td>
-    </tr>
-
-    <tr>
-      <th>사자성어</th>
-      <td>
-        {%- if page.saja and page.saja.size > 0 -%}
-          <ul class="saja">
-            {%- for item in page.saja -%}
-              <li>
-                <span class="jp-font">{{ item.word }}</span>
-                {% if item.reading %}<small class="reading">{{ item.reading }}</small>{% endif %}
-                {% if item.gloss %}{% include formatted-text.html text=item.gloss %}{% endif %}
-              </li>
-            {%- endfor -%}
-          </ul>
-        {%- endif -%}
-      </td>
-    </tr>
-  </tbody>
-</table>
+  {%- if page.saja and page.saja.size > 0 -%}
+    <section class="kanji-section lexicon-section">
+      <h2>사자성어</h2>
+      <div class="kanji-section-body">
+        <ul class="saja">
+          {%- for item in page.saja -%}
+            <li>
+              <span class="jp-font">{{ item.word }}</span>
+              {% if item.reading %}<small class="reading">{{ item.reading }}</small>{% endif %}
+              {% if item.gloss %}{% include formatted-text.html text=item.gloss %}{% endif %}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </section>
+  {%- endif -%}
+</div>

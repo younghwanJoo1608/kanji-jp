@@ -1,0 +1,61 @@
+---
+layout: default
+title: 한자 검색
+permalink: /search/
+---
+
+<h1>한자 검색</h1>
+
+<div class="search-panel" role="search">
+  <label for="kanji-search-input">검색어</label>
+  <div class="search-input-row">
+    <input id="kanji-search-input" type="search" autocomplete="off" placeholder="한자, 뜻, 음훈, 단어, Unicode">
+    <button id="kanji-search-clear" type="button" aria-label="검색어 지우기">지우기</button>
+  </div>
+  <p class="search-help">히라가나/가타카나, 하이픈 유무를 구분하지 않습니다.</p>
+  <div class="search-filter-row" aria-label="세부 필터">
+    <label>
+      칸켄
+      <select id="filter-kanken">
+        <option value="">전체</option>
+      </select>
+    </label>
+    <label>
+      JIS
+      <select id="filter-jis">
+        <option value="">전체</option>
+      </select>
+    </label>
+    <label>
+      획수
+      <select id="filter-strokes">
+        <option value="">전체</option>
+      </select>
+    </label>
+    <label>
+      어휘
+      <select id="filter-lexicon">
+        <option value="">전체</option>
+        <option value="advanced">고급 어휘 있음</option>
+        <option value="genre">장르 표시 있음</option>
+        <option value="reference">Reference 있음</option>
+      </select>
+    </label>
+  </div>
+  <details class="radical-filter-panel">
+    <summary>
+      <span>부수</span>
+      <span id="filter-radical-toggle-label">열기</span>
+    </summary>
+    <div class="radical-filter-toolbar">
+      <span id="filter-radical-summary">선택 없음</span>
+      <button id="filter-radical-reset" type="button" aria-label="부수 필터 초기화" title="부수 필터 초기화">↻ 초기화</button>
+    </div>
+    <div id="filter-radical-buttons" class="radical-button-grid" aria-label="부수 필터"></div>
+  </details>
+</div>
+
+<div class="search-status" id="search-status">검색어를 입력하거나 필터를 선택하세요.</div>
+<div class="search-results" id="search-results"></div>
+
+<script src="{{ '/assets/js/search.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>

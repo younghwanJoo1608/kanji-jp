@@ -15,6 +15,13 @@
         <a href="{{ "/jis/" | relative_url }}"{% if page.url contains '/jis/' %} class="active"{% endif %}>JIS 수준별 한자 목록</a>
         <a href="{{ "/strokes/" | relative_url }}"{% if page.url contains '/strokes/' %} class="active"{% endif %}>획수별 한자 목록</a>
         <a href="{{ "/kokuji/" | relative_url }}"{% if page.url contains '/kokuji/' %} class="active"{% endif %}>일본의 국자</a>
+        <a href="{{ "/search/" | relative_url }}"{% if page.url contains '/search/' %} class="active"{% endif %}>
+          <svg class="nav-search-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6"></circle>
+            <path d="m16 16 4 4"></path>
+          </svg>
+          <span>검색</span>
+        </a>
         <a href="{{ "/about/" | relative_url }}" class="about-link{% if page.url contains '/about/' %} active{% endif %}">About</a>
       </nav>
     </header>

@@ -31,6 +31,9 @@
     .site-nav a.about-link { margin-left: auto; }
     .site-nav a {
         position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.32rem;
         text-decoration: none;
         color: var(--muted-ink);
         background: transparent;
@@ -41,6 +44,16 @@
         border: 0;
         transition: color 0.18s ease;
         box-shadow: none;
+    }
+    .nav-search-icon {
+        width: 0.95em;
+        height: 0.95em;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2.35;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex: 0 0 auto;
     }
     .site-nav a:hover {
         background: transparent;
@@ -179,6 +192,134 @@
         word-break: break-word;    /* CJK와 혼용시 강제 줄바꿈 */
         min-height: 1.2em; /* 빈 칸에도 일정 높이 유지 */
     }
+
+    .kanji-meta-layout {
+        display: grid;
+        gap: 1.35rem;
+    }
+
+    .kanji-summary {
+        border-top: 1px solid var(--hairline);
+        border-bottom: 1px solid var(--hairline);
+        padding: .75rem 0;
+    }
+
+    .kanji-summary-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+        gap: .65rem 1rem;
+        margin: 0;
+    }
+
+    .kanji-summary-list div {
+        min-width: 0;
+    }
+
+    .kanji-summary-list dt {
+        color: var(--muted-ink);
+        font-size: .72rem;
+        font-weight: 800;
+        line-height: 1.25;
+    }
+
+    .kanji-summary-list dd {
+        margin: .15rem 0 0;
+        min-height: 1.45rem;
+        overflow-wrap: anywhere;
+    }
+
+    .kanji-section {
+        border-top: 1px solid var(--hairline);
+        padding-top: 1rem;
+    }
+
+    .kanji-summary + .kanji-section {
+        border-top: 0;
+        padding-top: 0;
+    }
+
+    .kanji-section h2 {
+        margin: 0 0 .55rem;
+        color: var(--muted-ink);
+        font-size: 1rem;
+        font-weight: 850;
+        line-height: 1.35;
+    }
+
+    .kanji-section-body {
+        min-width: 0;
+    }
+
+    .lexicon-section {
+        margin-top: .55rem;
+        padding-top: 1.35rem;
+    }
+
+    .lexicon-section h2 {
+        display: flex;
+        align-items: center;
+        gap: .55rem;
+        margin-bottom: .7rem;
+        color: var(--ink);
+    }
+
+    .lexicon-section h2::after {
+        content: "";
+        flex: 1 1 auto;
+        height: 1px;
+        background: var(--hairline);
+    }
+
+    .lexicon-section-advanced h2 {
+        color: #8d2b2b;
+    }
+
+    .lexicon-section-advanced h2::after {
+        background: rgba(198, 40, 40, .18);
+    }
+
+    .kanji-section h3,
+    .compound-group-title {
+        margin: .75rem 0 .3rem;
+        color: var(--muted-ink);
+        font-size: .86rem;
+        font-weight: 800;
+        line-height: 1.35;
+    }
+
+    .meaning-group {
+        margin-bottom: .5em;
+    }
+
+    .meaning-reading {
+        font-weight: 800;
+    }
+
+    .meaning-line-primary {
+        padding-left: 1em;
+    }
+
+    .meaning-line-sub {
+        padding-left: 2em;
+    }
+
+    .meaning-line-sub-compact {
+        padding-left: 1em;
+    }
+
+    .reading-panels {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+        gap: .75rem 1rem;
+    }
+
+    .reading-panel {
+        min-width: 0;
+    }
+
+    .reading-panel h3 {
+        margin-top: 0;
+    }
       
     .compounds { margin: 0; padding-left: 1.25rem; }
     .compounds .reading { color: var(--muted-ink); }
@@ -237,6 +378,7 @@
     .card {
         --card-accent: rgba(168, 66, 43, .58);
         --card-accent-solid: var(--seal);
+        display: block;
         position: relative;
         min-height: 9.5rem;
         border: 1px solid var(--hairline);
@@ -445,6 +587,267 @@
         border-color: var(--ink);
     }
 
+    .search-panel {
+        border-top: 1px solid var(--hairline);
+        border-bottom: 1px solid var(--hairline);
+        padding: 1rem 0;
+        margin: 1rem 0;
+    }
+
+    .search-panel > label {
+        display: block;
+        color: var(--muted-ink);
+        font-size: .78rem;
+        font-weight: 850;
+        margin-bottom: .35rem;
+    }
+
+    .search-input-row {
+        display: flex;
+        gap: .5rem;
+    }
+
+    .search-input-row input {
+        flex: 1 1 auto;
+        min-width: 0;
+        border: 1px solid var(--hairline);
+        border-radius: 5px;
+        background: var(--surface);
+        color: var(--ink);
+        font-size: 1rem;
+        padding: .55rem .7rem;
+    }
+
+    .search-input-row button {
+        border: 1px solid var(--hairline);
+        border-radius: 5px;
+        background: var(--paper-soft);
+        color: var(--muted-ink);
+        cursor: pointer;
+        font-weight: 800;
+        padding: .5rem .7rem;
+    }
+
+    .search-filter-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+        gap: .65rem;
+        margin-top: .75rem;
+    }
+
+    .search-filter-row label {
+        color: var(--muted-ink);
+        font-size: .74rem;
+        font-weight: 800;
+    }
+
+    .search-filter-row select {
+        display: block;
+        width: 100%;
+        margin-top: .25rem;
+        border: 1px solid var(--hairline);
+        border-radius: 5px;
+        background: var(--surface);
+        color: var(--ink);
+        padding: .38rem .5rem;
+    }
+
+    .radical-filter-panel {
+        border-top: 1px solid var(--hairline);
+        margin-top: .85rem;
+        padding-top: .75rem;
+    }
+
+    .radical-filter-panel summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        cursor: pointer;
+        color: var(--muted-ink);
+        font-size: .78rem;
+        font-weight: 850;
+        list-style-position: outside;
+    }
+
+    .radical-filter-panel summary span:last-child {
+        color: var(--ink);
+        font-weight: 800;
+        text-align: right;
+    }
+
+    .radical-filter-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        margin-top: .65rem;
+    }
+
+    .radical-filter-toolbar span {
+        color: var(--muted-ink);
+        font-size: .78rem;
+        font-weight: 800;
+    }
+
+    .radical-filter-toolbar button {
+        border: 1px solid var(--hairline);
+        border-radius: 4px;
+        background: var(--paper-soft);
+        color: var(--muted-ink);
+        cursor: pointer;
+        font-size: .74rem;
+        font-weight: 850;
+        padding: .25rem .48rem;
+    }
+
+    .radical-filter-toolbar button:hover {
+        border-color: var(--hairline-strong);
+        background: #fffaf1;
+        color: var(--ink);
+    }
+
+    .radical-button-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(4.2rem, 1fr));
+        gap: .35rem;
+        margin-top: .65rem;
+        max-height: 18rem;
+        overflow: auto;
+        padding-right: .25rem;
+    }
+
+    .radical-filter-button {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: .35rem;
+        border: 1px solid var(--hairline);
+        border-radius: 4px;
+        background: var(--surface);
+        color: var(--ink);
+        cursor: pointer;
+        min-height: 2rem;
+        padding: .28rem .45rem;
+        font-weight: 800;
+        line-height: 1.2;
+    }
+
+    .radical-filter-button:hover {
+        border-color: var(--hairline-strong);
+        background: #fffaf1;
+    }
+
+    .radical-filter-button:disabled {
+        cursor: default;
+        opacity: .36;
+        background: transparent;
+    }
+
+    .radical-filter-button:disabled:hover {
+        border-color: var(--hairline);
+        background: transparent;
+    }
+
+    .radical-filter-button.active {
+        border-color: var(--seal);
+        background: var(--seal-soft);
+        color: var(--seal);
+    }
+
+    .radical-filter-button small {
+        color: var(--muted-ink);
+        font-size: .68rem;
+        font-weight: 750;
+    }
+
+    .radical-filter-button.active small {
+        color: inherit;
+    }
+
+    .search-help,
+    .search-status,
+    .search-more,
+    .search-no-snippet {
+        color: var(--muted-ink);
+        font-size: .84rem;
+    }
+
+    .search-help {
+        margin: .65rem 0 0;
+    }
+
+    .search-status {
+        margin: 1rem 0;
+        font-weight: 800;
+    }
+
+    .search-results {
+        display: grid;
+        gap: .9rem;
+    }
+
+    .search-result {
+        display: grid;
+        grid-template-columns: minmax(10rem, 13rem) minmax(0, 1fr);
+        gap: 1rem;
+        border-top: 1px solid var(--hairline);
+        padding-top: 1rem;
+    }
+
+    .search-result-card .card {
+        min-height: 8.6rem;
+    }
+
+    .search-result-body {
+        min-width: 0;
+    }
+
+    .search-result-body h2 {
+        margin: 0 0 .45rem;
+        font-size: 1.05rem;
+        line-height: 1.35;
+    }
+
+    .search-result-body h2 a {
+        color: var(--ink);
+        text-decoration: none;
+    }
+
+    .search-result-body h2 span {
+        color: var(--muted-ink);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Roboto Mono", monospace;
+        font-size: .78rem;
+        margin-left: .25rem;
+    }
+
+    .search-match {
+        display: grid;
+        grid-template-columns: 7.4rem minmax(0, 1fr);
+        gap: .65rem;
+        margin: .28rem 0;
+        line-height: 1.55;
+    }
+
+    .search-match-section {
+        color: var(--muted-ink);
+        font-size: .78rem;
+        font-weight: 850;
+    }
+
+    .search-match-text {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .search-match mark {
+        background: #f7dda7;
+        color: inherit;
+        border-radius: 3px;
+        padding: .02em .12em;
+        font-weight: 850;
+    }
+
     @media (max-width: 520px) {
         .container { margin: 2rem auto; }
         .site-nav { gap: .6rem .9rem; }
@@ -467,4 +870,15 @@
         .card-meta { font-size: .7rem; gap: .2rem .35rem; }
         .card-meta span + span::before { margin-right: .35rem; }
         .card-code { font-size: .66rem; }
+        .search-input-row { flex-direction: column; }
+        .search-result {
+            grid-template-columns: 1fr;
+        }
+        .search-result-card .card {
+            min-height: 8rem;
+        }
+        .search-match {
+            grid-template-columns: 1fr;
+            gap: .05rem;
+        }
     }

@@ -1,0 +1,27 @@
+---
+layout: null
+permalink: /search.json
+---
+[
+{%- assign items = site.kanji | sort: "title" -%}
+{%- for k in items -%}
+  {
+    "char": {{ k.char | jsonify }},
+    "title": {{ k.title | jsonify }},
+    "unicode": {{ k.unicode | jsonify }},
+    "url": {{ k.url | relative_url | jsonify }},
+    "type": {{ k.type | jsonify }},
+    "kanken": {{ k.kanken | jsonify }},
+    "jis": {{ k.jis | jsonify }},
+    "strokes": {{ k.strokes | jsonify }},
+    "radical": {{ k.radical | jsonify }},
+    "meanings": {{ k.meanings | jsonify }},
+    "onyomi": {{ k.onyomi | jsonify }},
+    "kunyomi": {{ k.kunyomi | jsonify }},
+    "compounds": {{ k.compounds | jsonify }},
+    "idioms": {{ k.idioms | jsonify }},
+    "saja": {{ k.saja | jsonify }},
+    "variants": {{ k.variants | jsonify }}
+  }{% unless forloop.last %},{% endunless %}
+{%- endfor -%}
+]

@@ -2,7 +2,7 @@
 # ページの識別
 title: 今
 char: 今
-unicode: U+5FC3
+unicode: U+4ECA
 
 # 構造化プロパティ
 meanings:

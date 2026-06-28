@@ -161,6 +161,19 @@
     if (typeof meanings === "string") return [meanings];
     if (!Array.isArray(meanings)) return [];
     const rows = [];
+    const pushMeaning = (m, prefix = "") => {
+      if (!m) return;
+      if (typeof m === "string") {
+        rows.push(`${prefix}${m}`);
+        return;
+      }
+      if (m.meaning) rows.push(`${prefix}${m.meaning}${m.example ? ` 「${m.example}」` : ""}`);
+      if (Array.isArray(m.submeanings)) {
+        m.submeanings.forEach((sub) => {
+          if (sub?.meaning) rows.push(`${prefix}${sub.meaning}${sub.example ? ` 「${sub.example}」` : ""}`);
+        });
+      }
+    };
     meanings.forEach((m) => {
       if (!m) return;
       if (typeof m === "string") {
@@ -168,11 +181,10 @@
         return;
       }
       const prefix = m.reading ? `${m.reading} ` : "";
-      if (m.meaning) rows.push(`${prefix}${m.meaning}${m.example ? ` 「${m.example}」` : ""}`);
-      if (Array.isArray(m.submeanings)) {
-        m.submeanings.forEach((sub) => {
-          if (sub?.meaning) rows.push(`${prefix}${sub.meaning}${sub.example ? ` 「${sub.example}」` : ""}`);
-        });
+      if (Array.isArray(m.meanings)) {
+        m.meanings.forEach((child) => pushMeaning(child, prefix));
+      } else {
+        pushMeaning(m, prefix);
       }
     });
     return rows;
@@ -242,7 +254,7 @@
 
     compounds.concat(idioms, saja).forEach((entry) => {
       if (!entry) return;
-      searchable.push(entry.word, entry.reading, entry.gloss, entry.yomi, entry.variation, entry.reference, entry.genre);
+      searchable.push(entry.word, entry.reading, entry.gloss, entry.yomi, entry.variation, entry.replace, entry.reference, entry.genre);
       readingVariants(entry.reading).forEach((v) => searchable.push(v));
     });
 
@@ -403,7 +415,7 @@
       addValueMatch(matches, section, variant, queryNorm, SCORE.readingExact, SCORE.readingPartial, wordText);
     });
     addMatch(matches, section, [entry.word, entry.reading, entry.gloss].filter(Boolean).join(" "), queryNorm, SCORE.gloss);
-    addMatch(matches, section, [entry.variation, entry.reference, entry.genre].filter(Boolean).join(" "), queryNorm, SCORE.meta);
+    addMatch(matches, section, [entry.variation, entry.replace, entry.reference, entry.genre].filter(Boolean).join(" "), queryNorm, SCORE.meta);
   }
 
   function uniqueMatches(matches) {

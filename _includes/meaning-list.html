@@ -1,4 +1,21 @@
-{% if page.meanings.first.meaning %}
+{% if page.meanings.first.meanings %}
+  {% for group in page.meanings %}
+    {% assign group_circle_code = 12927 | plus: forloop.index %}
+    <div class="meaning-group">
+      <span class="jp-font meaning-reading">&#{{ group_circle_code }}; {{ group.reading }}</span>
+      {% for m in group.meanings %}
+        {% assign circle_code = 9311 | plus: forloop.index %}
+        <div class="meaning-line meaning-line-primary">&#{{ circle_code }}; {% include formatted-text.html text=m.meaning %}{% if m.example %} <span class="jp-font">「{{ m.example }}」</span>{% endif %}</div>
+        {% if m.submeanings %}
+          {% for sub in m.submeanings %}
+            {% assign sub_code = 13007 | plus: forloop.index %}
+            <div class="meaning-line meaning-line-sub">&#{{ sub_code }}; {% include formatted-text.html text=sub.meaning %}{% if sub.example %} <span class="jp-font">「{{ sub.example }}」</span>{% endif %}</div>
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endfor %}
+{% elsif page.meanings.first.meaning %}
   {% if page.meanings.first.reading %}
     {% assign grouped_meanings = page.meanings | group_by: "reading" %}
     {% for group in grouped_meanings %}

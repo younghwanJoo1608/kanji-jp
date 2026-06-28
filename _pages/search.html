@@ -15,18 +15,6 @@ permalink: /search/
   <p class="search-help">히라가나/가타카나, 하이픈 유무를 구분하지 않습니다.</p>
   <div class="search-filter-row" aria-label="세부 필터">
     <label>
-      칸켄
-      <select id="filter-kanken">
-        <option value="">전체</option>
-      </select>
-    </label>
-    <label>
-      JIS
-      <select id="filter-jis">
-        <option value="">전체</option>
-      </select>
-    </label>
-    <label>
       획수
       <select id="filter-strokes">
         <option value="">전체</option>
@@ -42,6 +30,28 @@ permalink: /search/
       </select>
     </label>
   </div>
+  <details id="filter-kanken-panel" class="search-filter-panel">
+    <summary>
+      <span>칸켄</span>
+      <span id="filter-kanken-toggle-label">열기</span>
+    </summary>
+    <div class="search-filter-toolbar">
+      <span id="filter-kanken-summary">선택 없음</span>
+      <button id="filter-kanken-reset" type="button" aria-label="칸켄 필터 초기화" title="칸켄 필터 초기화">↻ 초기화</button>
+    </div>
+    <div id="filter-kanken-buttons" class="filter-button-grid" aria-label="칸켄 급수 필터"></div>
+  </details>
+  <details id="filter-jis-panel" class="search-filter-panel">
+    <summary>
+      <span>JIS</span>
+      <span id="filter-jis-toggle-label">열기</span>
+    </summary>
+    <div class="search-filter-toolbar">
+      <span id="filter-jis-summary">선택 없음</span>
+      <button id="filter-jis-reset" type="button" aria-label="JIS 필터 초기화" title="JIS 필터 초기화">↻ 초기화</button>
+    </div>
+    <div id="filter-jis-buttons" class="filter-button-grid filter-button-grid-wide" aria-label="JIS 수준 필터"></div>
+  </details>
   <details class="radical-filter-panel">
     <summary>
       <span>부수</span>

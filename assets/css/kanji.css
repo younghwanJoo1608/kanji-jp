@@ -652,12 +652,63 @@
         padding: .38rem .5rem;
     }
 
+    .filter-button-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(4.8rem, 1fr));
+        gap: .35rem;
+        margin-top: .65rem;
+    }
+
+    .filter-button-grid-wide {
+        grid-template-columns: repeat(auto-fill, minmax(6.2rem, 1fr));
+    }
+
+    .filter-chip-button {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: .35rem;
+        border: 1px solid var(--hairline);
+        border-radius: 4px;
+        background: var(--surface);
+        color: var(--ink);
+        cursor: pointer;
+        min-height: 2rem;
+        padding: .28rem .45rem;
+        font-weight: 800;
+        line-height: 1.2;
+        transition: background .15s ease, border-color .15s ease, color .15s ease;
+    }
+
+    .filter-chip-button:hover {
+        border-color: var(--hairline-strong);
+        background: #fffaf1;
+    }
+
+    .filter-chip-button.active {
+        border-color: var(--seal);
+        background: var(--seal-soft);
+        color: var(--seal);
+    }
+
+    .filter-chip-button small {
+        color: var(--muted-ink);
+        font-size: .68rem;
+        font-weight: 750;
+    }
+
+    .filter-chip-button.active small {
+        color: inherit;
+    }
+
+    .search-filter-panel,
     .radical-filter-panel {
         border-top: 1px solid var(--hairline);
         margin-top: .85rem;
         padding-top: .75rem;
     }
 
+    .search-filter-panel summary,
     .radical-filter-panel summary {
         display: flex;
         align-items: center;
@@ -670,12 +721,14 @@
         list-style-position: outside;
     }
 
+    .search-filter-panel summary span:last-child,
     .radical-filter-panel summary span:last-child {
         color: var(--ink);
         font-weight: 800;
         text-align: right;
     }
 
+    .search-filter-toolbar,
     .radical-filter-toolbar {
         display: flex;
         align-items: center;
@@ -684,12 +737,14 @@
         margin-top: .65rem;
     }
 
+    .search-filter-toolbar span,
     .radical-filter-toolbar span {
         color: var(--muted-ink);
         font-size: .78rem;
         font-weight: 800;
     }
 
+    .search-filter-toolbar button,
     .radical-filter-toolbar button {
         border: 1px solid var(--hairline);
         border-radius: 4px;
@@ -701,6 +756,7 @@
         padding: .25rem .48rem;
     }
 
+    .search-filter-toolbar button:hover,
     .radical-filter-toolbar button:hover {
         border-color: var(--hairline-strong);
         background: #fffaf1;

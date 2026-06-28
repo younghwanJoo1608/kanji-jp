@@ -2,6 +2,8 @@
   const state = {
     items: [],
     ready: false,
+    selectedKanken: "",
+    selectedJis: "",
     selectedRadicals: new Set(),
     lastRenderKey: ""
   };
@@ -11,8 +13,16 @@
     clear: document.getElementById("kanji-search-clear"),
     status: document.getElementById("search-status"),
     results: document.getElementById("search-results"),
-    kanken: document.getElementById("filter-kanken"),
-    jis: document.getElementById("filter-jis"),
+    kankenButtons: document.getElementById("filter-kanken-buttons"),
+    kankenSummary: document.getElementById("filter-kanken-summary"),
+    kankenReset: document.getElementById("filter-kanken-reset"),
+    kankenPanel: document.getElementById("filter-kanken-panel"),
+    kankenToggleLabel: document.getElementById("filter-kanken-toggle-label"),
+    jisButtons: document.getElementById("filter-jis-buttons"),
+    jisSummary: document.getElementById("filter-jis-summary"),
+    jisReset: document.getElementById("filter-jis-reset"),
+    jisPanel: document.getElementById("filter-jis-panel"),
+    jisToggleLabel: document.getElementById("filter-jis-toggle-label"),
     strokes: document.getElementById("filter-strokes"),
     radicalButtons: document.getElementById("filter-radical-buttons"),
     radicalSummary: document.getElementById("filter-radical-summary"),
@@ -70,7 +80,7 @@
   }
 
   function decodeNumericEntities(value) {
-    return String(value == null ? "" : value).replace(/&#(x[0-9a-f]+|\d+);/gi, (match, body) => {
+    return String(value == null ? "" : value).replace(/&#(x[0-9a-f]+|\d+);?/gi, (match, body) => {
       const codePoint = body[0].toLowerCase() === "x"
         ? parseInt(body.slice(1), 16)
         : parseInt(body, 10);
@@ -262,12 +272,38 @@
     select.appendChild(option);
   }
 
-  function fillFilters() {
-    const kankenValues = new Set(state.items.map((item) => item.kanken || "配当外"));
-    KANKEN_ORDER.filter((v) => kankenValues.has(v)).forEach((v) => addOption(els.kanken, v));
+  function orderedFilterValues(order, counts) {
+    const known = order.filter((value) => counts.has(value));
+    const extras = [...counts.keys()]
+      .filter((value) => !order.includes(value))
+      .sort((a, b) => String(a).localeCompare(String(b), "ja"));
+    return known.concat(extras);
+  }
 
-    const jisValues = new Set(state.items.map((item) => item.jis || "外字"));
-    JIS_ORDER.filter((v) => jisValues.has(v)).forEach((v) => addOption(els.jis, v));
+  function appendFilterButton(container, value, label, count) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "filter-chip-button";
+    button.dataset.value = value;
+    button.setAttribute("aria-pressed", "false");
+    button.innerHTML = `<span>${escapeHtml(label || value)}</span><small>${count}</small>`;
+    container.appendChild(button);
+  }
+
+  function fillFilters() {
+    const kankenCounts = new Map();
+    state.items.forEach((item) => {
+      const value = item.kanken || "配当外";
+      kankenCounts.set(value, (kankenCounts.get(value) || 0) + 1);
+    });
+    orderedFilterValues(KANKEN_ORDER, kankenCounts).forEach((v) => appendFilterButton(els.kankenButtons, v, v, kankenCounts.get(v)));
+
+    const jisCounts = new Map();
+    state.items.forEach((item) => {
+      const value = item.jis || "外字";
+      jisCounts.set(value, (jisCounts.get(value) || 0) + 1);
+    });
+    orderedFilterValues(JIS_ORDER, jisCounts).forEach((v) => appendFilterButton(els.jisButtons, v, v, jisCounts.get(v)));
 
     [...new Set(state.items.map((item) => Number(item.strokes)).filter(Boolean))]
       .sort((a, b) => a - b)
@@ -291,8 +327,8 @@
   }
 
   function passesFilters(item) {
-    if (els.kanken.value && (item.kanken || "配当外") !== els.kanken.value) return false;
-    if (els.jis.value && (item.jis || "外字") !== els.jis.value) return false;
+    if (state.selectedKanken && (item.kanken || "配当外") !== state.selectedKanken) return false;
+    if (state.selectedJis && (item.jis || "外字") !== state.selectedJis) return false;
     if (els.strokes.value && String(item.strokes || "") !== els.strokes.value) return false;
     if (state.selectedRadicals.size > 0 && !state.selectedRadicals.has(item._radicalCanonical)) {
       return false;
@@ -470,11 +506,13 @@
     const query = els.input.value.trim();
     const queryNorm = normalizeSearchText(query);
     const queryKanjiSet = extractKanjiSet(query);
-    const filtersActive = [els.kanken, els.jis, els.strokes, els.lexicon].some((el) => el.value) || state.selectedRadicals.size > 0;
+    const filtersActive = Boolean(state.selectedKanken || state.selectedJis)
+      || [els.strokes, els.lexicon].some((el) => el.value)
+      || state.selectedRadicals.size > 0;
     const renderKey = JSON.stringify({
       query,
-      kanken: els.kanken.value,
-      jis: els.jis.value,
+      kanken: state.selectedKanken,
+      jis: state.selectedJis,
       strokes: els.strokes.value,
       lexicon: els.lexicon.value,
       radicals: [...state.selectedRadicals].sort()
@@ -519,8 +557,36 @@
 
   function bindEvents() {
     els.input.addEventListener("input", render);
-    [els.kanken, els.jis, els.strokes, els.lexicon].forEach((el) => {
+    [els.strokes, els.lexicon].forEach((el) => {
       el.addEventListener("change", render);
+    });
+    els.kankenButtons.addEventListener("click", (event) => {
+      const button = event.target.closest(".filter-chip-button");
+      if (!button) return;
+      state.selectedKanken = state.selectedKanken === button.dataset.value ? "" : button.dataset.value;
+      updateSingleFilterButtons(els.kankenButtons, state.selectedKanken);
+      updateSingleFilterSummary(els.kankenSummary, state.selectedKanken);
+      render();
+    });
+    els.kankenReset.addEventListener("click", () => {
+      state.selectedKanken = "";
+      updateSingleFilterButtons(els.kankenButtons, state.selectedKanken);
+      updateSingleFilterSummary(els.kankenSummary, state.selectedKanken);
+      render();
+    });
+    els.jisButtons.addEventListener("click", (event) => {
+      const button = event.target.closest(".filter-chip-button");
+      if (!button) return;
+      state.selectedJis = state.selectedJis === button.dataset.value ? "" : button.dataset.value;
+      updateSingleFilterButtons(els.jisButtons, state.selectedJis);
+      updateSingleFilterSummary(els.jisSummary, state.selectedJis);
+      render();
+    });
+    els.jisReset.addEventListener("click", () => {
+      state.selectedJis = "";
+      updateSingleFilterButtons(els.jisButtons, state.selectedJis);
+      updateSingleFilterSummary(els.jisSummary, state.selectedJis);
+      render();
     });
     els.radicalButtons.addEventListener("click", (event) => {
       const button = event.target.closest(".radical-filter-button");
@@ -547,12 +613,26 @@
       updateRadicalSummary();
       render();
     });
+    els.kankenPanel.addEventListener("toggle", () => updateToggleLabel(els.kankenPanel, els.kankenToggleLabel));
+    els.jisPanel.addEventListener("toggle", () => updateToggleLabel(els.jisPanel, els.jisToggleLabel));
     els.radicalPanel.addEventListener("toggle", updateRadicalToggleLabel);
     els.clear.addEventListener("click", () => {
       els.input.value = "";
       render();
       els.input.focus();
     });
+  }
+
+  function updateSingleFilterButtons(container, selectedValue) {
+    container.querySelectorAll(".filter-chip-button").forEach((button) => {
+      const active = button.dataset.value === selectedValue;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+  }
+
+  function updateSingleFilterSummary(el, selectedValue) {
+    el.textContent = selectedValue || "선택 없음";
   }
 
   function updateRadicalSummary() {
@@ -567,7 +647,11 @@
   }
 
   function updateRadicalToggleLabel() {
-    els.radicalToggleLabel.textContent = els.radicalPanel.open ? "닫기" : "열기";
+    updateToggleLabel(els.radicalPanel, els.radicalToggleLabel);
+  }
+
+  function updateToggleLabel(panel, label) {
+    label.textContent = panel.open ? "닫기" : "열기";
   }
 
   async function init() {
@@ -578,7 +662,13 @@
       const data = await response.json();
       state.items = data.map(prepareItem);
       fillFilters();
+      updateSingleFilterButtons(els.kankenButtons, state.selectedKanken);
+      updateSingleFilterButtons(els.jisButtons, state.selectedJis);
+      updateSingleFilterSummary(els.kankenSummary, state.selectedKanken);
+      updateSingleFilterSummary(els.jisSummary, state.selectedJis);
       updateRadicalSummary();
+      updateToggleLabel(els.kankenPanel, els.kankenToggleLabel);
+      updateToggleLabel(els.jisPanel, els.jisToggleLabel);
       updateRadicalToggleLabel();
       state.ready = true;
       render();

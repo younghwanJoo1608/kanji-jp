@@ -4,8 +4,8 @@ char: 羽&#xE0101;
 unicode: U+7FBD
 meanings:
   - { meaning: "날개. 깃.", example : "羽毛" }
-  - { meaning: "새 따위를 세는 말."}
-  - { meaning: "데와노쿠니, 「出羽の国」의 약자.",  }
+  - { meaning: "[단위] 새 따위를 세는 말."}
+  - { meaning: "[지명] 데와노쿠니, 「出羽の国」의 약자.",  }
 
 onyomi:
   - { reading: ウ, type: "상용" }

@@ -9,7 +9,7 @@ meanings:
   - { meaning: "사람. 인간.", type: "人権"}
   - { meaning: "인품. 성질.", type: "人格"}
   - { meaning: "어떤 직업이나 분야에 속하는 사람.", type: "歌人"}
-  - { meaning: "사람을 세는 말.",}
+  - { meaning: "[단위] 사람을 세는 말.",}
 onyomi: 
   - { reading: ジン, type: "상용" }
   - { reading: ニン, type: "상용" }

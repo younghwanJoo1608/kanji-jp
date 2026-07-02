@@ -15,6 +15,9 @@ DEFAULT_BASE_URL = "https://kanji.jitenon.jp"
 DEFAULT_KANJIPEDIA_BASE_URL = "https://www.kanjipedia.jp"
 DEFAULT_KOTOBANK_BASE_URL = "https://kotobank.jp"
 DEFAULT_FINAL_DIR = "_kanji"
+UNRESOLVED_WORD_GLOSS = "※뜻 확인 필요"
+PROJECT_REFERENCES = %w[국어대사전 코지엔 대사천 신한어림 자통 신자원 한자원 대한화사전 자통망].freeze
+SOURCE_REFERENCE_ORDER = %w[국어대사전 코지엔 대사천 신한어림 자통 신자원 한자원 대한화사전 자통망].freeze
 
 Grade = Struct.new(:input, :number, :pre, :label, :path_code, keyword_init: true) do
   def url(base_url)
@@ -42,9 +45,11 @@ options = {
   require_word_translations: false,
   kotobank_fallback: false,
   kotobank_base_url: DEFAULT_KOTOBANK_BASE_URL,
+  allow_untranslated: false,
   show: "missing",
   json: nil,
   write_stage: nil,
+  snapshot: nil,
   limit: nil,
   sleep: 1.0
 }
@@ -66,9 +71,11 @@ OptionParser.new do |opts|
   opts.on("--require-word-translations", "Fail if a kanjipedia word gloss does not have a Korean translation.") { options[:require_word_translations] = true }
   opts.on("--kotobank-fallback", "Fetch missing required words from kotobank.jp after kanjipedia word search.") { options[:kotobank_fallback] = true }
   opts.on("--kotobank-base-url URL", "Kotobank base URL. Default: #{DEFAULT_KOTOBANK_BASE_URL}") { |v| options[:kotobank_base_url] = v }
+  opts.on("--allow-untranslated", "Allow writing Japanese meanings/glosses when translation cache entries are missing.") { options[:allow_untranslated] = true }
   opts.on("--show MODE", %w[all missing staged completed], "Rows to print. Default: missing") { |v| options[:show] = v }
   opts.on("--json PATH", "Write the audit report as JSON.") { |v| options[:json] = v }
   opts.on("--write-stage MODE", %w[missing staged all], "Write stage files for missing, staged, or all non-completed rows.") { |v| options[:write_stage] = v }
+  opts.on("--snapshot PATH", "Required snapshot path when writing a real _kanji_* stage directory.") { |v| options[:snapshot] = v }
   opts.on("--limit N", Integer, "Limit generated files.") { |v| options[:limit] = v }
   opts.on("--sleep SECONDS", Float, "Delay between detail page requests. Default: 1.0") { |v| options[:sleep] = v }
   opts.on("-h", "--help", "Show this help.") do
@@ -157,9 +164,18 @@ end
 
 def normalize_word_reading(text)
   text.to_s
+      .sub(/[（(]その他表記[）)].*\z/, "")
+      .tr("ァ-ヶ", "ぁ-ゖ")
       .tr("－‐‑‒–—―", "-")
       .gsub(/[-・･\s]/, "")
       .strip
+end
+
+def normalize_kotobank_reading(text)
+  text.to_s
+      .gsub(/[（(][^）)]*[）)]/, "")
+      .gsub(/[［\[][^\]］]*[\]］]/, "")
+      .then { |value| normalize_word_reading(value) }
 end
 
 def clean_word_text(text)
@@ -228,6 +244,10 @@ end
 
 def kotobank_word_url(base_url, word)
   "#{base_url}/word/#{URI.encode_www_form_component(word)}"
+end
+
+def kotobank_word_search_url(base_url, word)
+  "#{base_url}/search?#{URI.encode_www_form(q: word, t: "all")}"
 end
 
 def kanjipedia_word_search_page_urls(first_doc, first_url, base_url)
@@ -348,8 +368,7 @@ GENRE_RULES = [
       /세는 말/,
       /단위로 하는/,
       /단위로 한다/,
-      /(?:수|길이|거리|면적|넓이|부피|용량|화폐|비율|시간|각도|무게)의 단위/,
-      /(?:약|1)[^.。]*(?:리터|미터|센티미터|cm|mm|g|아르|헥타르|평방|제곱|입방)/
+      /(?:수|길이|거리|면적|넓이|부피|용량|화폐|비율|시간|각도|무게)의 단위/
     ]
   },
   {
@@ -368,7 +387,8 @@ GENRE_RULES = [
       /일본日本의 약칭/,
       /아메리카.*약칭/,
       /미합중국/,
-      /일본과 미합중국/
+      /일본과 미합중국/,
+      /공화국/
     ]
   },
   {
@@ -405,6 +425,8 @@ GENRE_RULES = [
       /곤충류의 총칭/,
       /곤충의 총칭/,
       /선태식물/,
+      /양치식물/,
+      /치어/,
       /벼과/,
       /국화과/,
       /장미과/,
@@ -456,7 +478,7 @@ def kanjipedia_meaning_text(node)
 
   result = +""
   skipping_relation = false
-  restart_pattern = /#{CIRCLED_NUMBER_PATTERN}|#{LATIN_MEANING_GROUP_PATTERN}/
+  restart_pattern = /#{LATIN_MEANING_GROUP_PATTERN}/
 
   node.children.each do |child|
     if child.element? && child.name == "img" && relation_marker_image?(child)
@@ -797,7 +819,9 @@ def kunyomi_word_target(char, reading)
 
   normalized = normalize_word_reading(raw)
   word = if raw.include?("-")
-           "#{char}#{raw.split("-", 2).last}"
+           stem, suffix = raw.split("-", 2)
+           joiner = stem.include?("…") ? "…" : ""
+           "#{char}#{joiner}#{suffix}"
          else
            char
          end
@@ -830,7 +854,7 @@ def required_word_targets(detail)
     targets << target if target && !target.word.empty?
   end
 
-  targets.uniq { |target| target.word }
+  targets.uniq { |target| [target.word, target.reading] }
 end
 
 def compound_yomi(word, reading, detail, jukujikun:)
@@ -850,6 +874,27 @@ def compound_yomi(word, reading, detail, jukujikun:)
   end
 
   ""
+end
+
+def kunyomi_compound_reading?(reading, detail)
+  normalized = normalize_word_reading(reading)
+  return false if normalized.empty?
+
+  detail.fetch("kunyomi", []).any? do |item|
+    surface = normalize_word_reading(item["reading"])
+    !surface.empty? && normalized.start_with?(surface)
+  end
+end
+
+def display_compound_reading(reading, word:, kunyomi: false, jukujikun: false)
+  normalized = normalize_word_reading(reading)
+  return "" if normalized.empty?
+
+  if kunyomi || jukujikun || word.to_s.match?(/[ぁ-ゖ]/)
+    katakana_to_hiragana(normalized)
+  else
+    hiragana_to_katakana(normalized)
+  end
 end
 
 def select_word_candidates(candidates, detail, max_words:)
@@ -894,7 +939,11 @@ def word_translation_for(translations, char, word, gloss_ja)
   by_char = translations[strip_variation_selectors(char)] || translations[char]
   if by_char.is_a?(Hash)
     by_word = by_char[word]
-    return by_word[gloss_ja] if by_word.is_a?(Hash)
+    if by_word.is_a?(Hash)
+      return by_word[gloss_ja] if by_word.key?(gloss_ja)
+
+      return fuzzy_source_translation(by_word, gloss_ja)
+    end
     return by_word if by_word.is_a?(String)
     return by_char[gloss_ja]
   end
@@ -902,9 +951,37 @@ def word_translation_for(translations, char, word, gloss_ja)
   translations[gloss_ja]
 end
 
-def genre_from_text(text)
-  match = text.to_s.match(/\[(#{GENRE_TAGS.join("|")})\]/)
-  match && match[1]
+def compact_translation_source(text)
+  text.to_s.gsub(/\s+/, "")
+end
+
+def translation_source_fingerprint(text)
+  compact_translation_source(text).gsub(/[ぁ-ゖァ-ヺー]/, "")
+end
+
+def fuzzy_source_translation(source_map, gloss_ja)
+  source = compact_translation_source(gloss_ja)
+  source_fingerprint = translation_source_fingerprint(gloss_ja)
+  return "" if source.length < 3 && source_fingerprint.length < 3
+
+  matches = source_map.filter_map do |key, value|
+    compact_key = compact_translation_source(key)
+    key_fingerprint = translation_source_fingerprint(key)
+    next if compact_key.length < 3 && key_fingerprint.length < 3
+    next unless compact_key.start_with?(source) ||
+                source.start_with?(compact_key) ||
+                key_fingerprint.start_with?(source_fingerprint) ||
+                source_fingerprint.start_with?(key_fingerprint)
+
+    [compact_key.length + key_fingerprint.length, value]
+  end
+  return "" if matches.empty?
+
+  matches.max_by(&:first).last
+end
+
+def missing_word_translation_error?(error)
+  error.message.start_with?("Missing Korean word translation")
 end
 
 def extract_word_variation(doc)
@@ -923,6 +1000,18 @@ def extract_word_replace(doc)
   text[/「([^」]+)」の書きかえ字/, 1].to_s.strip
 end
 
+def clean_word_gloss_text(text)
+  cleaned = text.to_s.gsub(/\s+/, " ").strip
+  cleaned = cleaned.gsub(/[（(]出典：[^）)]*[）)]/, "")
+  cleaned = cleaned.gsub(/[［\[]出典[^］\]]*[］\]][^。]*。?/, "")
+  cleaned = cleaned.gsub(/[［\[]例[^］\]]*[］\]][^。]*。?/, "")
+  cleaned = cleaned.gsub(/「[^」]*―[^」]*」/, "")
+  cleaned = cleaned.gsub(/「[^」]*[。！？][^」]*」/, "")
+  cleaned = cleaned.gsub(/「[^」]*(?:です|ます|した|だった|である|になる|となる|がある|がいる)[^」]*」/, "")
+  cleaned = cleaned.gsub(/「[^」]+」(?=\s*(?:#{CIRCLED_NUMBER_PATTERN}|\z))/, "")
+  cleaned.gsub(/\s+/, " ").strip
+end
+
 def kotobank_dictionary_article(doc, key)
   article = doc.at_css("article.dictype.cf.#{key}")
   return article if article
@@ -938,14 +1027,153 @@ def kotobank_dictionary_article(doc, key)
   end
 end
 
-def kotobank_preferred_article(doc)
-  kotobank_dictionary_article(doc, "nikkokuseisen") ||
-    kotobank_dictionary_article(doc, "daijisen")
+def kotobank_reference_for_article(article)
+  classes = article["class"].to_s.split
+  return "국어대사전" if classes.include?("nikkokuseisen")
+  return "대사천" if classes.include?("daijisen")
+  return "코지엔" if classes.include?("kojien") || classes.include?("koujien")
+
+  heading = clean_node_text(article.at_css("h2"))
+  return "국어대사전" if heading.include?("日本国語大辞典")
+  return "대사천" if heading.include?("大辞泉")
+  return "코지엔" if heading.include?("広辞苑")
+  return "자통" if heading.include?("字通")
+  return "신한어림" if heading.include?("新漢語林")
+  return "신자원" if heading.include?("新字源")
+  return "한자원" if heading.include?("漢字源")
+  return "대한화사전" if heading.include?("大漢和辞典") || heading.include?("大漢和辭典")
+
+  ""
+end
+
+def xpath_literal(value)
+  text = value.to_s
+  return "'#{text}'" unless text.include?("'")
+  return "\"#{text}\"" unless text.include?('"')
+
+  "concat(#{text.split("'").map { |part| "'#{part}'" }.join(%q{, "'", })})"
+end
+
+def kotobank_result_reading(label)
+  label_text = label.to_s
+  raw = if label_text.match?(/\A[ぁ-ゖァ-ヺー・･\s\-－‐‑‒–—―（(）)]+/)
+          label_text[/\A[ぁ-ゖァ-ヺー・･\s\-－‐‑‒–—―（(）)]+/].to_s
+        else
+          label_text.split(/[】］]/, 2)[1].to_s[/[ぁ-ゖァ-ヺー・･\s\-－‐‑‒–—―（(）)]+/].to_s
+        end
+  normalize_kotobank_reading(raw)
+end
+
+def kotobank_article_matches_target?(article, word, reading)
+  labels = article.css("h3, h4").map { |node| clean_node_text(node) }.reject(&:empty?)
+  return false if labels.empty?
+
+  normalized_reading = normalize_kotobank_reading(reading)
+  labels.any? do |label|
+    kotobank_result_matches_word?(label, word) &&
+      (normalized_reading.empty? || kotobank_result_reading(label) == normalized_reading)
+  end
+end
+
+def kotobank_preferred_article(doc, word: nil, reading: nil, url: nil)
+  articles = doc.css("article.dictype")
+  if word
+    matched_articles = articles.select { |article| kotobank_article_matches_target?(article, word, reading) }
+    articles = matched_articles unless matched_articles.empty?
+  end
+
+  SOURCE_REFERENCE_ORDER.each do |reference|
+    article = articles.find { |candidate| kotobank_reference_for_article(candidate) == reference }
+    return article if article
+  end
+
+  fragment = url.to_s.split("#", 2)[1]
+  if fragment && !fragment.empty?
+    marker = doc.at_xpath("//*[@id=#{xpath_literal(fragment)}]")
+    article = marker&.ancestors&.find { |node| node.name == "article" && node["class"].to_s.include?("dictype") }
+    return article if article && PROJECT_REFERENCES.include?(kotobank_reference_for_article(article))
+  end
+
+  articles.first
 end
 
 def kotobank_heading_reading(doc)
   text = clean_node_text(doc.at_css("h1"))
   text[/[（(]読み[）)](.+)\z/, 1].to_s.strip
+end
+
+def kotobank_heading_reading_matches?(heading, expected)
+  normalized_expected = normalize_kotobank_reading(expected)
+  return true if normalized_expected.empty?
+
+  heading.to_s
+         .gsub(/[［\[].*\z/, "")
+         .split(/[・･,、／\/\s]+/)
+         .map { |part| normalize_kotobank_reading(part) }
+         .reject(&:empty?)
+         .include?(normalized_expected)
+end
+
+def validate_kotobank_kunyomi_heading!(target, detail, heading)
+  return unless target.reason == "kunyomi"
+  return if target.reading.to_s.empty?
+  return if heading.to_s.empty?
+
+  return if kotobank_heading_reading_matches?(heading, target.reading)
+
+  raise "Kotobank fallback heading reading mismatch for #{target.word}: #{heading} != #{target.reading}"
+end
+
+def normalize_kotobank_result_label(text)
+  text.to_s
+      .gsub(/[[:space:]・\/／〔〕【】「」▽△]/, "")
+      .gsub(/[（(]([^）)]*)[）)]/, '\1')
+      .strip
+end
+
+def kotobank_result_spellings(label)
+  bracket = label.to_s[/[【［]([^】］]+)[】］]/, 1].to_s
+  return [] if bracket.empty?
+
+  bracket.split(/[／\/・･]/).map do |part|
+    clean_word_text(part)
+  end.reject(&:empty?)
+end
+
+def kotobank_result_matches_word?(label, word)
+  normalized_word = clean_word_text(word)
+  spellings = kotobank_result_spellings(label)
+  return true if spellings.include?(normalized_word)
+
+  kanji = normalized_word.scan(/\p{Han}/)
+  kana_suffix = normalized_word.sub(/\A\p{Han}+/, "")
+  kanji.length == 1 && !kana_suffix.empty? && spellings.include?(kanji.first)
+end
+
+def kotobank_result_reading_matches?(label, expected)
+  normalized_expected = normalize_kotobank_reading(expected)
+  return true if normalized_expected.empty?
+
+  kotobank_result_reading(label) == normalized_expected
+end
+
+def kotobank_result_matches_target?(label, word, expected_reading)
+  return kotobank_result_matches_word?(label, word) if expected_reading.to_s.empty?
+  return false unless kotobank_result_reading_matches?(label, expected_reading)
+
+  return true if kotobank_result_matches_word?(label, word)
+
+  false
+end
+
+def resolve_kotobank_word_url(base_url, word, expected_reading: "")
+  search_doc = fetch_html(kotobank_word_search_url(base_url, word))
+  link = search_doc.css('a[href^="/word/"]').find do |candidate|
+    kotobank_result_matches_target?(clean_node_text(candidate), word, expected_reading)
+  end
+  return nil unless link
+
+  URI.join(base_url, link["href"].to_s).to_s
 end
 
 def clean_kotobank_gloss(text, word)
@@ -960,18 +1188,40 @@ def clean_kotobank_gloss(text, word)
   cleaned = cleaned.sub(/\[可能\].*\z/, "")
   cleaned = cleaned.sub(/\[用法\].*\z/, "")
   cleaned = cleaned.sub(/\[類語\].*\z/, "")
-  cleaned.gsub(/\s+/, " ").strip
+  clean_word_gloss_text(cleaned)
 end
 
 def extract_kotobank_word_detail(target, detail, base_url:, translations:, require_translations:)
-  doc = fetch_html(kotobank_word_url(base_url, target.word))
-  article = kotobank_preferred_article(doc)
+  direct_url = kotobank_word_url(base_url, target.word)
+  doc = begin
+    fetch_html(direct_url)
+  rescue OpenURI::HTTPError
+    resolved_url = resolve_kotobank_word_url(base_url, target.word, expected_reading: target.reading)
+    raise unless resolved_url
+
+    fetch_html(resolved_url)
+  end
+  article = kotobank_preferred_article(doc, word: target.word, reading: target.reading, url: direct_url)
   raise "No Kotobank fallback dictionary entry for #{target.word}" unless article
 
   gloss_ja = clean_kotobank_gloss(clean_node_text(article.at_css("section.description")), target.word)
   raise "No Kotobank fallback gloss for #{target.word}" if gloss_ja.empty?
 
-  reading = target.reading.to_s.empty? ? normalize_word_reading(kotobank_heading_reading(doc)) : target.reading
+  heading_reading = kotobank_heading_reading(doc)
+  if target.reason == "kunyomi" && !kotobank_heading_reading_matches?(heading_reading, target.reading)
+    resolved_url = resolve_kotobank_word_url(base_url, target.word, expected_reading: target.reading)
+    if resolved_url && resolved_url != direct_url
+      doc = fetch_html(resolved_url)
+      article = kotobank_preferred_article(doc, word: target.word, reading: target.reading, url: resolved_url)
+      raise "No Kotobank fallback dictionary entry for #{target.word}" unless article
+
+      gloss_ja = clean_kotobank_gloss(clean_node_text(article.at_css("section.description")), target.word)
+      raise "No Kotobank fallback gloss for #{target.word}" if gloss_ja.empty?
+      heading_reading = kotobank_heading_reading(doc)
+    end
+  end
+  validate_kotobank_kunyomi_heading!(target, detail, heading_reading)
+  reading = target.reading.to_s.empty? ? normalize_kotobank_reading(heading_reading) : target.reading
   reading = katakana_to_hiragana(reading) if target.reason == "kunyomi" || target.word.match?(/[ぁ-ゖ]/)
   gloss = word_translation_for(translations, detail["char"], target.word, gloss_ja)
   if gloss.to_s.strip.empty?
@@ -983,14 +1233,20 @@ def extract_kotobank_word_detail(target, detail, base_url:, translations:, requi
   end
 
   gloss = add_word_genre_tags(gloss.to_s.strip)
+  display_reading = display_compound_reading(
+    reading,
+    word: target.word,
+    kunyomi: target.reason == "kunyomi" || kunyomi_compound_reading?(reading, detail),
+    jukujikun: target.jukujikun
+  )
   row = {
     "word" => target.word,
-    "reading" => reading,
+    "reading" => display_reading,
     "gloss" => gloss,
-    "yomi" => compound_yomi(target.word, reading, detail, jukujikun: target.jukujikun)
+    "yomi" => compound_yomi(target.word, display_reading, detail, jukujikun: target.jukujikun)
   }
-  genre = genre_from_text(gloss)
-  row["genre"] = genre if genre
+  reference = kotobank_reference_for_article(article)
+  row["reference"] = reference unless reference.empty?
   row
 end
 
@@ -1004,6 +1260,7 @@ def extract_kanjipedia_word_detail(candidate, detail, translations:, require_tra
   replacement = extract_word_replace(doc)
   gloss_ja = kanjipedia_meaning_text(gloss_node)
   gloss_ja = text_before_any_marker_image(gloss_node, %w[季 書きかえ]) if gloss_node&.css("img")&.any? { |img| %w[季 書きかえ].include?(img["alt"].to_s) }
+  gloss_ja = clean_word_gloss_text(gloss_ja)
   gloss = word_translation_for(translations, detail["char"], word, gloss_ja)
   if gloss.to_s.strip.empty?
     message = "Missing Korean word translation for #{detail["char"]} #{word}: #{gloss_ja}"
@@ -1014,24 +1271,60 @@ def extract_kanjipedia_word_detail(candidate, detail, translations:, require_tra
   end
 
   gloss = add_word_genre_tags(gloss.to_s.strip)
+  display_reading = display_compound_reading(
+    reading,
+    word: word,
+    kunyomi: candidate.word.match?(/[ぁ-ゖ]/) || kunyomi_compound_reading?(reading, detail),
+    jukujikun: candidate.jukujikun
+  )
   row = {
     "word" => word,
-    "reading" => reading,
+    "reading" => display_reading,
     "gloss" => gloss,
-    "yomi" => compound_yomi(word, reading, detail, jukujikun: candidate.jukujikun)
+    "yomi" => compound_yomi(word, display_reading, detail, jukujikun: candidate.jukujikun)
   }
-  genre = genre_from_text(gloss)
-  row["genre"] = genre if genre
   variation = extract_word_variation(doc)
   row["variation"] = variation unless variation.empty?
   row["replace"] = replacement unless replacement.empty?
   row
 end
 
+def required_target_present?(rows, target)
+  rows.any? do |row|
+    next false unless clean_word_text(row["word"]) == target.word
+    next true if target.reading.to_s.empty?
+
+    normalize_word_reading(row["reading"]) == target.reading
+  end
+end
+
+def unresolved_source_error?(error)
+  return false if missing_word_translation_error?(error)
+  return true if error.is_a?(OpenURI::HTTPError) && error.message.include?("404")
+
+  error.message.start_with?("No Kotobank fallback dictionary entry") ||
+    error.message.start_with?("No Kotobank fallback gloss") ||
+    error.message.start_with?("Kotobank fallback heading reading mismatch")
+end
+
+def unresolved_required_word_row(target, detail)
+  reading = display_compound_reading(
+    target.reading,
+    word: target.word,
+    kunyomi: target.reason == "kunyomi" || kunyomi_compound_reading?(target.reading, detail),
+    jukujikun: target.jukujikun
+  )
+  {
+    "word" => target.word,
+    "reading" => reading,
+    "gloss" => UNRESOLVED_WORD_GLOSS,
+    "yomi" => compound_yomi(target.word, reading, detail, jukujikun: target.jukujikun)
+  }
+end
+
 def append_kotobank_fallback_words!(rows, detail, targets, base_url:, translations:, require_translations:)
-  existing_words = rows.map { |row| clean_word_text(row["word"]) }.to_set
   targets.each do |target|
-    next if existing_words.include?(target.word)
+    next if required_target_present?(rows, target)
 
     begin
       row = extract_kotobank_word_detail(
@@ -1042,9 +1335,18 @@ def append_kotobank_fallback_words!(rows, detail, targets, base_url:, translatio
         require_translations: require_translations
       )
       rows << row
-      existing_words << clean_word_text(row["word"])
     rescue StandardError => e
+      raise if require_translations && missing_word_translation_error?(e)
+
       warn "  Kotobank #{target.word}: #{e.class}: #{e.message}"
+      unless unresolved_source_error?(e)
+        warn "  #{target.word}: unresolved placeholder skipped because the failure was not a source miss."
+        next
+      end
+
+      placeholder = unresolved_required_word_row(target, detail)
+      rows << placeholder
+      warn "  #{target.word}: added #{UNRESOLVED_WORD_GLOSS}"
     end
   end
   rows
@@ -1061,6 +1363,8 @@ def extract_kanjipedia_words(detail, base_url:, translations:, require_translati
       require_translations: require_translations
     )
   rescue StandardError => e
+    raise if require_translations && missing_word_translation_error?(e)
+
     warn "  #{candidate.url}: #{e.class}: #{e.message}"
     nil
   end
@@ -1180,7 +1484,7 @@ end
 
 def inline_compound(item)
   fields = []
-  %w[word reading gloss yomi variation replace reference genre].each do |key|
+  %w[word reading gloss yomi variation replace reference].each do |key|
     next if item[key].to_s.empty?
 
     fields << "#{key}: #{json_quote(item[key])}"
@@ -1368,8 +1672,20 @@ def print_report(grade, source_url, expected, rows, mode)
   end
 end
 
+def real_stage_dir?(path)
+  File.basename(path.to_s).start_with?("_kanji_")
+end
+
+def validate_snapshot_for_stage_write!(stage_dir, snapshot)
+  return unless real_stage_dir?(stage_dir)
+
+  abort "Refusing to write #{stage_dir}: pass --snapshot PATH created by tools/snapshot_kanji_stage.rb." if snapshot.to_s.empty?
+  abort "Snapshot path does not exist: #{snapshot}" unless File.exist?(snapshot)
+end
+
 grade = parse_grade(options[:grade])
 options[:stage_dir] ||= default_stage_dir(grade)
+validate_snapshot_for_stage_write!(options[:stage_dir], options[:snapshot]) if options[:write_stage]
 source_url = grade.url(options[:base_url])
 entries, expected = scrape_grade_list(source_url, options[:base_url])
 completed = load_collection(options[:final_dir])
@@ -1377,6 +1693,11 @@ staged = load_collection(options[:stage_dir])
 kanjipedia_url_cache = load_json_cache(options[:kanjipedia_cache])
 meaning_translations = load_meaning_translations(options[:meaning_translations])
 word_translations = load_meaning_translations(options[:word_translations])
+
+if options[:write_stage] && !options[:allow_untranslated]
+  options[:require_meaning_translations] = true if options[:kanjipedia]
+  options[:require_word_translations] = true if options[:kanjipedia_words]
+end
 
 rows = entries.map do |entry|
   status = status_for(entry, completed, staged)

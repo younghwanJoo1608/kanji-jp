@@ -1,0 +1,579 @@
+{
+  "summary": {
+    "source_dir": "_translation_source_8_ja",
+    "pages": 98,
+    "meaning_sources": 305,
+    "word_sources": 856,
+    "unresolved_word_sources": 70,
+    "missing_meanings": 0,
+    "bad_meaning_translations": 0,
+    "missing_words": 0,
+    "bad_word_translations": 0
+  },
+  "missing_meanings": [],
+  "bad_meaning_translations": [],
+  "missing_words": [],
+  "bad_word_translations": [],
+  "unresolved_word_sources": [
+    {
+      "file": "_translation_source_8_ja/6C7A.md",
+      "char": "決",
+      "unicode": "U+6C7A",
+      "word": "決まる",
+      "reading": "きまる",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/6D0B.md",
+      "char": "洋",
+      "unicode": "U+6D0B",
+      "word": "洋",
+      "reading": "うみ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/6D0B.md",
+      "char": "洋",
+      "unicode": "U+6D0B",
+      "word": "洋",
+      "reading": "なだ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/6D0B.md",
+      "char": "洋",
+      "unicode": "U+6D0B",
+      "word": "洋い",
+      "reading": "ひろい",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/6DF1.md",
+      "char": "深",
+      "unicode": "U+6DF1",
+      "word": "深",
+      "reading": "み",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/6E29.md",
+      "char": "温",
+      "unicode": "U+6E29",
+      "word": "温む",
+      "reading": "つつむ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/6F22.md",
+      "char": "漢",
+      "unicode": "U+6F22",
+      "word": "漢",
+      "reading": "おとこ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/7531.md",
+      "char": "由",
+      "unicode": "U+7531",
+      "word": "由",
+      "reading": "なお",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/7531.md",
+      "char": "由",
+      "unicode": "U+7531",
+      "word": "由…ごとし",
+      "reading": "なお…ごとし",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/7533.md",
+      "char": "申",
+      "unicode": "U+7533",
+      "word": "申ねる",
+      "reading": "かさねる",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/767A.md",
+      "char": "発",
+      "unicode": "U+767A",
+      "word": "発く",
+      "reading": "ひらく",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/76F8.md",
+      "char": "相",
+      "unicode": "U+76F8",
+      "word": "相",
+      "reading": "あい",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/76F8.md",
+      "char": "相",
+      "unicode": "U+76F8",
+      "word": "相",
+      "reading": "ありさま",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/793C.md",
+      "char": "礼",
+      "unicode": "U+793C",
+      "word": "礼う",
+      "reading": "うやまう",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/793C.md",
+      "char": "礼",
+      "unicode": "U+793C",
+      "word": "礼",
+      "reading": "のり",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/795E.md",
+      "char": "神",
+      "unicode": "U+795E",
+      "word": "神",
+      "reading": "かん",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/795E.md",
+      "char": "神",
+      "unicode": "U+795E",
+      "word": "神",
+      "reading": "こう",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/795E.md",
+      "char": "神",
+      "unicode": "U+795E",
+      "word": "神",
+      "reading": "たましい",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/79D2.md",
+      "char": "秒",
+      "unicode": "U+79D2",
+      "word": "秒",
+      "reading": "のぎ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/7A76.md",
+      "char": "究",
+      "unicode": "U+7A76",
+      "word": "究まる",
+      "reading": "きわまる",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/7AE0.md",
+      "char": "章",
+      "unicode": "U+7AE0",
+      "word": "章",
+      "reading": "あや",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/7AE0.md",
+      "char": "章",
+      "unicode": "U+7AE0",
+      "word": "章",
+      "reading": "ふみ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/7B2C.md",
+      "char": "第",
+      "unicode": "U+7B2C",
+      "word": "第で",
+      "reading": "ついで",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/7B2C.md",
+      "char": "第",
+      "unicode": "U+7B2C",
+      "word": "第",
+      "reading": "やしき",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/7D1A.md",
+      "char": "級",
+      "unicode": "U+7D1A",
+      "word": "級",
+      "reading": "くび",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/7DF4.md",
+      "char": "練",
+      "unicode": "U+7DF4",
+      "word": "練",
+      "reading": "ねりぎぬ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/7F8E.md",
+      "char": "美",
+      "unicode": "U+7F8E",
+      "word": "美める",
+      "reading": "ほめる",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/7F8E.md",
+      "char": "美",
+      "unicode": "U+7F8E",
+      "word": "美い",
+      "reading": "よい",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/82E6.md",
+      "char": "苦",
+      "unicode": "U+82E6",
+      "word": "苦",
+      "reading": "にがな",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/82E6.md",
+      "char": "苦",
+      "unicode": "U+82E6",
+      "word": "苦だ",
+      "reading": "はなはだ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8377.md",
+      "char": "荷",
+      "unicode": "U+8377",
+      "word": "荷",
+      "reading": "はす",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/843D.md",
+      "char": "落",
+      "unicode": "U+843D",
+      "word": "落",
+      "reading": "さと",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8449.md",
+      "char": "葉",
+      "unicode": "U+8449",
+      "word": "葉",
+      "reading": "かみ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8449.md",
+      "char": "葉",
+      "unicode": "U+8449",
+      "word": "葉",
+      "reading": "すえ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8868.md",
+      "char": "表",
+      "unicode": "U+8868",
+      "word": "表れる",
+      "reading": "あらわれる",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8868.md",
+      "char": "表",
+      "unicode": "U+8868",
+      "word": "表",
+      "reading": "しるし",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8A69.md",
+      "char": "詩",
+      "unicode": "U+8A69",
+      "word": "詩",
+      "reading": "うた",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8ABF.md",
+      "char": "調",
+      "unicode": "U+8ABF",
+      "word": "調る",
+      "reading": "あざける",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8ABF.md",
+      "char": "調",
+      "unicode": "U+8ABF",
+      "word": "調ぐ",
+      "reading": "やわらぐ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8C46.md",
+      "char": "豆",
+      "unicode": "U+8C46",
+      "word": "豆",
+      "reading": "たかつき",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8CA0.md",
+      "char": "負",
+      "unicode": "U+8CA0",
+      "word": "負く",
+      "reading": "そむく",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8CA0.md",
+      "char": "負",
+      "unicode": "U+8CA0",
+      "word": "負む",
+      "reading": "たのむ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8DEF.md",
+      "char": "路",
+      "unicode": "U+8DEF",
+      "word": "路",
+      "reading": "じ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8DEF.md",
+      "char": "路",
+      "unicode": "U+8DEF",
+      "word": "路",
+      "reading": "くるま",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8EAB.md",
+      "char": "身",
+      "unicode": "U+8EAB",
+      "word": "身ら",
+      "reading": "みずから",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8EE2.md",
+      "char": "転",
+      "unicode": "U+8EE2",
+      "word": "転る",
+      "reading": "うつる",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8EE2.md",
+      "char": "転",
+      "unicode": "U+8EE2",
+      "word": "転",
+      "reading": "くるり",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8EE2.md",
+      "char": "転",
+      "unicode": "U+8EE2",
+      "word": "転ぶ",
+      "reading": "まろぶ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/8FB2.md",
+      "char": "農",
+      "unicode": "U+8FB2",
+      "word": "農す",
+      "reading": "たがやす",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/904B.md",
+      "char": "運",
+      "unicode": "U+904B",
+      "word": "運",
+      "reading": "さだめ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/90E8.md",
+      "char": "部",
+      "unicode": "U+90E8",
+      "word": "部",
+      "reading": "くみ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/90E8.md",
+      "char": "部",
+      "unicode": "U+90E8",
+      "word": "部べる",
+      "reading": "すべる",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/90E8.md",
+      "char": "部",
+      "unicode": "U+90E8",
+      "word": "部",
+      "reading": "つかさ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/90E8.md",
+      "char": "部",
+      "unicode": "U+90E8",
+      "word": "部ける",
+      "reading": "わける",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/914D.md",
+      "char": "配",
+      "unicode": "U+914D",
+      "word": "配",
+      "reading": "つれあい",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/914D.md",
+      "char": "配",
+      "unicode": "U+914D",
+      "word": "配す",
+      "reading": "ながす",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/914D.md",
+      "char": "配",
+      "unicode": "U+914D",
+      "word": "配ぶ",
+      "reading": "ならぶ",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/9152.md",
+      "char": "酒",
+      "unicode": "U+9152",
+      "word": "酒",
+      "reading": "さか",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/9662.md",
+      "char": "院",
+      "unicode": "U+9662",
+      "word": "院",
+      "reading": "かき",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/9662.md",
+      "char": "院",
+      "unicode": "U+9662",
+      "word": "院",
+      "reading": "かこい",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/967D.md",
+      "char": "陽",
+      "unicode": "U+967D",
+      "word": "陽る",
+      "reading": "いつわる",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/967D.md",
+      "char": "陽",
+      "unicode": "U+967D",
+      "word": "陽",
+      "reading": "ひなた",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/968E.md",
+      "char": "階",
+      "unicode": "U+968E",
+      "word": "階",
+      "reading": "はしご",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/9762.md",
+      "char": "面",
+      "unicode": "U+9762",
+      "word": "面",
+      "reading": "おも",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/9762.md",
+      "char": "面",
+      "unicode": "U+9762",
+      "word": "面く",
+      "reading": "そむく",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/9762.md",
+      "char": "面",
+      "unicode": "U+9762",
+      "word": "面",
+      "reading": "も",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/984C.md",
+      "char": "題",
+      "unicode": "U+984C",
+      "word": "題",
+      "reading": "ひたい",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/98F2.md",
+      "char": "飲",
+      "unicode": "U+98F2",
+      "word": "飲う",
+      "reading": "みずかう",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/9928.md",
+      "char": "館",
+      "unicode": "U+9928",
+      "word": "館",
+      "reading": "たて",
+      "gloss": "※뜻 확인 필요"
+    },
+    {
+      "file": "_translation_source_8_ja/9F3B.md",
+      "char": "鼻",
+      "unicode": "U+9F3B",
+      "word": "鼻め",
+      "reading": "はじめ",
+      "gloss": "※뜻 확인 필요"
+    }
+  ]
+}

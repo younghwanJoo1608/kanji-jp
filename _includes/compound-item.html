@@ -3,8 +3,7 @@
   <span class="{% if item.type == '상용' %}standard{% endif %}{% if include.hard %} hard{% endif %} jp-font">{{ item.word }}</span>
   {% if item.reading %}<small class="reading">{{ item.reading }}</small>{% endif %}
   {% if item.gloss %}
-    {%- assign has_genre = item.genre and item.genre != "" -%}
-    {% include genre-icon.html genre=item.genre %}{% if has_genre %}{% include formatted-text.html text=item.gloss show_genre_icons="false" %}{% else %}{% include formatted-text.html text=item.gloss %}{% endif %}
+    {% include formatted-text.html text=item.gloss %}
     {% if include.show_reference %}{% include reference-icon.html ref=item.reference %}{% endif %}
     {% include compound-extra.html item=item %}
   {% endif %}

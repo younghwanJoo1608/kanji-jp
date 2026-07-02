@@ -209,7 +209,8 @@
   }
 
   function hasGenre(item) {
-    return itemArray(item.compounds).some((entry) => entry && entry.genre);
+    return flattenMeanings(item.meanings).some((text) => /\[(생물|불교|지명|나라|단위)\]/.test(text)) ||
+      itemArray(item.compounds).some((entry) => entry && /\[(생물|불교|지명|나라|단위)\]/.test(String(entry.gloss || "")));
   }
 
   function hasReference(item) {
@@ -254,7 +255,7 @@
 
     compounds.concat(idioms, saja).forEach((entry) => {
       if (!entry) return;
-      searchable.push(entry.word, entry.reading, entry.gloss, entry.yomi, entry.variation, entry.replace, entry.reference, entry.genre);
+      searchable.push(entry.word, entry.reading, entry.gloss, entry.yomi, entry.variation, entry.replace, entry.reference);
       readingVariants(entry.reading).forEach((v) => searchable.push(v));
     });
 
@@ -415,7 +416,7 @@
       addValueMatch(matches, section, variant, queryNorm, SCORE.readingExact, SCORE.readingPartial, wordText);
     });
     addMatch(matches, section, [entry.word, entry.reading, entry.gloss].filter(Boolean).join(" "), queryNorm, SCORE.gloss);
-    addMatch(matches, section, [entry.variation, entry.replace, entry.reference, entry.genre].filter(Boolean).join(" "), queryNorm, SCORE.meta);
+    addMatch(matches, section, [entry.variation, entry.replace, entry.reference].filter(Boolean).join(" "), queryNorm, SCORE.meta);
   }
 
   function uniqueMatches(matches) {

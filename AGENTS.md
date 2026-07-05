@@ -92,6 +92,10 @@ Common options:
 
 - `--grade 8`: scrape grade 8 from Jitenon. `pre2`, `jun2`, `準2`, and `준2`
   map to preliminary grade URLs.
+- `--jitenon-search QUERY`: resolve one kanji through Jitenon site search
+  instead of a grade list. Use a Unicode code such as `659C`/`U+659C` or the
+  kanji itself, such as `斜`. Without `--stage-dir`, this mode defaults to
+  `_kanji_single` so it does not accidentally write to a grade stage folder.
 - `--show all|missing|staged|completed`: audit what exists.
 - `--write-stage missing|staged|all`: write only non-completed rows to the
   stage folder.
@@ -291,6 +295,17 @@ gloss: "※뜻 확인 필요"
 
 This marker is intentional and searchable. Do not silently drop unresolved
 classical, non-joyo, or rare readings.
+
+If the unresolved target came from a kanji meaning example and no source
+provided a reliable word reading, keep the compound as a review marker with:
+
+```yaml
+reading: "※読み確認必要"
+gloss: "※뜻 확인 필요"
+```
+
+Use a conservative page-grouping `yomi` from the target kanji only so the page
+can render, but do not treat that as a verified word reading.
 
 ## Validation
 

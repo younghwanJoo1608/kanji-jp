@@ -4,6 +4,7 @@
 require "cgi"
 require "fileutils"
 require "json"
+require "net/http"
 require "nokogiri"
 require "open-uri"
 require "optparse"
@@ -16,6 +17,7 @@ DEFAULT_KANJIPEDIA_BASE_URL = "https://www.kanjipedia.jp"
 DEFAULT_KOTOBANK_BASE_URL = "https://kotobank.jp"
 DEFAULT_FINAL_DIR = "_kanji"
 UNRESOLVED_WORD_GLOSS = "※뜻 확인 필요"
+UNRESOLVED_WORD_READING = "※読み確認必要"
 PROJECT_REFERENCES = %w[국어대사전 코지엔 대사천 신한어림 자통 신자원 한자원 대한화사전 자통망].freeze
 SOURCE_REFERENCE_ORDER = %w[국어대사전 코지엔 대사천 신한어림 자통 신자원 한자원 대한화사전 자통망].freeze
 SMALL_KANA_FOLD = {
@@ -63,6 +65,9 @@ options = {
   json: nil,
   write_stage: nil,
   snapshot: nil,
+  jitenon_search: nil,
+  unicode: nil,
+  char: nil,
   limit: nil,
   sleep: 1.0
 }
@@ -89,6 +94,9 @@ OptionParser.new do |opts|
   opts.on("--json PATH", "Write the audit report as JSON.") { |v| options[:json] = v }
   opts.on("--write-stage MODE", %w[missing staged all], "Write stage files for missing, staged, or all non-completed rows.") { |v| options[:write_stage] = v }
   opts.on("--snapshot PATH", "Required snapshot path when writing a real _kanji_* stage directory.") { |v| options[:snapshot] = v }
+  opts.on("--jitenon-search QUERY", "Resolve one kanji through kanji.jitenon.jp search, e.g. 659C or 斜.") { |v| options[:jitenon_search] = v }
+  opts.on("--unicode CODE", "Limit work to one Unicode codepoint, e.g. 659C or U+659C.") { |v| options[:unicode] = v }
+  opts.on("--char CHAR", "Limit work to one kanji character.") { |v| options[:char] = v }
   opts.on("--limit N", Integer, "Limit generated files.") { |v| options[:limit] = v }
   opts.on("--sleep SECONDS", Float, "Delay between detail page requests. Default: 1.0") { |v| options[:sleep] = v }
   opts.on("-h", "--help", "Show this help.") do
@@ -127,8 +135,46 @@ def fetch_html(url)
   Nokogiri::HTML(URI.open(url, headers))
 end
 
+def post_jitenon_search_url(query, base_url)
+  code_query = unicode_code_query(query)
+  form = if code_query
+           { "value" => code_query, "how" => "すべて", "search" => "contain" }
+         else
+           { "value" => strip_variation_selectors(query).strip, "how" => "漢字", "search" => "match" }
+         end
+
+  uri = URI.join(base_url, "/include/page_send.php")
+  request = Net::HTTP::Post.new(uri)
+  request["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "\
+                          "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+  request.set_form_data(form)
+
+  response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https") do |http|
+    http.request(request)
+  end
+  raise "Jitenon search failed for #{query.inspect}: HTTP #{response.code}" unless response.is_a?(Net::HTTPSuccess)
+
+  location = response.body.to_s.strip
+  raise "Jitenon search returned an empty URL for #{query.inspect}" if location.empty?
+
+  URI.join(base_url, location).to_s
+end
+
 def kanji_unicode(char)
   "U+#{char.codepoints.first.to_s(16).upcase}"
+end
+
+def normalize_unicode_filter(value)
+  raw = value.to_s.strip
+  return "" if raw.empty?
+
+  code = raw.sub(/\AU\+/i, "").upcase
+  "U+#{code}"
+end
+
+def unicode_code_query(value)
+  raw = normalize_digits(value).to_s.strip.sub(/\AU\+/i, "").upcase
+  raw.match?(/\A[0-9A-F]{4,6}\z/) ? raw : nil
 end
 
 def normalize_digits(value)
@@ -933,6 +979,13 @@ def ensure_compound_yomi!(row, detail, context:)
   raise "Missing compound yomi for #{detail["char"]} #{row["word"]}(#{row["reading"]}) while #{context}"
 end
 
+def fallback_unresolved_yomi(detail)
+  onyomi = detail.fetch("onyomi", []).map { |item| item["reading"].to_s }.find { |reading| !reading.empty? }
+  return onyomi if onyomi
+
+  detail.fetch("kunyomi", []).map { |item| item["reading"].to_s.split("-", 2).first }.find { |reading| !reading.empty? }.to_s
+end
+
 def validate_compound_yomi!(detail)
   detail.fetch("compounds", []).each do |row|
     ensure_compound_yomi!(row, detail, context: "validating generated compounds")
@@ -1377,11 +1430,16 @@ def unresolved_required_word_row(target, detail)
     kunyomi: target.reason == "kunyomi" || kunyomi_compound_reading?(target.reading, detail),
     jukujikun: target.jukujikun
   )
+  yomi = compound_yomi(target.word, reading, detail, jukujikun: target.jukujikun)
+  if reading.empty?
+    reading = UNRESOLVED_WORD_READING
+    yomi = fallback_unresolved_yomi(detail)
+  end
   row = {
     "word" => target.word,
     "reading" => reading,
     "gloss" => UNRESOLVED_WORD_GLOSS,
-    "yomi" => compound_yomi(target.word, reading, detail, jukujikun: target.jukujikun)
+    "yomi" => yomi
   }
   ensure_compound_yomi!(row, detail, context: "creating unresolved word placeholder")
 end
@@ -1445,9 +1503,11 @@ end
 
 def merge_readings!(target, key, additions)
   additions.each do |item|
+    item = item.dup
+    item["type"] = "" unless target["_joyo"]
     existing = target[key].find { |row| row["reading"] == item["reading"] }
     if existing
-      existing["type"] = "상용" if existing["type"].to_s.empty? && item["type"] == "상용"
+      existing["type"] = "상용" if target["_joyo"] && existing["type"].to_s.empty? && item["type"] == "상용"
       next
     end
 
@@ -1489,10 +1549,11 @@ def extract_kanji_detail(url, fallback_char:, grade:)
     "kunyomi" => [],
     "radical" => "",
     "strokes" => nil,
-    "kanken" => grade.label,
+    "kanken" => grade&.label.to_s,
     "jis" => "",
     "variants" => nil,
-    "compounds" => []
+    "compounds" => [],
+    "_joyo" => false
   }
 
   current_heading = nil
@@ -1516,11 +1577,17 @@ def extract_kanji_detail(url, fallback_char:, grade:)
       detail["kanken"] = normalize_digits(clean_node_text(td)).gsub(/\s+/, "")
     when /JIS水準/
       detail["jis"] = normalize_digits(clean_node_text(td)).gsub(/\s+/, "")
+    when /種別/
+      detail["_joyo"] = clean_node_text(td).include?("常用")
     end
   end
 
   detail["onyomi"].reject! { |item| item["reading"].empty? }
   detail["kunyomi"].reject! { |item| item["reading"].empty? }
+  unless detail["_joyo"]
+    detail["onyomi"].each { |item| item["type"] = "" }
+    detail["kunyomi"].each { |item| item["type"] = "" }
+  end
   detail
 end
 
@@ -1665,6 +1732,62 @@ def scrape_grade_list(url, base_url)
   [entries, expected]
 end
 
+def jitenon_detail_char(doc)
+  h1_text = clean_node_text(doc.at_css("h1") || doc.at_css("title"))
+  h1_text[/漢字「(.+?)」/, 1] || h1_text[/「(.+?)」/, 1]
+end
+
+def jitenon_detail_url(doc, fallback_url)
+  canonical = doc.at_css('link[rel="canonical"]')&.[]("href").to_s.strip
+  canonical.empty? ? fallback_url : canonical
+end
+
+def jitenon_search_candidate_links(doc)
+  links = doc.css("#search_result .data_cont a").select do |link|
+    href = link["href"].to_s
+    href.match?(%r{/kanji[a-z]?/})
+  end
+  links = doc.css("a").select { |link| link["href"].to_s.match?(%r{/kanji[a-z]?/}) } if links.empty?
+  links
+end
+
+def resolve_jitenon_search_entry(query, base_url)
+  search_url = post_jitenon_search_url(query, base_url)
+  doc = fetch_html(search_url)
+  target_code = unicode_code_query(query)
+  target_unicode = target_code ? "U+#{target_code}" : nil
+  target_char = target_code ? [target_code.to_i(16)].pack("U") : strip_variation_selectors(query).strip
+
+  direct_char = jitenon_detail_char(doc)
+  if direct_char && strip_variation_selectors(direct_char) == strip_variation_selectors(target_char)
+    url = jitenon_detail_url(doc, search_url)
+    return [ListEntry.new(char: direct_char, unicode: kanji_unicode(direct_char), url: url, readings: []), search_url]
+  end
+
+  candidates = jitenon_search_candidate_links(doc).filter_map do |link|
+    char = link.at_css("span")&.text&.strip
+    char ||= clean_node_text(link)[/\p{Han}/]
+    next if char.to_s.empty?
+
+    unicode = kanji_unicode(char)
+    next if target_unicode && unicode != target_unicode
+    next if !target_unicode && strip_variation_selectors(char) != strip_variation_selectors(target_char)
+
+    ListEntry.new(
+      char: char,
+      unicode: unicode,
+      url: URI.join(base_url, link["href"].to_s).to_s,
+      readings: []
+    )
+  end
+
+  candidates.uniq!(&:unicode)
+  raise "No exact Jitenon search result found for #{query.inspect} at #{search_url}" if candidates.empty?
+  raise "Multiple exact Jitenon search results found for #{query.inspect}: #{candidates.map(&:url).join(", ")}" if candidates.length > 1
+
+  [candidates.first, search_url]
+end
+
 def front_matter(path)
   text = File.read(path, encoding: "UTF-8")
   match = text.match(/\A---\s*\n(.*?)\n---\s*(?:\n|\z)/m)
@@ -1712,7 +1835,7 @@ end
 
 def print_report(grade, source_url, expected, rows, mode)
   counts = rows.group_by { |row| row[:status] }.transform_values(&:length)
-  puts "Grade: #{grade.label}"
+  puts "Grade: #{grade&.label || "Jitenon search"}"
   puts "Source: #{source_url}"
   puts "Listed: #{rows.length}#{expected ? " / expected #{expected}" : ""}"
   puts "Completed: #{counts.fetch("completed", 0)}"
@@ -1747,11 +1870,17 @@ def validate_snapshot_for_stage_write!(stage_dir, snapshot)
   abort "Snapshot path does not exist: #{snapshot}" unless File.exist?(snapshot)
 end
 
-grade = parse_grade(options[:grade])
-options[:stage_dir] ||= default_stage_dir(grade)
+grade = options[:jitenon_search] ? nil : parse_grade(options[:grade])
+options[:stage_dir] ||= options[:jitenon_search] ? "_kanji_single" : default_stage_dir(grade)
 validate_snapshot_for_stage_write!(options[:stage_dir], options[:snapshot]) if options[:write_stage]
-source_url = grade.url(options[:base_url])
-entries, expected = scrape_grade_list(source_url, options[:base_url])
+if options[:jitenon_search]
+  entry, source_url = resolve_jitenon_search_entry(options[:jitenon_search], options[:base_url])
+  entries = [entry]
+  expected = 1
+else
+  source_url = grade.url(options[:base_url])
+  entries, expected = scrape_grade_list(source_url, options[:base_url])
+end
 completed = load_collection(options[:final_dir])
 staged = load_collection(options[:stage_dir])
 kanjipedia_url_cache = load_json_cache(options[:kanjipedia_cache])
@@ -1775,6 +1904,14 @@ rows = entries.map do |entry|
     path: source&.fetch(:path, nil)
   }
 end
+if options[:unicode]
+  target_unicode = normalize_unicode_filter(options[:unicode])
+  rows = rows.select { |row| row[:unicode].casecmp?(target_unicode) }
+end
+if options[:char]
+  rows = rows.select { |row| strip_variation_selectors(row[:char]) == strip_variation_selectors(options[:char]) }
+end
+abort "No matching kanji found for the requested --unicode/--char filter." if (options[:unicode] || options[:char]) && rows.empty?
 
 if expected && expected != entries.length
   warn "Expected #{expected} entries from page metadata, but scraped #{entries.length}."
@@ -1834,7 +1971,8 @@ end
 
 if options[:json]
   report = {
-    grade: grade.label,
+    grade: grade&.label,
+    jitenon_search: options[:jitenon_search],
     source_url: source_url,
     expected_count: expected,
     scraped_count: entries.length,

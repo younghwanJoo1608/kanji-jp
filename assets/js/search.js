@@ -34,6 +34,7 @@
 
   const KANKEN_ORDER = ["10級", "9級", "8級", "7級", "6級", "5級", "4級", "3級", "準2級", "2級", "準1級", "1級", "配当外"];
   const JIS_ORDER = ["第1水準", "第2水準", "第3水準", "第4水準", "外字"];
+  const INTERMEDIATE_REFERENCES = new Set(["코지엔", "대사천", "신한어림", "국어대사전"]);
   const RADICAL_ORDER = [
     "一", "丨", "丶", "丿", "乙", "亅", "二", "亠", "人", "儿", "入", "八", "冂", "冖", "冫", "几", "凵", "刀", "力", "勹", "匕", "匚", "匸", "十", "卜", "卩", "厂", "厶", "又",
     "口", "囗", "土", "士", "夂", "夊", "夕", "大", "女", "子", "宀", "寸", "小", "尢", "尸", "屮", "山", "巛", "工", "己", "巾", "干", "幺", "广", "廴", "廾", "弋", "弓", "彐", "彡", "彳",
@@ -205,7 +206,12 @@
   }
 
   function hasAdvanced(item) {
-    return itemArray(item.compounds).some((entry) => entry && entry.reference);
+    return itemArray(item.compounds).some((entry) => entry && entry.reference && !INTERMEDIATE_REFERENCES.has(entry.reference));
+  }
+
+  function compoundSectionLabel(entry) {
+    if (entry.reference && !INTERMEDIATE_REFERENCES.has(entry.reference)) return "고급 어휘";
+    return "일반 사전 어휘";
   }
 
   function hasGenre(item) {
@@ -451,8 +457,7 @@
       });
     });
     item._compounds.forEach((entry) => {
-      const label = entry.reference ? "고급 어휘" : "일반 사전 어휘";
-      addEntryMatches(matches, label, entry, queryNorm);
+      addEntryMatches(matches, compoundSectionLabel(entry), entry, queryNorm);
     });
     item._idioms.forEach((entry) => addEntryMatches(matches, "관용구", entry, queryNorm));
     item._saja.forEach((entry) => addEntryMatches(matches, "사자성어", entry, queryNorm));

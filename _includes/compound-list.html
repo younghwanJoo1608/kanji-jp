@@ -50,7 +50,7 @@
     </h4>
     <ul class="compounds">
       {%- for item in group_items -%}
-        {% include compound-item.html item=item hard=include.hard show_reference=include.show_reference %}
+        {% include compound-item.html item=item hard=include.hard intermediate=include.intermediate show_reference=include.show_reference %}
       {%- endfor -%}
     </ul>
   {%- endif -%}
@@ -62,7 +62,7 @@
     <h4 class="compound-group-title">숙자훈</h4>
     <ul class="compounds">
       {%- for item in jukujikun -%}
-        {% include compound-item.html item=item hard=include.hard show_reference=include.show_reference %}
+        {% include compound-item.html item=item hard=include.hard intermediate=include.intermediate show_reference=include.show_reference %}
       {%- endfor -%}
     </ul>
   {%- endif -%}

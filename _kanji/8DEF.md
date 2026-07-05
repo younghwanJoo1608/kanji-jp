@@ -18,8 +18,8 @@ kanken: 8級
 jis: 第1水準
 variants:
 compounds:
-  - { word: "当路", reading: "トウロ", gloss: "중요한 지위에 있는 것. 또는 그런 사람." }
-  - { word: "路傍", reading: "ロボウ", gloss: "길가. 노변." }
+  - { word: "当路", reading: "トウロ", gloss: "중요한 지위에 있는 것. 또는 그런 사람.", yomi: "ロ" }
+  - { word: "路傍", reading: "ロボウ", gloss: "길가. 노변.", yomi: "ロ" }
   - { word: "路", reading: "みち", gloss: "① 사람이나 차 등이 다니는 곳. ② 마땅히 따라야 할 도리. ③ 방법이나 수단.", yomi: "みち" }
   - { word: "海路", reading: "うなじ", gloss: "바다 위에서 배가 지나는 길. 항로.", yomi: "숙자훈" }
   - { word: "岐路", reading: "えだみち", gloss: "① 큰길에서 갈라진 좁은 길. ② 사물의 본줄기에서 벗어나는 것. 또는 벗어난 곳.", yomi: "숙자훈", variation: "枝道" }
@@ -30,6 +30,6 @@ compounds:
   - { word: "八十路", reading: "やそじ", gloss: "① 여든. ② 80세.", yomi: "숙자훈" }
   - { word: "路加伝", reading: "るかでん", gloss: "[종교] 신약성서의 네 복음서 가운데 세 번째 책. 루카 복음서.", yomi: "숙자훈" }
   - { word: "十字路", reading: "じゅうじろ", gloss: "십자 모양으로 교차하는 길. 네거리.", yomi: "じ" }
-  - { word: "理路", reading: "リロ", gloss: "사물의 도리. 생각이나 말의 논리적 흐름. 이치.", reference: "국어대사전" }
+  - { word: "理路", reading: "リロ", gloss: "사물의 도리. 생각이나 말의 논리적 흐름. 이치.", reference: "국어대사전", yomi: "ロ" }
   - { word: "路", reading: "じ", gloss: "(1) 길. (2) 지명에 붙어, 그 지방으로 가는 길이나 그 지방을 지나가는 길을 나타내는 말. (3) 날짜 수에 붙어, 그만큼 걸리는 길이나 여정임을 나타내는 말.", yomi: "じ", reference: "국어대사전" }
 ---

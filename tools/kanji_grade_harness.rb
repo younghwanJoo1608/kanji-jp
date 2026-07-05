@@ -18,6 +18,19 @@ DEFAULT_FINAL_DIR = "_kanji"
 UNRESOLVED_WORD_GLOSS = "※뜻 확인 필요"
 PROJECT_REFERENCES = %w[국어대사전 코지엔 대사천 신한어림 자통 신자원 한자원 대한화사전 자통망].freeze
 SOURCE_REFERENCE_ORDER = %w[국어대사전 코지엔 대사천 신한어림 자통 신자원 한자원 대한화사전 자통망].freeze
+SMALL_KANA_FOLD = {
+  "ぁ" => "あ", "ぃ" => "い", "ぅ" => "う", "ぇ" => "え", "ぉ" => "お",
+  "ゃ" => "や", "ゅ" => "ゆ", "ょ" => "よ", "ゎ" => "わ"
+}.freeze
+VOICED_KANA = {
+  "か" => "が", "き" => "ぎ", "く" => "ぐ", "け" => "げ", "こ" => "ご",
+  "さ" => "ざ", "し" => "じ", "す" => "ず", "せ" => "ぜ", "そ" => "ぞ",
+  "た" => "だ", "ち" => "ぢ", "つ" => "づ", "て" => "で", "と" => "ど",
+  "は" => "ば", "ひ" => "び", "ふ" => "ぶ", "へ" => "べ", "ほ" => "ぼ"
+}.freeze
+HAND_VOICED_KANA = {
+  "は" => "ぱ", "ひ" => "ぴ", "ふ" => "ぷ", "へ" => "ぺ", "ほ" => "ぽ"
+}.freeze
 
 Grade = Struct.new(:input, :number, :pre, :label, :path_code, keyword_init: true) do
   def url(base_url)
@@ -176,6 +189,38 @@ def normalize_kotobank_reading(text)
       .gsub(/[（(][^）)]*[）)]/, "")
       .gsub(/[［\[][^\]］]*[\]］]/, "")
       .then { |value| normalize_word_reading(value) }
+end
+
+def fold_small_kana(text)
+  text.to_s.chars.map { |char| SMALL_KANA_FOLD.fetch(char, char) }.join
+end
+
+def sokuon_reading_variant(kana)
+  return nil if kana.length < 2
+
+  %w[つ ち く き].include?(kana[-1]) ? "#{kana[0...-1]}っ" : nil
+end
+
+def voiced_reading_variants(kana)
+  chars = kana.to_s.chars
+  return [] if chars.empty?
+
+  variants = [kana]
+  variants << ([VOICED_KANA[chars[0]]] + chars[1..]).join if VOICED_KANA[chars[0]]
+  variants << ([HAND_VOICED_KANA[chars[0]]] + chars[1..]).join if HAND_VOICED_KANA[chars[0]]
+  variants.uniq
+end
+
+def yomi_reading_variants(reading)
+  normalized = normalize_word_reading(reading)
+  bases = [normalized, fold_small_kana(normalized)].uniq.reject(&:empty?)
+  bases += bases.filter_map { |base| sokuon_reading_variant(base) }
+  bases.flat_map { |base| voiced_reading_variants(base) }.uniq
+end
+
+def reading_contains_yomi?(reading, yomi)
+  normalized_reading = normalize_word_reading(reading)
+  yomi_reading_variants(yomi).any? { |variant| normalized_reading.include?(variant) }
 end
 
 def clean_word_text(text)
@@ -865,15 +910,33 @@ def compound_yomi(word, reading, detail, jukujikun:)
     raw = item["reading"].to_s
     surface = normalize_word_reading(raw)
     stem = raw.split("-", 2).first.to_s
-    return stem unless surface.empty? || !normalized_reading.start_with?(surface)
+    stem_surface = normalize_word_reading(stem)
+    next if stem_surface.empty?
+
+    return stem if !surface.empty? && normalized_reading.start_with?(surface)
+    return stem if normalized_reading.start_with?(stem_surface)
+    return stem if reading_contains_yomi?(reading, stem)
   end
 
   detail.fetch("onyomi", []).each do |item|
     yomi = item["reading"].to_s
-    return yomi if !yomi.empty? && normalized_reading.include?(yomi)
+    return yomi if !yomi.empty? && reading_contains_yomi?(reading, yomi)
   end
 
   ""
+end
+
+def ensure_compound_yomi!(row, detail, context:)
+  row["yomi"] = compound_yomi(row["word"], row["reading"], detail, jukujikun: row["yomi"].to_s == "숙자훈") if row["yomi"].to_s.strip.empty?
+  return row unless row["yomi"].to_s.strip.empty?
+
+  raise "Missing compound yomi for #{detail["char"]} #{row["word"]}(#{row["reading"]}) while #{context}"
+end
+
+def validate_compound_yomi!(detail)
+  detail.fetch("compounds", []).each do |row|
+    ensure_compound_yomi!(row, detail, context: "validating generated compounds")
+  end
 end
 
 def kunyomi_compound_reading?(reading, detail)
@@ -1247,7 +1310,7 @@ def extract_kotobank_word_detail(target, detail, base_url:, translations:, requi
   }
   reference = kotobank_reference_for_article(article)
   row["reference"] = reference unless reference.empty?
-  row
+  ensure_compound_yomi!(row, detail, context: "extracting Kotobank word detail")
 end
 
 def extract_kanjipedia_word_detail(candidate, detail, translations:, require_translations:)
@@ -1286,7 +1349,7 @@ def extract_kanjipedia_word_detail(candidate, detail, translations:, require_tra
   variation = extract_word_variation(doc)
   row["variation"] = variation unless variation.empty?
   row["replace"] = replacement unless replacement.empty?
-  row
+  ensure_compound_yomi!(row, detail, context: "extracting Kanjipedia word detail")
 end
 
 def required_target_present?(rows, target)
@@ -1314,12 +1377,13 @@ def unresolved_required_word_row(target, detail)
     kunyomi: target.reason == "kunyomi" || kunyomi_compound_reading?(target.reading, detail),
     jukujikun: target.jukujikun
   )
-  {
+  row = {
     "word" => target.word,
     "reading" => reading,
     "gloss" => UNRESOLVED_WORD_GLOSS,
     "yomi" => compound_yomi(target.word, reading, detail, jukujikun: target.jukujikun)
   }
+  ensure_compound_yomi!(row, detail, context: "creating unresolved word placeholder")
 end
 
 def append_kotobank_fallback_words!(rows, detail, targets, base_url:, translations:, require_translations:)
@@ -1754,6 +1818,7 @@ if options[:write_stage]
         kotobank_base_url: options[:kotobank_fallback] ? options[:kotobank_base_url] : nil
       )
     end
+    validate_compound_yomi!(detail)
     path = write_stage_file(detail, options[:stage_dir])
     puts "-> #{path}"
     sleep options[:sleep] if index + 1 < targets.length && options[:sleep].positive?

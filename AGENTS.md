@@ -218,6 +218,8 @@ Word fields:
 - `gloss`: Korean translated meaning, with genre tags where needed.
 - `yomi`: only the target kanji's reading in that word, for grouping on the
   hosted page.
+  It is required for every compound. The harness must fail rather than write a
+  compound whose `yomi` is empty.
 - `variation`: alternate spelling from Kanjipedia `表記`.
 - `replace`: Kanjipedia `書きかえ`, for example `台風` has `颱風`.
 - `reference`: dictionary/source marker. Use advanced dictionary names for

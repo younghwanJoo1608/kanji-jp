@@ -1,9 +1,16 @@
 {%- assign compounds_normal = "" | split: "" -%}
+{%- assign compounds_intermediate = "" | split: "" -%}
 {%- assign compounds_advanced = "" | split: "" -%}
+{%- assign intermediate_references = "|코지엔|대사천|신한어림|국어대사전|" -%}
 {%- if page.compounds and page.compounds.size > 0 -%}
   {%- for item in page.compounds -%}
     {%- if item.reference and item.reference != "" -%}
-      {%- assign compounds_advanced = compounds_advanced | push: item -%}
+      {%- assign reference_key = item.reference | prepend: "|" | append: "|" -%}
+      {%- if intermediate_references contains reference_key -%}
+        {%- assign compounds_intermediate = compounds_intermediate | push: item -%}
+      {%- else -%}
+        {%- assign compounds_advanced = compounds_advanced | push: item -%}
+      {%- endif -%}
     {%- else -%}
       {%- assign compounds_normal = compounds_normal | push: item -%}
     {%- endif -%}
@@ -79,11 +86,12 @@
     </div>
   </section>
 
-  {%- if compounds_normal.size > 0 -%}
+  {%- if compounds_normal.size > 0 or compounds_intermediate.size > 0 -%}
     <section class="kanji-section lexicon-section">
       <h2>일반 사전 어휘</h2>
       <div class="kanji-section-body">
-        {% include compound-list.html items=compounds_normal include_jukujikun=true hard=false show_reference=true %}
+        {%- assign compounds_regular = compounds_normal | concat: compounds_intermediate -%}
+        {% include compound-list.html items=compounds_regular include_jukujikun=true hard=false show_reference=true %}
       </div>
     </section>
   {%- endif -%}

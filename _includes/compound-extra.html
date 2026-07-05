@@ -1,8 +1,8 @@
 {%- assign variation = include.item.variation | default: "" -%}
 {%- if variation != "" -%}
-  <img class="gloss-icon" src="{{ '/assets/icons/표기.svg' | relative_url }}" alt="표기" height="18" style="margin-left: 0.5em" />{% include formatted-text.html text=variation %}
+  <img class="gloss-icon" src="{{ '/assets/icons/표기.svg' | relative_url }}" alt="표기" height="18" style="margin-left: 0.5em" /><span class="jp-font" lang="ja">{% include formatted-text.html text=variation %}</span>
 {%- endif -%}
 {%- assign replacement = include.item.replace | default: "" -%}
 {%- if replacement != "" -%}
-  <img class="gloss-icon" src="{{ '/assets/icons/카키가에.svg' | relative_url }}" alt="카키가에" height="18" style="margin-left: 0.5em" />{% include formatted-text.html text=replacement %}
+  <img class="gloss-icon" src="{{ '/assets/icons/카키가에.svg' | relative_url }}" alt="카키가에" height="18" style="margin-left: 0.5em" /><span class="jp-font" lang="ja">{% include formatted-text.html text=replacement %}</span>
 {%- endif -%}

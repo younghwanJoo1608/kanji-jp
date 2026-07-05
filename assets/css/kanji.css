@@ -160,7 +160,7 @@
     
     /* ★ 字形を大きく見せるクラス（本文中でも使用可） */
     .kanji-glyph {
-        font-family: "Noto Serif KR", "Noto Serif CJK KR", "BatangChe", "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", "Songti SC", "SimSun", serif;
+        font-family: "Noto Serif JP", "Noto Serif CJK JP", "Yu Mincho", "Hiragino Mincho ProN", "Noto Serif KR", "Noto Serif CJK KR", "BatangChe", serif;
         display: inline-block;
         font-size: clamp(64px, 12vw, 148px); /* 画面に応じて大きく */
         line-height: 1;
@@ -324,6 +324,7 @@
     .compounds { margin: 0; padding-left: 1.25rem; }
     .compounds .reading { color: var(--muted-ink); }
     .compounds .standard { color: #1170ff; } /* 표외 보라색 강조 */
+    .compounds .intermediate { color: #1170ff; } /* 중간 티어 어휘 */
     .compounds .offchart { color: #7f1783; } /* 표외 보라색 강조 */
     .compounds .hard { color: #c62828; } /* 고급 빨간색 강조 */
 

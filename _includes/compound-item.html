@@ -1,10 +1,16 @@
 {%- assign item = include.item -%}
+{%- assign intermediate_references = "|코지엔|대사천|신한어림|국어대사전|" -%}
+{%- assign reference_key = item.reference | default: "" | prepend: "|" | append: "|" -%}
+{%- assign is_intermediate = include.intermediate -%}
+{%- if intermediate_references contains reference_key -%}
+  {%- assign is_intermediate = true -%}
+{%- endif -%}
 <li>
-  <span class="{% if item.type == '상용' %}standard{% endif %}{% if include.hard %} hard{% endif %} jp-font">{{ item.word }}</span>
+  <span class="{% if item.type == '상용' %}standard{% endif %}{% if is_intermediate %} intermediate{% endif %}{% if include.hard %} hard{% endif %} jp-font">{{ item.word }}</span>
   {% if item.reading %}<small class="reading">{{ item.reading }}</small>{% endif %}
   {% if item.gloss %}
     {% include formatted-text.html text=item.gloss %}
-    {% if include.show_reference %}{% include reference-icon.html ref=item.reference %}{% endif %}
     {% include compound-extra.html item=item %}
+    {% if include.show_reference %}{% include reference-icon.html ref=item.reference %}{% endif %}
   {% endif %}
 </li>

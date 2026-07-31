@@ -234,6 +234,7 @@ def normalize_kotobank_reading(text)
   text.to_s
       .gsub(/[（(][^）)]*[）)]/, "")
       .gsub(/[［\[][^\]］]*[\]］]/, "")
+      .gsub(/[A-Za-z]+/, "")
       .then { |value| normalize_word_reading(value) }
 end
 
@@ -267,6 +268,11 @@ end
 def reading_contains_yomi?(reading, yomi)
   normalized_reading = normalize_word_reading(reading)
   yomi_reading_variants(yomi).any? { |variant| normalized_reading.include?(variant) }
+end
+
+def katakana_reading?(reading)
+  text = reading.to_s
+  text.match?(/[ァ-ヶ]/) && !text.match?(/[ぁ-ゖ]/)
 end
 
 def clean_word_text(text)
@@ -352,7 +358,11 @@ def kanjipedia_word_search_page_urls(first_doc, first_url, base_url)
   urls.to_a
 end
 
-def resolve_kanjipedia_url(char, base_url, cache)
+def reading_match_key(reading)
+  reading.to_s.gsub("-", "").strip
+end
+
+def resolve_kanjipedia_url(char, base_url, cache, expected_readings: [])
   cache_key = strip_variation_selectors(char)
   cached = cache[cache_key]
   return cached if cached && !cached.empty?
@@ -370,7 +380,26 @@ def resolve_kanjipedia_url(char, base_url, cache)
   regular = candidates.reject { |url| url.include?("/kanji/other/") }
   selected = regular.first || candidates.first
   raise "No kanjipedia kanji result for #{cache_key}" unless selected
-  raise "Ambiguous kanjipedia kanji result for #{cache_key}: #{candidates.join(", ")}" if regular.length > 1
+
+  if regular.length > 1
+    expected_order = expected_readings.map { |reading| reading_match_key(reading) }.reject(&:empty?)
+    expected = expected_order.to_set
+    readings_by_url = regular.to_h do |url|
+      doc = fetch_html(url)
+      readings = extract_kanjipedia_readings(doc).values.flatten.map { |row| reading_match_key(row["reading"]) }
+      [url, readings]
+    end
+    matched = readings_by_url.select { |_url, readings| readings.any? { |reading| expected.include?(reading) } }.keys
+    expected_order.each do |reading|
+      preferred = readings_by_url.select { |_url, readings| readings.include?(reading) }.keys
+      if preferred.length == 1
+        selected = preferred.first
+        break
+      end
+    end
+    selected = matched.first if matched.length == 1
+    raise "Ambiguous kanjipedia kanji result for #{cache_key}: #{candidates.join(", ")}" unless readings_by_url.key?(selected)
+  end
 
   cache[cache_key] = selected
 end
@@ -431,7 +460,7 @@ def extract_kanjipedia_readings(doc)
   readings = { "onyomi" => [], "kunyomi" => [] }
 
   doc.css("#onkunList li").each do |li|
-    heading = li.at_css("img")&.[]("alt").to_s
+    heading = li.css("img").map { |img| img["alt"].to_s }.find { |alt| ["音", "訓"].include?(alt) }.to_s
     body = li.at_css(".onkunYomi")
     next unless body
 
@@ -558,6 +587,10 @@ def trim_kanjipedia_cross_reference_tail(text)
       .strip
 end
 
+def kanjipedia_reading_only_meaning?(text)
+  text.to_s.match?(/\A[ァ-ヶー・\s]+\z/)
+end
+
 def relation_marker_image?(node)
   src = node["src"].to_s
   alt = node["alt"].to_s
@@ -663,6 +696,7 @@ def parse_kanjipedia_meaning_part(part, reading = nil)
     meaning = stripped.split("「", 2).first.to_s.strip
   end
   return nil if meaning.empty?
+  return nil if kanjipedia_reading_only_meaning?(meaning)
 
   row = { "meaning" => meaning }
   row = { "reading" => reading }.merge(row) if reading
@@ -829,8 +863,8 @@ def apply_meaning_translations!(meanings, char, translations, require_translatio
   meanings
 end
 
-def extract_kanjipedia_detail(char, base_url:, url_cache:, translations:, require_translations:)
-  url = resolve_kanjipedia_url(char, base_url, url_cache)
+def extract_kanjipedia_detail(char, base_url:, url_cache:, translations:, require_translations:, expected_readings: [])
+  url = resolve_kanjipedia_url(char, base_url, url_cache, expected_readings: expected_readings)
   doc = fetch_html(url)
   page_char = strip_variation_selectors(clean_node_text(doc.at_css("#kanjiOyaji") || doc.at_css("title")))
   expected_char = strip_variation_selectors(char)
@@ -885,6 +919,8 @@ end
 
 def proverb_or_idiom_candidate?(candidate)
   text = candidate.raw_label.to_s
+  return true if kanji_only?(candidate.word) && candidate.word.length >= 4
+  return true if candidate.word.to_s.match?(/[のがをにへと]/) && candidate.word.length >= 4
   return true if text.match?(/[、。]/)
   return true if text.length > 14 && text.match?(/[ぁ-ゖ]/)
 
@@ -931,6 +967,7 @@ def required_word_targets(detail)
   extract_meaning_examples(detail.fetch("meanings", [])).each do |word|
     cleaned = clean_word_text(word)
     next if cleaned.empty?
+    next unless strip_variation_selectors(cleaned).include?(char)
 
     targets << RequiredWordTarget.new(
       word: cleaned,
@@ -952,6 +989,27 @@ def compound_yomi(word, reading, detail, jukujikun:)
   return "숙자훈" if jukujikun
 
   normalized_reading = normalize_word_reading(reading)
+  if strip_variation_selectors(clean_word_text(word)) == strip_variation_selectors(detail["char"]) && !normalized_reading.empty?
+    return katakana_reading?(reading) ? hiragana_to_katakana(normalized_reading) : katakana_to_hiragana(normalized_reading)
+  end
+
+  onyomi_match = lambda do
+    matched = ""
+    detail.fetch("onyomi", []).each do |item|
+      yomi = item["reading"].to_s
+      if !yomi.empty? && reading_contains_yomi?(reading, yomi)
+        matched = yomi
+        break
+      end
+    end
+    matched
+  end
+
+  if katakana_reading?(reading)
+    matched = onyomi_match.call
+    return matched unless matched.empty?
+  end
+
   detail.fetch("kunyomi", []).each do |item|
     raw = item["reading"].to_s
     surface = normalize_word_reading(raw)
@@ -964,10 +1022,8 @@ def compound_yomi(word, reading, detail, jukujikun:)
     return stem if reading_contains_yomi?(reading, stem)
   end
 
-  detail.fetch("onyomi", []).each do |item|
-    yomi = item["reading"].to_s
-    return yomi if !yomi.empty? && reading_contains_yomi?(reading, yomi)
-  end
+  matched = onyomi_match.call
+  return matched unless matched.empty?
 
   ""
 end
@@ -1515,9 +1571,15 @@ def merge_readings!(target, key, additions)
   end
 end
 
+def normalize_reading_kinds!(detail)
+  detail["onyomi"].reject! { |item| item["reading"].to_s.match?(/[ぁ-ゖ]/) }
+  detail
+end
+
 def enrich_with_kanjipedia!(detail, kanjipedia)
   merge_readings!(detail, "onyomi", kanjipedia["onyomi"])
   merge_readings!(detail, "kunyomi", kanjipedia["kunyomi"])
+  normalize_reading_kinds!(detail)
   detail["meanings"] = kanjipedia["meanings"] unless kanjipedia["meanings"].empty?
   detail
 end
@@ -1941,7 +2003,8 @@ if options[:write_stage]
         base_url: options[:kanjipedia_base_url],
         url_cache: kanjipedia_url_cache,
         translations: meaning_translations,
-        require_translations: options[:require_meaning_translations]
+        require_translations: options[:require_meaning_translations],
+        expected_readings: detail.fetch("onyomi", []).concat(detail.fetch("kunyomi", [])).map { |item| item["reading"] }
       )
       enrich_with_kanjipedia!(detail, kanjipedia)
     end
